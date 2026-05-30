@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P20 – Maximum Number of Occurrences of a Substring</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.medium{background:#fef9c3;color:#a16207}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Strings · Sliding Window Masterclass</a> &rsaquo; Fixed Window + Freq</div>
+<h1>P20 &mdash; Maximum Number of Occurrences of a Substring</h1>
+<div class="meta"><span class="badge medium">Medium</span> &bull; LC #1297 &bull; Pattern: <strong>Only minSize Matters + Frequency Map</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Given <code>s</code>, integers <code>maxLetters</code>, <code>minSize</code>, <code>maxSize</code>, return the maximum number of occurrences (among any substring of length in [minSize, maxSize]) that satisfies: distinct chars ≤ maxLetters.</p>
+<p><strong>Example:</strong> <code>s = "aababcaab", maxLetters = 2, minSize = 3, maxSize = 4</code> &rarr; <code>2</code></p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Only minSize matters</dt><dd>Any longer winner contains a minSize winner with ≥ same occurrences. So just count minSize-length substrings.</dd>
+<dt>Frequency tally of substrings</dt><dd>HashMap from minSize substring to occurrence count. Update as the window slides.</dd>
+<dt>Distinct ≤ maxLetters</dt><dd>Filter: only valid substrings (≤ maxLetters distinct chars) count.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>You don't need to try every length. Just look at length = minSize. Slide that fixed window, check the distinct-char count, tally each substring, return the highest tally.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>If a length-k substring is a winner, its first minSize chars are also a winner (same constraints, no fewer occurrences). So minSize is the only length to examine.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Slide a window of size minSize. Maintain a distinct-char count.</li>
+<li>If distinct ≤ maxLetters: tally substring in a HashMap.</li>
+<li>Return max value in HashMap (0 if empty).</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int maxFreq(String s, int maxLetters, int minSize, int maxSize) {
+    Map&lt;String, Integer&gt; freq = new HashMap&lt;&gt;();
+    int[] cnt = new int[26];
+    int distinct = 0;
+    int K = minSize;
+    for (int i = 0; i &lt; Math.min(K, s.length()); i++) {
+        if (cnt[s.charAt(i) - 'a']++ == 0) distinct++;
+    }
+    if (s.length() &gt;= K &amp;&amp; distinct &lt;= maxLetters) {
+        freq.merge(s.substring(0, K), 1, Integer::sum);
+    }
+    for (int r = K; r &lt; s.length(); r++) {
+        if (cnt[s.charAt(r) - 'a']++ == 0) distinct++;
+        if (--cnt[s.charAt(r - K) - 'a'] == 0) distinct--;
+        if (distinct &lt;= maxLetters) {
+            freq.merge(s.substring(r - K + 1, r + 1), 1, Integer::sum);
+        }
+    }
+    int best = 0;
+    for (int v : freq.values()) best = Math.max(best, v);
+    return best;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n · minSize)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(n · minSize)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Fixed Window + Frequency Tally:</strong> Ignore maxSize entirely; minSize is sufficient. The constraint window is fixed; the answer comes from a HashMap tally.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> When you see a range like [minSize, maxSize], check whether the smallest works just as well. Often it does &mdash; and the range hint becomes a red herring.</div>
+
+<div class="footer">Strings · Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

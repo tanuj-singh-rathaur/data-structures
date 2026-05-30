@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DSA Practice — Global Index</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:980px;margin:0 auto;padding:30px;background:#fafafa;color:#1f2937;line-height:1.55}
+  h1{color:#0f172a;border-bottom:3px solid #2563eb;padding-bottom:8px}
+  h2{color:#0f172a;margin-top:34px;border-left:4px solid #2563eb;padding-left:10px}
+  h3{color:#334155;margin-top:24px}
+  .stage{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px 22px;margin:14px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .stage h3{margin-top:0}
+  .topic{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid #e5e7eb;border-radius:6px;margin:6px 0;background:#fff;transition:all .15s}
+  .topic:hover{border-color:#2563eb;background:#f8fafc}
+  .topic a{color:#2563eb;text-decoration:none;font-weight:600}
+  .topic a:hover{text-decoration:underline}
+  .topic .count{font-size:.85rem;color:#64748b}
+  .badge{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;font-weight:600;margin-left:8px}
+  .ready{background:#dcfce7;color:#166534}
+  .soon{background:#fef3c7;color:#92400e}
+  .stub{background:#e5e7eb;color:#475569}
+  ol.order{padding-left:22px}
+  ol.order li{margin:5px 0}
+  table.problem-order{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+  table.problem-order th{background:#f1f5f9;text-align:left;padding:8px}
+  table.problem-order td{padding:7px 8px;border-top:1px solid #f1f5f9}
+  table.problem-order tr:hover{background:#f8fafc}
+  table.problem-order a{color:#2563eb;text-decoration:none}
+  table.problem-order a:hover{text-decoration:underline}
+  .pill{display:inline-block;font-size:.72rem;padding:2px 8px;border-radius:10px;font-weight:600}
+  .pill-easy{background:#dcfce7;color:#166534}
+  .pill-med{background:#fef3c7;color:#92400e}
+  .pill-hard{background:#fee2e2;color:#991b1b}
+  .group{font-weight:600;color:#0f172a;margin-top:14px;padding:6px 0;border-bottom:1px solid #e5e7eb}
+  .footer{text-align:center;color:#64748b;margin-top:40px;font-size:.85rem}
+</style>
+</head>
+<body>
+
+<h1>📚 DSA Practice — Global Hierarchy</h1>
+<p>Pattern-wise problem set following the RisingBrain sheet. Solve topics in the order below — each stage builds on the previous one.</p>
+
+<!-- ============================= -->
+<h2>🗺️ Recommended Topic Order</h2>
+
+<div class="stage">
+  <h3>Stage 1 — Arrays (Foundational Patterns)</h3>
+  <div class="topic"><span>1. <a href="arrays/twopointer/00_Masterclass.html">Two Pointer</a></span><span class="count">20 problems <span class="badge ready">Ready</span></span></div>
+  <div class="topic"><span>2. <a href="arrays/slidingwindow/00_Masterclass.html">Sliding Window</a></span><span class="count">8 problems <span class="badge ready">Ready</span></span></div>
+  <div class="topic"><span>3. <a href="arrays/prefixsum/00_Masterclass.html">Prefix Sum</a></span><span class="count">6 problems <span class="badge ready">Ready</span></span></div>
+  <div class="topic"><span>4. <a href="arrays/kadane/00_Masterclass.html">Kadane's Algorithm</a></span><span class="count">5 problems <span class="badge ready">Ready</span></span></div>
+</div>
+
+<div class="stage">
+  <h3>Stage 2 — Strings (Same Patterns, New Data)</h3>
+  <div class="topic"><span>5. <a href="strings/twopointer/00_Masterclass.html">Strings · Two Pointer</a></span><span class="count">20 problems <span class="badge ready">Ready</span></span></div>
+  <div class="topic"><span>6. <a href="strings/slidingwindow/00_Masterclass.html">Strings · Sliding Window</a></span><span class="count">20 problems <span class="badge ready">Ready</span></span></div>
+</div>
+
+<div class="stage">
+  <h3>Stage 3 — Search</h3>
+  <div class="topic"><span>7. <a href="binarysearch/classic/">Binary Search · Classic</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>8. <a href="binarysearch/lowerupperbound/">Binary Search · Lower/Upper Bound</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>9. <a href="binarysearch/in2dmatrix/">Binary Search · 2D Matrix</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+</div>
+
+<div class="stage">
+  <h3>Stage 4 — Hashing</h3>
+  <div class="topic"><span>10. <a href="hashmap/frequency/">HashMap · Frequency</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+</div>
+
+<div class="stage">
+  <h3>Stage 5 — Recursion &amp; Backtracking</h3>
+  <div class="topic"><span>11. <a href="recursion/divideconquer/">Recursion · Divide &amp; Conquer</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>12. <a href="backtracking/choice/">Backtracking · Choice</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>13. <a href="backtracking/decision/">Backtracking · Decision</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>14. <a href="backtracking/constraint/">Backtracking · Constraint</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>15. <a href="backtracking/grid/">Backtracking · Grid</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+</div>
+
+<div class="stage">
+  <h3>Stage 6 — Trees</h3>
+  <div class="topic"><span>16. <a href="tree/bfs/">Tree · BFS</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>17. <a href="tree/dfs/">Tree · DFS</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>18. <a href="tree/lca/">Tree · LCA</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>19. <a href="tree/serialization/">Tree · Serialization</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+</div>
+
+<div class="stage">
+  <h3>Stage 7 — Heaps &amp; Tries</h3>
+  <div class="topic"><span>20. <a href="heap/topk/">Heap · Top K</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>21. <a href="trie/basic/">Trie · Basic</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>22. <a href="trie/wordbreak/">Trie · Word Break</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+  <div class="topic"><span>23. <a href="trie/bitwise/">Trie · Bitwise</a></span><span class="count"><span class="badge stub">Stubs only</span></span></div>
+</div>
+
+<div class="stage">
+  <h3>Stage 8 — Graph &amp; DP <span class="badge soon">Coming Soon</span></h3>
+  <div class="topic"><span>24. Graphs</span><span class="count">not yet added</span></div>
+  <div class="topic"><span>25. Dynamic Programming</span><span class="count">not yet added</span></div>
+</div>
+
+<!-- ============================= -->
+<h2>🎯 Two Pointer — Recommended Problem Order</h2>
+<p>Inside the Two Pointer topic, follow this order (easy → hard, grouped by sub-pattern). Click any problem to open its study guide.</p>
+
+<div class="group">Easy · Opposite Ends</div>
+<table class="problem-order">
+<tr><th>#</th><th>Problem</th><th>LC</th><th>Difficulty</th></tr>
+<tr><td>1</td><td><a href="arrays/twopointer/P01_TwoSumII.html">P01 · Two Sum II</a></td><td>167</td><td><span class="pill pill-easy">Easy</span></td></tr>
+<tr><td>2</td><td><a href="arrays/twopointer/P09_ValidPalindrome.html">P09 · Valid Palindrome</a></td><td>125</td><td><span class="pill pill-easy">Easy</span></td></tr>
+<tr><td>3</td><td><a href="arrays/twopointer/P10_ReverseString.html">P10 · Reverse String</a></td><td>344</td><td><span class="pill pill-easy">Easy</span></td></tr>
+</table>
+
+<div class="group">Easy · Slow + Fast (Same Direction)</div>
+<table class="problem-order">
+<tr><th>#</th><th>Problem</th><th>LC</th><th>Difficulty</th></tr>
+<tr><td>4</td><td><a href="arrays/twopointer/P05_RemoveDuplicates.html">P05 · Remove Duplicates</a></td><td>26</td><td><span class="pill pill-easy">Easy</span></td></tr>
+<tr><td>5</td><td><a href="arrays/twopointer/P17_RemoveElement.html">P17 · Remove Element</a></td><td>27</td><td><span class="pill pill-easy">Easy</span></td></tr>
+<tr><td>6</td><td><a href="arrays/twopointer/P07_MoveZeroes.html">P07 · Move Zeroes</a></td><td>283</td><td><span class="pill pill-easy">Easy</span></td></tr>
+<tr><td>7</td><td><a href="arrays/twopointer/P16_IsSubsequence.html">P16 · Is Subsequence</a></td><td>392</td><td><span class="pill pill-easy">Easy</span></td></tr>
+</table>
+
+<div class="group">Easy · Fill From Back</div>
+<table class="problem-order">
+<tr><th>#</th><th>Problem</th><th>LC</th><th>Difficulty</th></tr>
+<tr><td>8</td><td><a href="arrays/twopointer/P08_SquaresOfSortedArray.html">P08 · Squares of a Sorted Array</a></td><td>977</td><td><span class="pill pill-easy">Easy</span></td></tr>
+<tr><td>9</td><td><a href="arrays/twopointer/P14_MergeSortedArray.html">P14 · Merge Sorted Array</a></td><td>88</td><td><span class="pill pill-easy">Easy</span></td></tr>
+<tr><td>10</td><td><a href="arrays/twopointer/P15_BackspaceStringCompare.html">P15 · Backspace String Compare</a></td><td>844</td><td><span class="pill pill-easy">Easy</span></td></tr>
+</table>
+
+<div class="group">Medium · Opposite Ends</div>
+<table class="problem-order">
+<tr><th>#</th><th>Problem</th><th>LC</th><th>Difficulty</th></tr>
+<tr><td>11</td><td><a href="arrays/twopointer/P03_ContainerWithMostWater.html">P03 · Container With Most Water</a></td><td>11</td><td><span class="pill pill-med">Medium</span></td></tr>
+<tr><td>12</td><td><a href="arrays/twopointer/P13_BoatsToSavePeople.html">P13 · Boats to Save People</a></td><td>881</td><td><span class="pill pill-med">Medium</span></td></tr>
+<tr><td>13</td><td><a href="arrays/twopointer/P19_ShortestUnsortedSubarray.html">P19 · Shortest Unsorted Subarray</a></td><td>581</td><td><span class="pill pill-med">Medium</span></td></tr>
+<tr><td>14</td><td><a href="arrays/twopointer/P20_MinimizeMaxPairSum.html">P20 · Minimize Maximum Pair Sum</a></td><td>1877</td><td><span class="pill pill-med">Medium</span></td></tr>
+</table>
+
+<div class="group">Medium · Three Pointer (Partition)</div>
+<table class="problem-order">
+<tr><th>#</th><th>Problem</th><th>LC</th><th>Difficulty</th></tr>
+<tr><td>15</td><td><a href="arrays/twopointer/P06_SortColors.html">P06 · Sort Colors (Dutch Flag)</a></td><td>75</td><td><span class="pill pill-med">Medium</span></td></tr>
+</table>
+
+<div class="group">Medium · Fix One + Two Pointer (k-Sum)</div>
+<table class="problem-order">
+<tr><th>#</th><th>Problem</th><th>LC</th><th>Difficulty</th></tr>
+<tr><td>16</td><td><a href="arrays/twopointer/P02_ThreeSum.html">P02 · 3Sum</a></td><td>15</td><td><span class="pill pill-med">Medium</span></td></tr>
+<tr><td>17</td><td><a href="arrays/twopointer/P11_ThreeSumClosest.html">P11 · 3Sum Closest</a></td><td>16</td><td><span class="pill pill-med">Medium</span></td></tr>
+<tr><td>18</td><td><a href="arrays/twopointer/P12_FourSum.html">P12 · 4Sum</a></td><td>18</td><td><span class="pill pill-med">Medium</span></td></tr>
+</table>
+
+<div class="group">Medium · Hybrid</div>
+<table class="problem-order">
+<tr><th>#</th><th>Problem</th><th>LC</th><th>Difficulty</th></tr>
+<tr><td>19</td><td><a href="arrays/twopointer/P18_FindKClosestElements.html">P18 · Find K Closest Elements</a></td><td>658</td><td><span class="pill pill-med">Medium</span></td></tr>
+</table>
+
+<div class="group">Hard · Opposite Ends</div>
+<table class="problem-order">
+<tr><th>#</th><th>Problem</th><th>LC</th><th>Difficulty</th></tr>
+<tr><td>20</td><td><a href="arrays/twopointer/P04_TrappingRainWater.html">P04 · Trapping Rain Water</a></td><td>42</td><td><span class="pill pill-hard">Hard</span></td></tr>
+</table>
+
+<p style="margin-top:30px"><a href="arrays/twopointer/00_Masterclass.html" style="display:inline-block;background:#2563eb;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600">📖 Open Two Pointer Masterclass →</a></p>
+
+<div class="footer">DSA Practice Series · Hierarchy based on RisingBrain sheet</div>
+
+</body>
+</html>

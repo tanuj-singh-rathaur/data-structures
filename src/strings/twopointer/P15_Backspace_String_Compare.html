@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P15 – Backspace String Compare</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.easy{background:#dcfce7;color:#15803d}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Strings · Two Pointer Masterclass</a> &rsaquo; Right-to-Left Same Direction</div>
+<h1>P15 &mdash; Backspace String Compare</h1>
+<div class="meta"><span class="badge easy">Easy</span> &bull; LC #844 &bull; Pattern: <strong>Right-to-Left + Skip Counter</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Two strings; <code>'#'</code> means &ldquo;backspace.&rdquo; Return <code>true</code> if both produce the same final string. O(1) extra space preferred.</p>
+<p><strong>Example:</strong> <code>s = "ab#c", t = "ad#c"</code> &rarr; <code>true</code> (both become "ac")</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Backspace</dt><dd>The <code>#</code> consumes the previous (non-#) effective character. Multiple backspaces eat multiple chars.</dd>
+<dt>Skip counter</dt><dd>Right-to-left, track how many "pending backspaces" to apply. Increment on #, decrement on a real char (and skip that char if there's a pending backspace).</dd>
+<dt>Why right-to-left</dt><dd>Going forward means undoing characters you've already accepted &mdash; awkward. Going backward, you naturally know which characters survive.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Walk both strings backward. Track how many "I owe a delete" tokens you've accumulated on each side. When you reach a real character with no pending deletes, that's an effective character &mdash; compare it across sides.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Right-to-left lets you skip exactly the characters that would have been deleted, without ever building the actual output strings.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>i = |s|-1, j = |t|-1. Loop: walk each pointer left, consuming '#'s and skipping the right number of real chars.</li>
+<li>Compare the two surviving chars (or check both ran out).</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public boolean backspaceCompare(String s, String t) {
+    int i = s.length() - 1, j = t.length() - 1;
+    while (i &gt;= 0 || j &gt;= 0) {
+        i = nextValid(s, i);
+        j = nextValid(t, j);
+        char ci = i &gt;= 0 ? s.charAt(i) : 0;
+        char cj = j &gt;= 0 ? t.charAt(j) : 0;
+        if (ci != cj) return false;
+        i--; j--;
+    }
+    return true;
+}
+private int nextValid(String s, int i) {
+    int skip = 0;
+    while (i &gt;= 0 &amp;&amp; (s.charAt(i) == '#' || skip &gt; 0)) {
+        if (s.charAt(i) == '#') skip++;
+        else skip--;
+        i--;
+    }
+    return i;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(|s| + |t|)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Two Pointer Pattern</h2>
+<div class="pattern-box"><strong>Right-to-Left + Skip Counter:</strong> Walking backwards converts &ldquo;backspace&rdquo; from a state-mutating action into a stateless skip count.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Direction choice matters. The same problem becomes O(1) space when scanned right-to-left because the deletion semantics align with the walk.</div>
+
+<div class="footer">Strings · Two Pointer Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

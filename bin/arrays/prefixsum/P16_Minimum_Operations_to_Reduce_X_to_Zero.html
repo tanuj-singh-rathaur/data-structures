@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P16 – Min Operations to Reduce X to Zero</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.medium{background:#fef9c3;color:#a16207}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Prefix Sum Masterclass</a> &rsaquo; Reframe + Sliding</div>
+<h1>P16 &mdash; Minimum Operations to Reduce X to Zero</h1>
+<div class="meta"><span class="badge medium">Medium</span> &bull; LC #1658 &bull; Pattern: <strong>Reframe to Longest Middle Subarray</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Given <code>nums</code> (positive) and integer <code>x</code>, in each operation you may remove the leftmost or rightmost element, subtracting it from <code>x</code>. Return the minimum operations to make <code>x</code> exactly 0, or &minus;1 if impossible.</p>
+<p><strong>Example:</strong> <code>nums = [1, 1, 4, 2, 3], x = 5</code> &rarr; <code>2</code> (remove right twice: 3, 2)</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>The reframe</dt><dd>Removing from both ends = keeping a contiguous middle. If total &minus; middle = x, then middle = total &minus; x. So: find the <strong>longest</strong> middle subarray summing to <code>total &minus; x</code>; the answer is <code>n &minus; middleLength</code>.</dd>
+<dt>Why longest middle</dt><dd>Minimum operations corresponds to maximum kept. So we want the longest middle that sums to <code>total &minus; x</code>.</dd>
+<dt>Sliding window applicability</dt><dd>nums are positive &rArr; sliding window works for "longest subarray summing to target."</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Whatever you remove from the ends, the remaining middle subarray sums to <code>total &minus; x</code>. The fewer the operations, the longer the middle. So find the longest contiguous middle summing to <code>total &minus; x</code>; answer = <code>n &minus; thatLength</code>.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>A hard &ldquo;remove from ends&rdquo; problem becomes a classic &ldquo;longest subarray with target sum&rdquo; via a single subtraction. Reframing is the work; the algorithm is standard.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Compute <code>target = total &minus; x</code>.</li>
+<li>If <code>target &lt; 0</code>: return &minus;1.</li>
+<li>If <code>target == 0</code>: return <code>n</code>.</li>
+<li>Sliding window: longest subarray summing to <code>target</code>.</li>
+<li>Return <code>n &minus; bestLength</code> (or &minus;1 if no such subarray).</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int minOperations(int[] nums, int x) {
+    int total = 0; for (int v : nums) total += v;
+    int target = total - x;
+    if (target &lt; 0) return -1;
+    int L = 0, sum = 0, best = -1;
+    for (int R = 0; R &lt; nums.length; R++) {
+        sum += nums[R];
+        while (sum &gt; target) sum -= nums[L++];
+        if (sum == target) best = Math.max(best, R - L + 1);
+    }
+    return best == -1 ? -1 : nums.length - best;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Prefix Sum Pattern</h2>
+<div class="pattern-box"><strong>Reframe + Sliding:</strong> Convert a two-sided removal into a one-piece selection. Then a well-worn template solves it.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> &ldquo;Minimize removals&rdquo; &harr; &ldquo;maximize kept.&rdquo; That pivot transforms the problem from an ill-defined search into a known longest-subarray problem.</div>
+
+<div class="footer">Prefix Sum Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

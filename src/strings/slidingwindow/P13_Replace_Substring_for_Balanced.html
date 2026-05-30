@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P13 – Replace the Substring for Balanced String</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.medium{background:#fef9c3;color:#a16207}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Strings · Sliding Window Masterclass</a> &rsaquo; Complement Window</div>
+<h1>P13 &mdash; Replace the Substring for Balanced String</h1>
+<div class="meta"><span class="badge medium">Medium</span> &bull; LC #1234 &bull; Pattern: <strong>Shrink-to-Min Window with Outside Counts</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>String <code>s</code> of length <code>n</code> uses only 'Q', 'W', 'E', 'R'. Balanced = each letter occurs exactly <code>n/4</code> times. Return the minimum length substring you can replace to make <code>s</code> balanced.</p>
+<p><strong>Example:</strong> <code>"QQWE"</code> &rarr; <code>1</code> (replace one Q with R)</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Outside counts</dt><dd>The counts of Q, W, E, R outside the candidate window (the part we're NOT replacing).</dd>
+<dt>Validity</dt><dd>Outside counts of every letter must be ≤ <code>n/4</code> &mdash; the rest can come from the replaced window.</dd>
+<dt>Shrink-to-min</dt><dd>Standard pattern for "find smallest window satisfying property." Shrink L while valid, recording each smaller-but-still-valid length.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Look for a window to "rewrite." The rest of the string (outside the window) must already obey the n/4 cap for every letter. Find the smallest such window.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Don't think about "what to put in the window." Think about whether what's OUTSIDE the window is already legal. If yes, you can always fix the inside.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>cnt[4] = total counts of QWER in s. need = n/4.</li>
+<li>Slide window; decrement cnt for chars entering the window.</li>
+<li>While outside is valid (all cnt ≤ need): record window length; cnt[s[L]]++, L++.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int balancedString(String s) {
+    int n = s.length(), need = n / 4;
+    int[] cnt = new int[128];
+    for (char c : s.toCharArray()) cnt[c]++;
+    int L = 0, best = n;
+    for (int R = 0; R &lt; n; R++) {
+        cnt[s.charAt(R)]--;
+        while (L &lt; n &amp;&amp; cnt['Q'] &lt;= need &amp;&amp; cnt['W'] &lt;= need
+               &amp;&amp; cnt['E'] &lt;= need &amp;&amp; cnt['R'] &lt;= need) {
+            best = Math.min(best, R - L + 1);
+            cnt[s.charAt(L)]++;
+            L++;
+        }
+    }
+    return best;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Complement Window (Shrink-to-Min):</strong> Reframe "what to put in the window" as "what's outside must already be balanced." Then the standard shrink-to-min template solves it.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> The reframe is the whole trick. Once you realize you only need to validate the outside, the inside becomes irrelevant.</div>
+
+<div class="footer">Strings · Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

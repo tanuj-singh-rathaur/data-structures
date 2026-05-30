@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P08 – Sliding Window Maximum</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+
+<header>
+  <div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Sliding Window Masterclass</a> &nbsp;&rsaquo;&nbsp; Monotonic Deque</div>
+  <h1>P08 &mdash; Sliding Window Maximum</h1>
+  <div class="meta"><span class="badge hard">Hard</span> &bull; LeetCode #239 &bull; Pattern: <strong>Monotonic Deque</strong></div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+<p>Given an array <code>nums</code> and a window size <code>K</code>, return an array containing the maximum value of each contiguous window of size <code>K</code>.</p>
+<p><strong>Example:</strong> <code>nums = [1, 3, &minus;1, &minus;3, 5, 3, 6, 7], K = 3</code> &rarr; <code>[3, 3, 5, 5, 6, 7]</code></p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+  <dt>Deque (double-ended queue)</dt><dd>A queue that supports add/remove at both front and back in O(1). Java provides <code>ArrayDeque</code>.</dd>
+  <dt>Monotonic deque</dt><dd>A deque whose stored values stay in strictly decreasing (or increasing) order. For max-window we use decreasing &mdash; so the front is always the largest.</dd>
+  <dt>Storing indices, not values</dt><dd>We need to know when an element &ldquo;ages out&rdquo; (leaves the window). Storing its index lets us check that in O(1).</dd>
+  <dt>Why pop smaller from back</dt><dd>If a new element x arrives and the back of the deque is smaller than x, that old element can never be the max again as long as x is in the window. So pop it &mdash; it's permanently dominated.</dd>
+  <dt>Front = current max</dt><dd>By construction, after maintaining the invariant, the front of the deque holds the index of the current window's largest element.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+<p>Imagine you're maintaining a leaderboard inside the window. When a new contender enters, anyone with a worse score who's also still in the window is now obsolete &mdash; they can never win as long as the better one is still there. Kick them out. Also, anyone at the front of the leaderboard who has aged out (left the window) must go. The front is always your current champion.</p>
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>When a new value enters, every smaller value currently waiting in line is forever dominated. We can throw them away. The deque ends up holding only &ldquo;potentially future winners&rdquo; in strictly decreasing order &mdash; and the front of it is always the max.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">nums=[1, 3, &minus;1, &minus;3, 5, 3, 6, 7], K=3 &nbsp;&mdash;&nbsp; deque holds indices, values decreasing</div>
+<div class="wstep"><span class="wstep-n">i=0</span><div>dq = [0] &nbsp;(values: [1])</div><span class="wstep-act">window not full yet</span></div>
+<div class="wstep"><span class="wstep-n">i=1</span><div>3 &gt; 1 &rarr; pop 0. push 1.
+dq = [1] &nbsp;(values: [3])</div><span class="wstep-act">window not full yet</span></div>
+<div class="wstep"><span class="wstep-n">i=2</span><div>&minus;1 &lt; 3 &rarr; just push 2.
+dq = [1, 2] &nbsp;(values: [3, &minus;1])</div><span class="wstep-act">window=[1,3,&minus;1], max=nums[1]=3 &rarr; output 3</span></div>
+<div class="wstep"><span class="wstep-n">i=3</span><div>&minus;3 &lt; &minus;1 &rarr; push 3.
+dq = [1, 2, 3]</div><span class="wstep-act">i&minus;K=0 &ne; front(1), keep
+window=[3,&minus;1,&minus;3], max=3 &rarr; output 3</span></div>
+<div class="wstep"><span class="wstep-n">i=4</span><div>5 &gt; &minus;3, &minus;1, 3 &rarr; pop all 3.
+front 1 also gone, push 4.
+dq = [4] &nbsp;(values: [5])</div><span class="wstep-act">window=[&minus;1,&minus;3,5], max=5 &rarr; output 5</span></div>
+<div class="wstep"><span class="wstep-n">i=5</span><div>3 &lt; 5 &rarr; push 5.
+dq = [4, 5]</div><span class="wstep-act">window=[&minus;3,5,3], max=5 &rarr; output 5</span></div>
+<div class="wstep"><span class="wstep-n">i=6</span><div>6 &gt; 3, 5 &rarr; pop both. push 6.
+dq = [6]</div><span class="wstep-act">window=[5,3,6], max=6 &rarr; output 6</span></div>
+<div class="wstep"><span class="wstep-n">i=7</span><div>7 &gt; 6 &rarr; pop. push 7.
+dq = [7]</div><span class="wstep-act">window=[3,6,7], max=7 &rarr; output 7
+Final: [3,3,5,5,6,7]</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm</h2>
+<div class="steps"><ol>
+<li>Use a deque storing <em>indices</em>.</li>
+<li>For each <code>i</code> in 0..n&minus;1:
+  <ul>
+    <li>While deque non-empty and <code>nums[deque.last()] &lt; nums[i]</code>: pop last.</li>
+    <li>Push <code>i</code> onto the back.</li>
+    <li>If <code>deque.first() == i &minus; K</code>: pop front (out-of-window).</li>
+    <li>If <code>i &ge; K &minus; 1</code>: record <code>nums[deque.first()]</code> in result.</li>
+  </ul>
+</li>
+</ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public int[] maxSlidingWindow(int[] nums, int K) {
+    int n = nums.length;
+    int[] ans = new int[n - K + 1];
+    Deque&lt;Integer&gt; dq = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) {
+        while (!dq.isEmpty() &amp;&amp; nums[dq.peekLast()] &lt; nums[i]) dq.pollLast();
+        dq.offerLast(i);
+        if (dq.peekFirst() == i - K) dq.pollFirst();
+        if (i &gt;= K - 1) ans[i - K + 1] = nums[dq.peekFirst()];
+    }
+    return ans;
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(K)</div></div></div>
+<p style="margin-top:8px;font-size:.85rem;color:#64748b">Each element is pushed and popped at most once &rarr; amortized O(1) per step.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Monotonic Deque:</strong> The standard pattern for &ldquo;running max/min over a window.&rdquo; The deque holds indices in monotonic order &mdash; smaller-and-older candidates are evicted because they can never beat the newcomer. Front is always the current best.</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> Once a value is dominated by a newer-and-bigger neighbor, it can <em>never</em> become the window max again. Drop it immediately. That insight is what turns the obvious O(n&middot;K) into O(n).</div>
+
+<div class="footer">Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

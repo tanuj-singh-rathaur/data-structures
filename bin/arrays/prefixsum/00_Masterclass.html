@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prefix Sum Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}.t4{border-left-color:#7c3aed;background:#faf5ff}.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}
+.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aP{background:#172554;border-color:#3b82f6;color:#93c5fd}
+.ac.aS{background:#052e16;border-color:#22c55e;color:#86efac}
+.ac.aH{background:#1e1b4b;border-color:#a78bfa;color:#c4b5fd}
+.ac.aF{background:#431407;border-color:#f97316;color:#fdba74}
+.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}
+.pl{font-size:.7rem;font-weight:700;min-height:13px;margin-top:3px;line-height:1}
+.pP{color:#93c5fd}.pS{color:#86efac}.pH{color:#c4b5fd}.pF{color:#fdba74}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}
+.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}
+.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{body{background:#fff}.page{padding:20px}.section{break-inside:avoid}pre,code{break-inside:avoid}header{break-after:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Prefix Sum &mdash; Complete Masterclass</h1>
+  <div class="meta">Arrays &rsaquo; Prefix Sum &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Is Prefix Sum? (Layman's Explanation)</h2>
+<p>Imagine you keep a <strong>running tally</strong> as you walk past a row of jars of coins. After jar 1 you've counted 5 coins. After jar 2, 8 coins. After jar 3, 14 coins. That growing list <code>[5, 8, 14, ...]</code> is the <em>prefix sum</em>.</p>
+<p>Now if a friend asks &ldquo;how many coins are in jars 2 through 3?&rdquo; you don't recount. You take <strong>tally after jar 3 minus tally after jar 1</strong>: <code>14 - 5 = 9</code>. One subtraction. Done.</p>
+<p>That's the whole trick: pay O(n) <em>once</em> to build the running totals, and every &ldquo;sum of a range&rdquo; question after that takes O(1). It turns a repeated scan into a single subtraction.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster (Confusing Terms Explained)</h2>
+<div class="glossary">
+<dl>
+  <dt>Prefix</dt>
+  <dd>The beginning slice of an array, from index 0 up to some index <code>i</code>. So <code>prefix[3]</code> means &ldquo;everything from the start up through index 3.&rdquo;</dd>
+  <dt>Prefix sum array</dt>
+  <dd>An array where <code>P[i]</code> = sum of all values from index 0 to <code>i-1</code> (or 0 to <code>i</code> &mdash; both styles exist). <code>P[0]</code> is usually 0 (empty prefix).</dd>
+  <dt>Range sum / subarray sum</dt>
+  <dd>The sum of elements between two indices, e.g. <code>nums[l..r]</code>. With prefix sums it equals <code>P[r+1] - P[l]</code>.</dd>
+  <dt>Inclusive vs Exclusive</dt>
+  <dd>Inclusive means &ldquo;include both endpoints.&rdquo; Exclusive means &ldquo;stop just before.&rdquo; Prefix-sum formulas usually use <em>exclusive</em> upper-bound indices.</dd>
+  <dt>O(1) query</dt>
+  <dd>A &ldquo;constant time&rdquo; answer &mdash; doesn't matter if the range is 2 elements or 2 million, the lookup takes the same tiny amount of time.</dd>
+  <dt>HashMap of prefix sums</dt>
+  <dd>A dictionary mapping &ldquo;a prefix sum value I've seen&rdquo; to &ldquo;how many times / at which index.&rdquo; Used when you want to find subarrays matching a target without re-scanning.</dd>
+  <dt>Subarray</dt>
+  <dd>A <em>contiguous</em> slice of the array (elements next to each other). Different from a &ldquo;subsequence,&rdquo; which can skip elements.</dd>
+  <dt>XOR prefix</dt>
+  <dd>Same idea as prefix sum but with XOR instead of addition. Works because XOR is its own inverse: <code>a ^ a = 0</code>.</dd>
+  <dt>Difference array</dt>
+  <dd>The <em>opposite</em> of prefix sum: store the change at each step instead of the total. Range-update problems use this and then take a prefix sum at the end.</dd>
+</dl>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Prefix Sum?</h2>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>You're asked the <strong>sum of a range</strong> multiple times.</li>
+  <li>You're searching for a <strong>subarray with a target sum</strong> (or count, or XOR).</li>
+  <li>The array is <strong>not changing</strong> &mdash; immutable queries are the sweet spot.</li>
+  <li>Brute force is O(n&middot;q) for q queries, and you want O(n + q).</li>
+  <li>You need a <strong>pivot / balance point</strong> where left sum equals right sum.</li>
+  <li>You see addition or XOR being repeated over windows.</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 4 Types of Prefix Sum &mdash; Full Breakdown</h2>
+
+<!-- TYPE 1 — RANGE QUERY -->
+<div class="type-card t1">
+<div class="type-title">&#9312; Range-Sum Query (Immutable)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Build a prefix array once. Answer any &ldquo;sum from index l to r&rdquo; question with one subtraction.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>You'll answer many range-sum queries on a fixed array</li>
+  <li>The brute approach would loop l..r per query</li>
+</ul>
+<p><strong>The formula:</strong></p>
+<ul>
+  <li>Build <code>P[i+1] = P[i] + nums[i]</code> with <code>P[0] = 0</code></li>
+  <li>Range sum <code>nums[l..r] = P[r+1] - P[l]</code></li>
+</ul>
+</div>
+
+<strong>Worked Example: Sum of indices 1..3 of <code>[3, 5, 2, 7, 1]</code></strong>
+
+<div class="walk">
+<div class="walk-title">Build prefix, then one subtraction</div>
+
+<div class="wstep">
+<span class="wstep-n">Start</span>
+<div><div class="arow"><span class="abk">nums=[</span><span class="ac">3</span><span class="ac">5</span><span class="ac">2</span><span class="ac">7</span><span class="ac">1</span><span class="abk">]</span></div></div>
+<span class="wstep-act">P[0]=0 (empty prefix)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Build</span>
+<div><div class="arow"><span class="abk">P=[</span><span class="ac aP">0</span><span class="ac aP">3</span><span class="ac aP">8</span><span class="ac aP">10</span><span class="ac aP">17</span><span class="ac aP">18</span><span class="abk">]</span></div></div>
+<span class="wstep-act">P[i+1] = P[i] + nums[i]
+P has length n+1.</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Query</span>
+<div><div class="arow"><span class="abk">l=1, r=3 &rarr;</span><span class="ac aP">P[4]=17</span><span class="abk">&minus;</span><span class="ac aP">P[1]=3</span></div></div>
+<span class="wstep-act">sum(nums[1..3]) = P[4] - P[1] = 17 - 3 = 14
+Check: 5 + 2 + 7 = 14 &check;</span>
+</div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int[] P = new int[n + 1];
+for (int i = 0; i &lt; n; i++) P[i + 1] = P[i] + nums[i];
+// Query l..r in O(1):
+int rangeSum = P[r + 1] - P[l];</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 Running Sum of 1D Array</span>
+  <span class="prob-tag">P03 Range Sum Query - Immutable</span>
+</div>
+</div>
+
+<!-- TYPE 2 — PIVOT / BALANCE -->
+<div class="type-card t2">
+<div class="type-title">&#9313; Pivot / Balance Index</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Find an index where the sum to the left equals the sum to the right. The total stays fixed, so you just walk left-to-right and check.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Looking for an index where two halves &ldquo;balance&rdquo;</li>
+  <li>You need to check <em>every</em> index efficiently</li>
+</ul>
+<p><strong>The trick:</strong></p>
+<ul>
+  <li>Total = sum of all elements</li>
+  <li>At index <code>i</code>: rightSum = total &minus; leftSum &minus; nums[i]</li>
+  <li>Found when <code>leftSum == rightSum</code>. Then add <code>nums[i]</code> to leftSum and move on.</li>
+</ul>
+</div>
+
+<strong>Worked Example: Find pivot in <code>[1, 7, 3, 6, 5, 6]</code></strong>
+
+<div class="walk">
+<div class="walk-title">Track leftSum as we scan</div>
+<div class="wstep">
+<span class="wstep-n">Total</span>
+<div>total = 1+7+3+6+5+6 = 28</div>
+<span class="wstep-act">Constant for the whole walk.</span>
+</div>
+<div class="wstep">
+<span class="wstep-n">i=0</span>
+<div><div class="arow"><span class="ac aP">1</span><span class="ac">7</span><span class="ac">3</span><span class="ac">6</span><span class="ac">5</span><span class="ac">6</span></div></div>
+<span class="wstep-act">leftSum=0, right=28-0-1=27 &rarr; not equal</span>
+</div>
+<div class="wstep">
+<span class="wstep-n">i=3</span>
+<div><div class="arow"><span class="ac">1</span><span class="ac">7</span><span class="ac">3</span><span class="ac aS">6</span><span class="ac">5</span><span class="ac">6</span></div></div>
+<span class="wstep-act">leftSum = 1+7+3 = 11
+right = 28-11-6 = 11 &rarr; FOUND! pivot = 3</span>
+</div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int total = 0; for (int x : nums) total += x;
+int leftSum = 0;
+for (int i = 0; i &lt; n; i++) {
+    if (leftSum == total - leftSum - nums[i]) return i;
+    leftSum += nums[i];
+}
+return -1;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 Find Pivot Index</span>
+</div>
+</div>
+
+<!-- TYPE 3 — HASHMAP SUBARRAY -->
+<div class="type-card t3">
+<div class="type-title">&#9314; HashMap of Prefix Sums (Count / Find Subarray)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Walk once, keep a running prefix sum, and store &ldquo;how many times I've seen this sum.&rdquo; When the current sum minus the target was seen before, those previous positions are the left edges of valid subarrays.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Counting subarrays whose sum / XOR equals K</li>
+  <li>You can't sort or use a sliding window (negatives present, or XOR)</li>
+  <li>Brute force is O(n&sup2;)</li>
+</ul>
+<p><strong>The key identity:</strong></p>
+<ul>
+  <li>subarraySum(i..j) = P[j+1] &minus; P[i]</li>
+  <li>If we want subarraySum == K then P[i] = P[j+1] &minus; K</li>
+  <li>So at each j we ask: &ldquo;how many earlier prefixes equal <code>currentPrefix &minus; K</code>?&rdquo;</li>
+</ul>
+</div>
+
+<strong>Worked Example: Count subarrays with sum = 3 in <code>[1, 2, 3, &minus;1]</code></strong>
+
+<div class="walk">
+<div class="walk-title">Map starts {0:1} (empty prefix has been &ldquo;seen&rdquo; once)</div>
+<div class="wstep">
+<span class="wstep-n">i=0</span>
+<div>prefix=1, need 1&minus;3=&minus;2 &mdash; not in map</div>
+<span class="wstep-act">map = {0:1, 1:1}, count=0</span>
+</div>
+<div class="wstep">
+<span class="wstep-n">i=1</span>
+<div>prefix=3, need 3&minus;3=0 &rarr; map has 0 (count 1)</div>
+<span class="wstep-act">count += 1 &rarr; 1 (subarray [1,2])
+map = {0:1, 1:1, 3:1}</span>
+</div>
+<div class="wstep">
+<span class="wstep-n">i=2</span>
+<div>prefix=6, need 6&minus;3=3 &rarr; map has 3 (count 1)</div>
+<span class="wstep-act">count += 1 &rarr; 2 (subarray [3])
+map = {0:1, 1:1, 3:1, 6:1}</span>
+</div>
+<div class="wstep">
+<span class="wstep-n">i=3</span>
+<div>prefix=5, need 5&minus;3=2 &mdash; not in map</div>
+<span class="wstep-act">count stays at 2
+Final answer: 2</span>
+</div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>Map&lt;Integer,Integer&gt; seen = new HashMap&lt;&gt;();
+seen.put(0, 1);                  // empty prefix
+int prefix = 0, count = 0;
+for (int x : nums) {
+    prefix += x;
+    count += seen.getOrDefault(prefix - K, 0);
+    seen.merge(prefix, 1, Integer::sum);
+}
+return count;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P04 Subarray Sum Equals K</span>
+  <span class="prob-tag">P06 Subarrays with XOR = K</span>
+</div>
+</div>
+
+<!-- TYPE 4 — PREFIX + SUFFIX -->
+<div class="type-card t4">
+<div class="type-title">&#9315; Prefix + Suffix (Two-Pass Product / Sum)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> For each index, you need &ldquo;everything to the left&rdquo; combined with &ldquo;everything to the right.&rdquo; Sweep left-to-right to compute the prefix, then right-to-left to multiply in the suffix.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Compute an answer at every index using both sides</li>
+  <li>&ldquo;Without using the current element&rdquo; and &ldquo;without division&rdquo; are explicit constraints</li>
+  <li>You'd otherwise need O(n&sup2;) (recompute neighbors for each index)</li>
+</ul>
+<p><strong>The trick:</strong></p>
+<ul>
+  <li>Pass 1: <code>result[i] = product of everything before i</code></li>
+  <li>Pass 2: walk right-to-left, keep a running &ldquo;suffix product,&rdquo; multiply it into <code>result[i]</code></li>
+</ul>
+</div>
+
+<strong>Worked Example: Product Except Self for <code>[1, 2, 3, 4]</code></strong>
+
+<div class="walk">
+<div class="walk-title">Two sweeps &mdash; left then right</div>
+<div class="wstep">
+<span class="wstep-n">Pass 1</span>
+<div><div class="arow"><span class="ac aP">1</span><span class="ac aP">1</span><span class="ac aP">2</span><span class="ac aP">6</span></div></div>
+<span class="wstep-act">result[i] = product of nums[0..i-1]
+result[0]=1 (nothing on left)</span>
+</div>
+<div class="wstep">
+<span class="wstep-n">Pass 2</span>
+<div><div class="arow"><span class="ac aW">24</span><span class="ac aW">12</span><span class="ac aW">8</span><span class="ac aW">6</span></div></div>
+<span class="wstep-act">suffix=1, walk right&rarr;left
+i=3: result[3]*=1; suffix*=4 &rarr; suffix=4
+i=2: result[2]*=4; suffix*=3 &rarr; suffix=12
+i=1: result[1]*=12; suffix*=2 &rarr; suffix=24
+i=0: result[0]*=24</span>
+</div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int[] res = new int[n];
+res[0] = 1;
+for (int i = 1; i &lt; n; i++) res[i] = res[i-1] * nums[i-1];
+int suffix = 1;
+for (int i = n - 1; i &gt;= 0; i--) {
+    res[i] *= suffix;
+    suffix *= nums[i];
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P05 Product of Array Except Self</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal Prefix Sum Template</h2>
+<pre>// Build prefix sums (1-indexed style, easiest for range queries)
+int[] P = new int[n + 1];
+for (int i = 0; i &lt; n; i++) P[i + 1] = P[i] + nums[i];
+
+// O(1) range query: sum of nums[l..r]
+int sumLR = P[r + 1] - P[l];
+
+// HashMap variant — count subarrays where sum == K
+Map&lt;Integer,Integer&gt; seen = new HashMap&lt;&gt;();
+seen.put(0, 1);
+int prefix = 0, count = 0;
+for (int x : nums) {
+    prefix += x;
+    count += seen.getOrDefault(prefix - K, 0);
+    seen.merge(prefix, 1, Integer::sum);
+}</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Build prefix</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Range query</div><div class="kv-val">O(1)</div></div><div class="kv-item"><div class="kv-label">HashMap subarray</div><div class="kv-val">O(n) avg</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(n)</div></div></div>
+<p style="margin-top:12px">The cost of building the prefix array is paid once. After that, every query is constant time. Net win for any problem with multiple queries or any &ldquo;find a subarray&rdquo; question.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_Running_Sum_of_1D_Array.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_Running_Sum_of_1D_Array.html" style="color:#2563eb;text-decoration:none">Running Sum of 1D Array</a></td><td style="padding:7px;text-align:center">1480</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Range Query</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_Find_Pivot_Index.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_Find_Pivot_Index.html" style="color:#2563eb;text-decoration:none">Find Pivot Index</a></td><td style="padding:7px;text-align:center">724</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Pivot / Balance</td></tr>
+<tr><td style="padding:7px"><a href="P03_Range_Sum_Query___Immutable.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_Range_Sum_Query___Immutable.html" style="color:#2563eb;text-decoration:none">Range Sum Query - Immutable</a></td><td style="padding:7px;text-align:center">303</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Range Query</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_Subarray_Sum_Equals_K.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_Subarray_Sum_Equals_K.html" style="color:#2563eb;text-decoration:none">Subarray Sum Equals K</a></td><td style="padding:7px;text-align:center">560</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">HashMap</td></tr>
+<tr><td style="padding:7px"><a href="P05_Product_of_Array_Except_Self.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_Product_of_Array_Except_Self.html" style="color:#2563eb;text-decoration:none">Product of Array Except Self</a></td><td style="padding:7px;text-align:center">238</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Prefix + Suffix</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_Count_of_Subarrays_with_Given_XOR.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_Count_of_Subarrays_with_Given_XOR.html" style="color:#2563eb;text-decoration:none">Count of Subarrays with Given XOR</a></td><td style="padding:7px;text-align:center">1442</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">HashMap (XOR)</td></tr>
+<tr><td style="padding:7px"><a href="P07_Continuous_Subarray_Sum.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_Continuous_Subarray_Sum.html" style="color:#2563eb;text-decoration:none">Continuous Subarray Sum</a></td><td style="padding:7px;text-align:center">523</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Prefix mod K</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_Contiguous_Array.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_Contiguous_Array.html" style="color:#2563eb;text-decoration:none">Contiguous Array</a></td><td style="padding:7px;text-align:center">525</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">HashMap (0 as &minus;1)</td></tr>
+<tr><td style="padding:7px"><a href="P09_Maximum_Size_Subarray_Sum_Equals_K.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_Maximum_Size_Subarray_Sum_Equals_K.html" style="color:#2563eb;text-decoration:none">Max Size Subarray Sum Equals K</a></td><td style="padding:7px;text-align:center">325</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">HashMap (first index)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_Subarray_Sums_Divisible_by_K.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_Subarray_Sums_Divisible_by_K.html" style="color:#2563eb;text-decoration:none">Subarray Sums Divisible by K</a></td><td style="padding:7px;text-align:center">974</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Prefix mod K</td></tr>
+<tr><td style="padding:7px"><a href="P11_Range_Sum_Query_2D_Immutable.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_Range_Sum_Query_2D_Immutable.html" style="color:#2563eb;text-decoration:none">Range Sum Query 2D - Immutable</a></td><td style="padding:7px;text-align:center">304</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">2D Prefix</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_Number_of_Submatrices_That_Sum_to_Target.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_Number_of_Submatrices_That_Sum_to_Target.html" style="color:#2563eb;text-decoration:none">Submatrices That Sum to Target</a></td><td style="padding:7px;text-align:center">1074</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">2D &rarr; 1D HashMap</td></tr>
+<tr><td style="padding:7px"><a href="P13_Maximum_Sum_of_Two_Non_Overlapping_Subarrays.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_Maximum_Sum_of_Two_Non_Overlapping_Subarrays.html" style="color:#2563eb;text-decoration:none">Max Sum of Two Non-Overlapping</a></td><td style="padding:7px;text-align:center">1031</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Prefix + Rolling Best</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_Corporate_Flight_Bookings.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_Corporate_Flight_Bookings.html" style="color:#2563eb;text-decoration:none">Corporate Flight Bookings</a></td><td style="padding:7px;text-align:center">1109</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Difference Array</td></tr>
+<tr><td style="padding:7px"><a href="P15_Car_Pooling.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_Car_Pooling.html" style="color:#2563eb;text-decoration:none">Car Pooling</a></td><td style="padding:7px;text-align:center">1094</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Difference Array</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_Minimum_Operations_to_Reduce_X_to_Zero.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_Minimum_Operations_to_Reduce_X_to_Zero.html" style="color:#2563eb;text-decoration:none">Min Operations to Reduce X to Zero</a></td><td style="padding:7px;text-align:center">1658</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Reframe + Sliding</td></tr>
+<tr><td style="padding:7px"><a href="P17_Find_the_Highest_Altitude.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_Find_the_Highest_Altitude.html" style="color:#2563eb;text-decoration:none">Find the Highest Altitude</a></td><td style="padding:7px;text-align:center">1732</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Running Sum</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_Sum_of_Absolute_Differences_in_Sorted_Array.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_Sum_of_Absolute_Differences_in_Sorted_Array.html" style="color:#2563eb;text-decoration:none">Sum of Abs Diffs in Sorted Array</a></td><td style="padding:7px;text-align:center">1685</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Left/Right Prefix</td></tr>
+<tr><td style="padding:7px"><a href="P19_Left_and_Right_Sum_Differences.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_Left_and_Right_Sum_Differences.html" style="color:#2563eb;text-decoration:none">Left and Right Sum Differences</a></td><td style="padding:7px;text-align:center">2574</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Prefix + Suffix</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_Best_Sightseeing_Pair.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_Best_Sightseeing_Pair.html" style="color:#2563eb;text-decoration:none">Best Sightseeing Pair</a></td><td style="padding:7px;text-align:center">1014</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Rolling Best</td></tr>
+</table>
+</div>
+
+<div class="footer">Prefix Sum Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Two Pointer Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}
+.medium{background:#fef9c3;color:#a16207}
+.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.lc-link{color:#2563eb;text-decoration:none;font-weight:600}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}
+.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}
+.section.purple{border-left:4px solid #7c3aed}
+.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}
+.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}
+.t4{border-left-color:#7c3aed;background:#faf5ff}
+.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}
+.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}
+.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}
+.ac.aS{background:#052e16;border-color:#22c55e;color:#86efac}
+.ac.aF{background:#431407;border-color:#f97316;color:#fdba74}
+.ac.ai{background:#2e1065;border-color:#a855f7;color:#d8b4fe}
+.ac.aH{background:#1e1b4b;border-color:#818cf8;color:#c7d2fe}
+.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}
+.pl{font-size:.7rem;font-weight:700;min-height:13px;margin-top:3px;line-height:1}
+.pL{color:#60a5fa}.pR{color:#f87171}
+.pS{color:#34d399}.pF{color:#fb923c}
+.pi{color:#d8b4fe}.pH{color:#c7d2fe}
+.L{color:#60a5fa;font-weight:700}.R{color:#f87171;font-weight:700}
+.S{color:#34d399;font-weight:700}.F{color:#fb923c;font-weight:700}
+.i{color:#e879f9;font-weight:700}.M{color:#a78bfa;font-weight:700}
+.found{color:#fcd34d;font-weight:700}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+.diagram{background:#1e293b;color:#94a3b8;padding:16px 20px;border-radius:8px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.8;margin:10px 0;white-space:pre}
+.steps ol{padding-left:22px}
+.steps li{margin-bottom:8px}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}
+.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}
+.pattern-box strong{color:#6d28d9}
+.comment{color:#6ee7b7}
+.kw{color:#93c5fd}
+.str{color:#fca5a5}
+.num{color:#fcd34d}
+.divider{border:none;border-top:2px solid #e2e8f0;margin:28px 0}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{
+  body{background:#fff}
+  .page{padding:20px}
+  .section{break-inside:avoid}
+  pre,code{break-inside:avoid}
+  header{break-after:avoid}
+  h2{break-after:avoid}
+}
+</style>
+
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Two Pointer Technique &mdash; Complete Masterclass</h1>
+  <div class="meta">Arrays &rsaquo; Two Pointer &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Is Two Pointer? (Layman's Explanation)</h2>
+<p>Imagine you're in a <strong>sorted lineup of people by height</strong> and you want to find two people whose combined height is exactly 180 cm. The <em>dumb way</em> is to pair everyone with everyone else &mdash; that's O(n&sup2;). The <em>smart way</em>:</p>
+<ol style="padding-left:22px;margin:10px 0">
+  <li>Put your left hand on the <strong>shortest</strong> person (far left).</li>
+  <li>Put your right hand on the <strong>tallest</strong> person (far right).</li>
+  <li>Check their sum:<br>
+    &nbsp;&nbsp;&bull; <strong>Too tall?</strong> Move your right hand left (we need someone shorter).<br>
+    &nbsp;&nbsp;&bull; <strong>Too short?</strong> Move your left hand right (we need someone taller).<br>
+    &nbsp;&nbsp;&bull; <strong>Exact match?</strong> Done!
+  </li>
+</ol>
+<p>Each step eliminates an <em>entire row of possibilities</em>. That's why it's O(n) instead of O(n&sup2;). The secret weapon: <strong>the array is sorted</strong>, so moving a pointer in one direction always makes the sum go in a predictable direction.</p>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Two Pointer?</h2>
+<p>Look for these signals in the problem:</p>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>The array is <strong>sorted</strong> (or you can sort it).</li>
+  <li>You're looking for a <strong>pair/triplet/k-tuple</strong> that meets some condition.</li>
+  <li>The problem says <strong>O(1) extra space</strong>.</li>
+  <li>You need to <strong>remove elements in-place</strong>.</li>
+  <li>You need to <strong>check/reverse from both ends</strong> (palindrome, reverse).</li>
+  <li>The brute force is O(n&sup2;) and you know there must be a better way.</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 5 Types of Two Pointer &mdash; Full Breakdown</h2>
+
+<!-- ═══════════════════════════════════════════════════
+     TYPE 1 — OPPOSITE ENDS
+════════════════════════════════════════════════════ -->
+<div class="type-card t1">
+<div class="type-title">&#9312; Opposite Ends &nbsp;(Converging)</div>
+
+<div class="rule-box">
+<p><strong>What it is:</strong> One pointer starts at the <strong>left end</strong>, one at the <strong>right end</strong>. They march toward each other. Each step you look at both values and decide which side to move — you never move both at once (unless you found the answer).</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>The array is sorted (or you can sort it)</li>
+  <li>You need a pair whose sum / product / area satisfies a condition</li>
+  <li>You're checking symmetry from both ends (palindrome, reverse)</li>
+  <li>Brute force would be O(n&sup2;) and O(1) space is required</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Result too big &rarr; move <span class="R">R</span> left (shrink from the right)</li>
+  <li>Result too small &rarr; move <span class="L">L</span> right (grow from the left)</li>
+  <li>Exact match &rarr; record answer, move both</li>
+</ul>
+</div>
+
+<strong>Worked Example: Two Sum II</strong> &mdash; find pair summing to <code>9</code> in <code>[2, 7, 11, 15]</code>
+
+<div class="walk">
+<div class="walk-title">Step-by-step trace &nbsp;&mdash;&nbsp; blue cell = L &nbsp;|&nbsp; red cell = R</div>
+
+<div class="wstep">
+<span class="wstep-n">Start</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aL">2<span class="pl pL">L</span></span><span class="ac">7<span class="pl">&nbsp;</span></span><span class="ac">11<span class="pl">&nbsp;</span></span><span class="ac aR">15<span class="pl pR">R</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">L=0 (value 2), R=3 (value 15)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 1</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aL">2<span class="pl pL">L</span></span><span class="ac">7<span class="pl">&nbsp;</span></span><span class="ac">11<span class="pl">&nbsp;</span></span><span class="ac aR">15<span class="pl pR">R</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">sum = 2 + 15 = 17 &gt; 9
+&rarr; too big &rarr; R-- (move R left)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 2</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aL">2<span class="pl pL">L</span></span><span class="ac">7<span class="pl">&nbsp;</span></span><span class="ac aR">11<span class="pl pR">R</span></span><span class="ac">15<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">sum = 2 + 11 = 13 &gt; 9
+&rarr; too big &rarr; R-- (move R left)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 3</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aL">2<span class="pl pL">L</span></span><span class="ac aR">7<span class="pl pR">R</span></span><span class="ac">11<span class="pl">&nbsp;</span></span><span class="ac">15<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">sum = 2 + 7 = 9 = 9
+&rarr; FOUND! return [1, 2]</span>
+</div>
+
+</div>
+
+<strong>Code Template:</strong>
+<pre>int left = 0, right = n - 1;
+while (left &lt; right) {
+    int val = compute(arr[left], arr[right]);
+    if      (val == target) { /* found */ break; }
+    else if (val &lt; target)  left++;    // need bigger
+    else                    right--;   // need smaller
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 Two Sum II</span>
+  <span class="prob-tag">P03 Container With Most Water</span>
+  <span class="prob-tag">P04 Trapping Rain Water</span>
+  <span class="prob-tag">P09 Valid Palindrome</span>
+  <span class="prob-tag">P10 Reverse String</span>
+  <span class="prob-tag">P13 Boats to Save People</span>
+  <span class="prob-tag">P19 Shortest Unsorted Subarray</span>
+  <span class="prob-tag">P20 Minimize Max Pair Sum</span>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     TYPE 2 — SLOW + FAST
+════════════════════════════════════════════════════ -->
+<div class="type-card t2">
+<div class="type-title">&#9313; Slow + Fast &nbsp;(Same Direction)</div>
+
+<div class="rule-box">
+<p><strong>What it is:</strong> Both pointers move <strong>left to right</strong>, but at different speeds. <span class="F">Fast</span> is the <em>reader</em> — it visits every element without exception. <span class="S">Slow</span> is the <em>writer</em> — it only advances when fast finds something worth keeping. Everything before <span class="S">slow</span> at the end is your answer.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Remove / filter elements in-place without extra space</li>
+  <li>"Move all X to the end" or "keep only Y"</li>
+  <li>You need to compact an array (skip zeroes, skip duplicates, skip a value)</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li><span class="F">fast</span> always advances every iteration</li>
+  <li><span class="S">slow</span> only advances when <span class="F">nums[fast]</span> is a &ldquo;good&rdquo; element</li>
+  <li>Write <span class="F">nums[fast]</span> into <span class="S">nums[slow]</span> before advancing <span class="S">slow</span></li>
+</ul>
+</div>
+
+<strong>Worked Example: Move Zeroes</strong> &mdash; move all zeros to the end in <code>[0, 1, 0, 3, 12]</code>
+
+<div class="walk">
+<div class="walk-title">Step-by-step trace &nbsp;&mdash;&nbsp; green cell = S (write head) &nbsp;|&nbsp; orange cell = F (scanner)</div>
+
+<div class="wstep">
+<span class="wstep-n">Start</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aS aF">0<span class="pl pS">S/F</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">12<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">S=0, F=0 &mdash; both start at index 0</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 1</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aF">0<span class="pl pF">F</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">12<span class="pl">&nbsp;</span></span><span class="abk">]</span></div><div style="font-size:.75rem;color:#64748b;font-family:monospace;margin-top:2px">&nbsp;&nbsp;&nbsp;&nbsp;S is also at index 0 (not moving)</div></div>
+<span class="wstep-act">nums[F] = 0 &rarr; BAD (zero)
+F++ only &mdash; S stays put</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 2</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aS">1<span class="pl pS">S</span></span><span class="ac aF">1<span class="pl pF">F</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">12<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">nums[F] = 1 &rarr; GOOD
+write nums[S] = 1, then S++, F++
+(array[0] is now 1)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 3</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aS">1<span class="pl pS">S</span></span><span class="ac aF">0<span class="pl pF">F</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">12<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">nums[F] = 0 &rarr; BAD (zero)
+F++ only &mdash; S stays put</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 4</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aS">3<span class="pl pS">S</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aF">3<span class="pl pF">F</span></span><span class="ac">12<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">nums[F] = 3 &rarr; GOOD
+write nums[S] = 3, then S++, F++</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 5</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac aS">12<span class="pl pS">S</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac aF">12<span class="pl pF">F</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">nums[F] = 12 &rarr; GOOD
+write nums[S] = 12, then S++, F++
+(F is now past end &mdash; loop done)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Done</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">12<span class="pl">&nbsp;</span></span><span class="ac aW">0<span class="pl pS">S</span></span><span class="ac aW">0<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">Fill positions S &rarr; end with zeros
+Result: [1, 3, 12, 0, 0]</span>
+</div>
+
+</div>
+
+<strong>Code Template:</strong>
+<pre>int slow = 0;
+for (int fast = 0; fast &lt; n; fast++) {
+    if (nums[fast] /* is "good" */) {
+        nums[slow++] = nums[fast];
+    }
+}
+// slow = count of good elements</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P05 Remove Duplicates</span>
+  <span class="prob-tag">P07 Move Zeroes</span>
+  <span class="prob-tag">P16 Is Subsequence</span>
+  <span class="prob-tag">P17 Remove Element</span>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     TYPE 3 — FIX ONE + TWO POINTER
+════════════════════════════════════════════════════ -->
+<div class="type-card t3">
+<div class="type-title">&#9314; Fix One + Two Pointer &nbsp;(k-Sum Family)</div>
+
+<div class="rule-box">
+<p><strong>What it is:</strong> You <strong>lock one element</strong> with an outer loop (<span class="i">i</span>), then run a Type&nbsp;1 (Opposite Ends) two-pointer on <em>the subarray to the right</em>. This turns a 3-variable problem into a 2-variable one you already know how to solve. 4Sum adds one more fixed loop.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Find all triplets / quadruplets summing to a target</li>
+  <li>Brute force is O(n&sup3;) and you suspect O(n&sup2;) exists</li>
+  <li>Duplicates must be avoided in the result</li>
+</ul>
+<p><strong>The decision rule (inner two-pointer):</strong></p>
+<ul>
+  <li>sum &lt; target &rarr; <span class="L">L++</span> &nbsp;(need bigger left value)</li>
+  <li>sum &gt; target &rarr; <span class="R">R--</span> &nbsp;(need smaller right value)</li>
+  <li>sum == 0 &rarr; record, skip duplicate <span class="L">L</span> and <span class="R">R</span> values, then <span class="L">L++</span> <span class="R">R--</span></li>
+  <li>After inner loop, skip duplicate <span class="i">i</span> values before next outer iteration</li>
+</ul>
+</div>
+
+<strong>Worked Example: 3Sum</strong> &mdash; find all triplets summing to <code>0</code> in <code>[-4,&nbsp;-1,&nbsp;-1,&nbsp;0,&nbsp;1,&nbsp;2]</code>
+
+<div class="walk">
+<div class="walk-title">Step-by-step trace &nbsp;&mdash;&nbsp; purple = i (fixed) &nbsp;|&nbsp; blue = L &nbsp;|&nbsp; red = R</div>
+
+<div class="wstep">
+<span class="wstep-n">Sort</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">-4<span class="pl">&nbsp;</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">Always sort first &mdash; enables two-pointer + deduplication</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">i=0</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac ai">-4<span class="pl pi">i</span></span><span class="ac aL">-1<span class="pl pL">L</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aR">2<span class="pl pR">R</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">need L+R = -nums[i] = 4
+sum = -1+2 = 1 &lt; 4 &rarr; L++</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">i=0</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac ai">-4<span class="pl pi">i</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac aL">-1<span class="pl pL">L</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aR">2<span class="pl pR">R</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">sum = -1+2 = 1 &lt; 4 &rarr; L++</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">i=0</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac ai">-4<span class="pl pi">i</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac aL">0<span class="pl pL">L</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aR">2<span class="pl pR">R</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">sum = 0+2 = 2 &lt; 4 &rarr; L++</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">i=0</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac ai">-4<span class="pl pi">i</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aL">1<span class="pl pL">L</span></span><span class="ac aR">2<span class="pl pR">R</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">sum = 1+2 = 3 &lt; 4, but L &ge; R
+&rarr; inner loop ends, move i to 1</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">i=1</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">-4<span class="pl">&nbsp;</span></span><span class="ac ai">-1<span class="pl pi">i</span></span><span class="ac aL">-1<span class="pl pL">L</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aR">2<span class="pl pR">R</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">need L+R = -nums[i] = 1
+sum = -1+2 = 1 = 1 &rarr; FOUND! [-1,-1,2]
+skip dupes, L++ R--</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">i=1</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">-4<span class="pl">&nbsp;</span></span><span class="ac ai">-1<span class="pl pi">i</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac aL">0<span class="pl pL">L</span></span><span class="ac aR">1<span class="pl pR">R</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">sum = 0+1 = 1 = 1 &rarr; FOUND! [-1,0,1]
+skip dupes, L++ R-- &rarr; L&ge;R, inner loop ends</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">i=2</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">-4<span class="pl">&nbsp;</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac ai">-1<span class="pl pi">i</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">nums[2] == nums[1] == -1 &rarr; duplicate i, skip</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Done</span>
+<div style="color:#6ee7b7;font-family:monospace;font-size:.82rem;padding:8px 0">Result: [[-1, -1, 2], [-1, 0, 1]]</div>
+<span class="wstep-act">i=3 onwards: nums[i]=0, 1, 2 &gt; 0 &rarr; break early</span>
+</div>
+
+</div>
+
+<strong>Code Template:</strong>
+<pre>Arrays.sort(nums);
+for (int i = 0; i &lt; n - 2; i++) {
+    if (i &gt; 0 &amp;&amp; nums[i] == nums[i-1]) continue;  // skip dup i
+    int left = i + 1, right = n - 1;
+    while (left &lt; right) {
+        int sum = nums[i] + nums[left] + nums[right];
+        if      (sum == target) { /* save, skip dupes, L++, R-- */ }
+        else if (sum &lt; target)  left++;
+        else                    right--;
+    }
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 3Sum</span>
+  <span class="prob-tag">P11 3Sum Closest</span>
+  <span class="prob-tag">P12 4Sum</span>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     TYPE 4 — FILL FROM BACK
+════════════════════════════════════════════════════ -->
+<div class="type-card t4">
+<div class="type-title">&#9315; Fill From Back &nbsp;(Reverse Fill)</div>
+
+<div class="rule-box">
+<p><strong>What it is:</strong> You fill a result array <strong>from right to left</strong> (largest value first). Two pointers sit at the two ends of the source data, and you always write the <em>bigger</em> of the two into the next available slot from the right. This avoids overwriting data you still need.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>You need to merge or transform a sorted array, and writing from the front would overwrite values you still need</li>
+  <li>The largest values come from the two ends (e.g., negatives squared become large positives)</li>
+  <li>There is pre-allocated tail space (e.g., Merge Sorted Array)</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Compare absolute value (or actual value) at <span class="L">L</span> vs <span class="R">R</span></li>
+  <li>Write the larger into <code>result[pos--]</code></li>
+  <li>Advance the pointer whose value was just written</li>
+</ul>
+</div>
+
+<strong>Worked Example: Squares of a Sorted Array</strong> &mdash; square <code>[-4,&nbsp;-1,&nbsp;0,&nbsp;3,&nbsp;10]</code> in sorted order
+
+<div class="walk">
+<div class="walk-title">Step-by-step trace &nbsp;&mdash;&nbsp; blue = L &nbsp;|&nbsp; red = R &nbsp;|&nbsp; green = written to result</div>
+
+<div class="wstep">
+<span class="wstep-n">Start</span>
+<div>
+  <div style="font-size:.75rem;color:#64748b;font-family:monospace;margin-bottom:3px">source array:</div>
+  <div class="arow"><span class="abk">[</span><span class="ac aL">-4<span class="pl pL">L</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac aR">10<span class="pl pR">R</span></span><span class="abk">]</span></div>
+  <div style="font-size:.75rem;color:#64748b;font-family:monospace;margin-top:6px;margin-bottom:3px">result (pos=4):</div>
+  <div class="arow"><span class="abk">[</span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+</div>
+<span class="wstep-act">|L| = |-4| = 4
+|R| = |10| = 10</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 1</span>
+<div>
+  <div class="arow"><span class="abk">[</span><span class="ac aL">-4<span class="pl pL">L</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac aR">10<span class="pl pR">R</span></span><span class="abk">]</span></div>
+  <div class="arow" style="margin-top:6px"><span class="abk">[</span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac aW">100<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+</div>
+<span class="wstep-act">|R|=10 &gt; |L|=4
+&rarr; write 10&sup2;=100 at result[4]
+R-- (pos=3)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 2</span>
+<div>
+  <div class="arow"><span class="abk">[</span><span class="ac aL">-4<span class="pl pL">L</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aR">3<span class="pl pR">R</span></span><span class="ac">10<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+  <div class="arow" style="margin-top:6px"><span class="abk">[</span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac aW">16<span class="pl">&nbsp;</span></span><span class="ac aW">100<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+</div>
+<span class="wstep-act">|L|=4 &gt; |R|=3
+&rarr; write (-4)&sup2;=16 at result[3]
+L++ (pos=2)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 3</span>
+<div>
+  <div class="arow"><span class="abk">[</span><span class="ac">-4<span class="pl">&nbsp;</span></span><span class="ac aL">-1<span class="pl pL">L</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aR">3<span class="pl pR">R</span></span><span class="ac">10<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+  <div class="arow" style="margin-top:6px"><span class="abk">[</span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac aW">9<span class="pl">&nbsp;</span></span><span class="ac aW">16<span class="pl">&nbsp;</span></span><span class="ac aW">100<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+</div>
+<span class="wstep-act">|R|=3 &gt; |L|=1
+&rarr; write 3&sup2;=9 at result[2]
+R-- (pos=1)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 4</span>
+<div>
+  <div class="arow"><span class="abk">[</span><span class="ac">-4<span class="pl">&nbsp;</span></span><span class="ac aL">-1<span class="pl pL">L</span></span><span class="ac aR">0<span class="pl pR">R</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">10<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+  <div class="arow" style="margin-top:6px"><span class="abk">[</span><span class="ac">_<span class="pl">&nbsp;</span></span><span class="ac aW">1<span class="pl">&nbsp;</span></span><span class="ac aW">9<span class="pl">&nbsp;</span></span><span class="ac aW">16<span class="pl">&nbsp;</span></span><span class="ac aW">100<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+</div>
+<span class="wstep-act">|L|=1 &gt; |R|=0
+&rarr; write (-1)&sup2;=1 at result[1]
+L++ (pos=0)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 5</span>
+<div>
+  <div class="arow"><span class="abk">[</span><span class="ac">-4<span class="pl">&nbsp;</span></span><span class="ac">-1<span class="pl">&nbsp;</span></span><span class="ac aL aR">0<span class="pl" style="color:#a78bfa">L=R</span></span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">10<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+  <div class="arow" style="margin-top:6px"><span class="abk">[</span><span class="ac aW">0<span class="pl">&nbsp;</span></span><span class="ac aW">1<span class="pl">&nbsp;</span></span><span class="ac aW">9<span class="pl">&nbsp;</span></span><span class="ac aW">16<span class="pl">&nbsp;</span></span><span class="ac aW">100<span class="pl">&nbsp;</span></span><span class="abk">]</span></div>
+</div>
+<span class="wstep-act">L == R &rarr; write 0&sup2;=0 at result[0]
+Loop ends. Done!</span>
+</div>
+
+</div>
+
+<strong>Code Template:</strong>
+<pre>int left = 0, right = n - 1, pos = n - 1;
+int[] result = new int[n];
+while (left &lt;= right) {
+    int lVal = Math.abs(nums[left]);
+    int rVal = Math.abs(nums[right]);
+    if (lVal &gt; rVal) { result[pos--] = lVal * lVal; left++;  }
+    else             { result[pos--] = rVal * rVal; right--; }
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P08 Squares of Sorted Array</span>
+  <span class="prob-tag">P14 Merge Sorted Array</span>
+  <span class="prob-tag">P15 Backspace String Compare</span>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     TYPE 5 — THREE POINTER (PARTITION)
+════════════════════════════════════════════════════ -->
+<div class="type-card t5">
+<div class="type-title">&#9316; Three Pointer &nbsp;(Partition)</div>
+
+<div class="rule-box">
+<p><strong>What it is:</strong> Three boundaries divide the array into four zones: <em>processed-left</em>, <em>unknown-middle</em>, <em>processed-right</em>. The <span class="S">low</span> pointer is the right edge of the "left zone". The <span class="F">mid</span> pointer is the scanner. The <span class="M">high</span> pointer is the left edge of the "right zone". The middle shrinks until <span class="F">mid</span> passes <span class="M">high</span>.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Three-category partition in a single pass (classic Dutch National Flag)</li>
+  <li>Two pointers are not enough because there are three distinct groups</li>
+</ul>
+<p><strong>The decision rule (for 0/1/2 sort):</strong></p>
+<ul>
+  <li><span class="F">nums[mid]</span> == 0 &rarr; swap(<span class="F">mid</span>, <span class="S">low</span>), <span class="S">low++</span>, <span class="F">mid++</span></li>
+  <li><span class="F">nums[mid]</span> == 1 &rarr; <span class="F">mid++</span> only (already in place)</li>
+  <li><span class="F">nums[mid]</span> == 2 &rarr; swap(<span class="F">mid</span>, <span class="M">high</span>), <span class="M">high--</span> &nbsp;<strong>but do NOT mid++</strong> (swapped value is unknown!)</li>
+</ul>
+</div>
+
+<strong>Worked Example: Sort Colors</strong> &mdash; sort <code>[2,&nbsp;0,&nbsp;2,&nbsp;1,&nbsp;1,&nbsp;0]</code> in one pass
+
+<div class="walk">
+<div class="walk-title">Step-by-step trace &nbsp;&mdash;&nbsp; green = low (S) &nbsp;|&nbsp; orange = mid (F) &nbsp;|&nbsp; indigo = high (H) &nbsp;|&nbsp; cell shows current array state</div>
+
+<div class="wstep">
+<span class="wstep-n">Start</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aS aF">2<span class="pl pS">S/F</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aH">0<span class="pl pH">H</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">low=0, mid=0, high=5
+S and F start together at index 0</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 1</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aF">0<span class="pl pF">F</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aH">1<span class="pl pH">H</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div><div style="font-size:.74rem;color:#64748b;font-family:monospace;margin-top:2px">&nbsp;&nbsp;S also at index 0</div></div>
+<span class="wstep-act">mid=0, nums[mid]=2 &rarr; swap(mid, high)
+array: [0,0,2,1,1,2]  high-- (high=4)
+mid stays at 0 (don't advance!)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 2</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac aS aF">0<span class="pl pS">S/F</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aH">1<span class="pl pH">H</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">mid=0, nums[mid]=0 &rarr; swap(mid, low)
+low++ (low=1), mid++ (mid=1)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 3</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aS aF">0<span class="pl pS">S/F</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aH">1<span class="pl pH">H</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">mid=1, nums[mid]=0 &rarr; swap(mid, low)
+low++ (low=2), mid++ (mid=2)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 4</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aS aF">2<span class="pl pS">S/F</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac aH">1<span class="pl pH">H</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">mid=2, nums[mid]=2 &rarr; swap(mid, high)
+array: [0,0,1,1,2,2]  high-- (high=3)
+mid stays at 2 (don't advance!)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 5</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aS aF">1<span class="pl pS">S/F</span></span><span class="ac aH">1<span class="pl pH">H</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">mid=2, nums[mid]=1 &rarr; mid++ only
+(1 is already in the correct middle zone)</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Step 6</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aS">1<span class="pl pS">S</span></span><span class="ac aF aH">1<span class="pl pF">F/H</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">mid=3, nums[mid]=1 &rarr; mid++ only</span>
+</div>
+
+<div class="wstep">
+<span class="wstep-n">Done</span>
+<div><div class="arow"><span class="abk">[</span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">1<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="abk">]</span></div></div>
+<span class="wstep-act">mid=4 &gt; high=3 &rarr; loop ends
+Result: [0, 0, 1, 1, 2, 2]</span>
+</div>
+
+</div>
+
+<strong>Code Template:</strong>
+<pre>int low = 0, mid = 0, high = n - 1;
+while (mid &lt;= high) {
+    if      (nums[mid] == 0) swap(nums, low++, mid++);  // send to left zone
+    else if (nums[mid] == 1) mid++;                     // already in middle
+    else                     swap(nums, mid, high--);   // send to right zone
+    // NOTE: do NOT mid++ after swapping a 2 — the new nums[mid] is unknown
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P06 Sort Colors (Dutch National Flag)</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal Two Pointer Template</h2>
+<pre>
+// Type 1: Opposite ends
+int left = 0, right = n - 1;
+while (left &lt; right) {
+    if (condition_met)   { /* found */ break; }
+    else if (too_small)  { left++;  }   // need bigger value
+    else                 { right--; }   // need smaller value
+}
+
+// Type 2: Slow + Fast (same direction)
+int slow = 0;
+for (int fast = 0; fast &lt; n; fast++) {
+    if (nums[fast] is "good") {
+        nums[slow] = nums[fast];
+        slow++;
+    }
+}
+// slow = count of "good" elements
+</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Brute Force (no pointer)</div><div class="kv-val">O(n²)</div></div><div class="kv-item"><div class="kv-label">Two Pointer</div><div class="kv-val">O(n) after sort</div></div><div class="kv-item"><div class="kv-label">Space (usually)</div><div class="kv-val">O(1) extra</div></div><div class="kv-item"><div class="kv-label">With Sorting</div><div class="kv-val">O(n log n) total</div></div></div>
+<p style="margin-top:12px">Even when you sort first (O(n log n)), this beats the O(n&sup2;) brute force for large inputs.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_TwoSumII.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_TwoSumII.html" style="color:#2563eb;text-decoration:none">Two Sum II</a></td><td style="padding:7px;text-align:center">167</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_ThreeSum.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_ThreeSum.html" style="color:#2563eb;text-decoration:none">3Sum</a></td><td style="padding:7px;text-align:center">15</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fix + Two Pointer</td></tr>
+<tr><td style="padding:7px"><a href="P03_ContainerWithMostWater.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_ContainerWithMostWater.html" style="color:#2563eb;text-decoration:none">Container With Most Water</a></td><td style="padding:7px;text-align:center">11</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_TrappingRainWater.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_TrappingRainWater.html" style="color:#2563eb;text-decoration:none">Trapping Rain Water</a></td><td style="padding:7px;text-align:center">42</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr><td style="padding:7px"><a href="P05_RemoveDuplicates.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_RemoveDuplicates.html" style="color:#2563eb;text-decoration:none">Remove Duplicates</a></td><td style="padding:7px;text-align:center">26</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Slow + Fast</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_SortColors.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_SortColors.html" style="color:#2563eb;text-decoration:none">Sort Colors</a></td><td style="padding:7px;text-align:center">75</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Three Pointer</td></tr>
+<tr><td style="padding:7px"><a href="P07_MoveZeroes.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_MoveZeroes.html" style="color:#2563eb;text-decoration:none">Move Zeroes</a></td><td style="padding:7px;text-align:center">283</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Slow + Fast</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_SquaresOfSortedArray.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_SquaresOfSortedArray.html" style="color:#2563eb;text-decoration:none">Squares of a Sorted Array</a></td><td style="padding:7px;text-align:center">977</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Fill From Back</td></tr>
+<tr><td style="padding:7px"><a href="P09_ValidPalindrome.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_ValidPalindrome.html" style="color:#2563eb;text-decoration:none">Valid Palindrome</a></td><td style="padding:7px;text-align:center">125</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_ReverseString.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_ReverseString.html" style="color:#2563eb;text-decoration:none">Reverse String</a></td><td style="padding:7px;text-align:center">344</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr><td style="padding:7px"><a href="P11_ThreeSumClosest.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_ThreeSumClosest.html" style="color:#2563eb;text-decoration:none">3Sum Closest</a></td><td style="padding:7px;text-align:center">16</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fix + Two Pointer</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_FourSum.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_FourSum.html" style="color:#2563eb;text-decoration:none">4Sum</a></td><td style="padding:7px;text-align:center">18</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fix + Two Pointer</td></tr>
+<tr><td style="padding:7px"><a href="P13_BoatsToSavePeople.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_BoatsToSavePeople.html" style="color:#2563eb;text-decoration:none">Boats to Save People</a></td><td style="padding:7px;text-align:center">881</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_MergeSortedArray.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_MergeSortedArray.html" style="color:#2563eb;text-decoration:none">Merge Sorted Array</a></td><td style="padding:7px;text-align:center">88</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Fill From Back</td></tr>
+<tr><td style="padding:7px"><a href="P15_BackspaceStringCompare.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_BackspaceStringCompare.html" style="color:#2563eb;text-decoration:none">Backspace String Compare</a></td><td style="padding:7px;text-align:center">844</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends (RTL)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_IsSubsequence.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_IsSubsequence.html" style="color:#2563eb;text-decoration:none">Is Subsequence</a></td><td style="padding:7px;text-align:center">392</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Same Direction</td></tr>
+<tr><td style="padding:7px"><a href="P17_RemoveElement.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_RemoveElement.html" style="color:#2563eb;text-decoration:none">Remove Element</a></td><td style="padding:7px;text-align:center">27</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Slow + Fast</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_FindKClosestElements.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_FindKClosestElements.html" style="color:#2563eb;text-decoration:none">Find K Closest Elements</a></td><td style="padding:7px;text-align:center">658</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Opposite Ends (shrink)</td></tr>
+<tr><td style="padding:7px"><a href="P19_ShortestUnsortedSubarray.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_ShortestUnsortedSubarray.html" style="color:#2563eb;text-decoration:none">Shortest Unsorted Subarray</a></td><td style="padding:7px;text-align:center">581</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_MinimizeMaxPairSum.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_MinimizeMaxPairSum.html" style="color:#2563eb;text-decoration:none">Minimize Maximum Pair Sum</a></td><td style="padding:7px;text-align:center">1877</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Opposite Ends</td></tr>
+</table>
+</div>
+
+<div class="footer">Two Pointer Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body>
+</html>

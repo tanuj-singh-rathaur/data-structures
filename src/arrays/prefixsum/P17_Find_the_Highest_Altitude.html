@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P17 – Find the Highest Altitude</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.easy{background:#dcfce7;color:#15803d}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Prefix Sum Masterclass</a> &rsaquo; Running Sum</div>
+<h1>P17 &mdash; Find the Highest Altitude</h1>
+<div class="meta"><span class="badge easy">Easy</span> &bull; LC #1732 &bull; Pattern: <strong>Running Sum + Max</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>You start at altitude 0. You're given <code>gain[i]</code> = altitude change from point <code>i</code> to <code>i+1</code>. Return the highest altitude reached.</p>
+<p><strong>Example:</strong> <code>gain = [&minus;5, 1, 5, 0, &minus;7]</code> &rarr; <code>1</code></p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Altitude = running sum</dt><dd>Each <code>altitude[i+1] = altitude[i] + gain[i]</code>. The altitude sequence is the prefix sum of gain.</dd>
+<dt>Track max along the way</dt><dd>No need for a separate array &mdash; one scalar tracks the running max.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>The altitude is just the running total of the gains. Walk along, keep adding, remember the highest you've reached.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>It's prefix sum P01 (Running Sum 1D) with a max tracker. Don't build the prefix array &mdash; just compare on the fly.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Set <code>alt = 0</code>, <code>best = 0</code> (the starting altitude).</li>
+<li>For each <code>g</code> in <code>gain</code>: <code>alt += g</code>; <code>best = max(best, alt)</code>.</li>
+<li>Return <code>best</code>.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int largestAltitude(int[] gain) {
+    int alt = 0, best = 0;
+    for (int g : gain) {
+        alt += g;
+        best = Math.max(best, alt);
+    }
+    return best;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Prefix Sum Pattern</h2>
+<div class="pattern-box"><strong>Running Sum + Max:</strong> When the answer is a function of the running prefix, just track it inline &mdash; no array needed.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Don't allocate a prefix array if you only need a single derived quantity. One scalar plus a running max is enough.</div>
+
+<div class="footer">Prefix Sum Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

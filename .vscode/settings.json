@@ -1,0 +1,11 @@
+{
+  "java.project.sourcePaths": ["src"],
+  "java.compile.nullAnalysis.mode": "disabled",
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  }
+}

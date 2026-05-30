@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P05 – Max Consecutive Ones III</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+
+<header>
+  <div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Sliding Window Masterclass</a> &nbsp;&rsaquo;&nbsp; Variable Window + Counter</div>
+  <h1>P05 &mdash; Max Consecutive Ones III</h1>
+  <div class="meta"><span class="badge medium">Medium</span> &bull; LeetCode #1004 &bull; Pattern: <strong>At-Most-K Counter Window</strong></div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+<p>Given a binary array <code>nums</code> and an integer <code>K</code>, return the length of the longest subarray with at most <code>K</code> zeros (you may &ldquo;flip&rdquo; up to K zeros to 1s).</p>
+<p><strong>Example:</strong> <code>nums = [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0], K = 2</code> &rarr; <code>6</code></p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+  <dt>&ldquo;Flip&rdquo; K zeros</dt><dd>Reframing: the longest window we can keep is one with at most K zeros (we'll mentally flip those to 1s).</dd>
+  <dt>At-most-K constraint</dt><dd>The window's invariant: <em>zeros &le; K</em>. Whenever it breaks, shrink from L until it holds.</dd>
+  <dt>Zero counter</dt><dd>A single integer tracking how many zeros are currently inside the window &mdash; updated O(1) as elements join/leave.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+<p>You can &ldquo;cover&rdquo; up to K zeros with imaginary 1-stickers. Slide a window over the array. As long as the number of uncovered zeros (the count) is &le; K, the window is valid &mdash; expand. When it exceeds K, shrink from the left, removing zeros from the count, until you're back to K or fewer.</p>
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>&ldquo;Longest with K flips&rdquo; = &ldquo;longest window with &le; K zeros.&rdquo; That converts a flipping problem into the most classic sliding window template.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">[1,1,1,0,0,0,1,1,1,1,0], K=2 &nbsp;&mdash;&nbsp; track zeros inside window</div>
+<div class="wstep"><span class="wstep-n">R=0..4</span><div><div class="arow"><span class="ac aW">1</span><span class="ac aW">1</span><span class="ac aW">1</span><span class="ac aW">0</span><span class="ac aW">0</span><span class="ac">0</span><span class="ac">1</span><span class="ac">1</span><span class="ac">1</span><span class="ac">1</span><span class="ac">0</span></div></div><span class="wstep-act">zeros=2 &le; K, valid
+window length=5, best=5</span></div>
+<div class="wstep"><span class="wstep-n">R=5</span><div>add nums[5]=0 &rarr; zeros=3 &gt; K</div><span class="wstep-act">shrink: drop 1 (L=1), still zeros=3
+shrink: drop 1 (L=2), still zeros=3
+shrink: drop 1 (L=3), still zeros=3
+shrink: drop 0 (L=4), zeros=2 &check;
+window=[0,0,0]&hellip; actually [0,0] from L=4..5, length 2</span></div>
+<div class="wstep"><span class="wstep-n">R=6..9</span><div>add 1,1,1,1 &rarr; zeros stays 2</div><span class="wstep-act">window L=4..9, length=6
+best = 6 &check;</span></div>
+<div class="wstep"><span class="wstep-n">R=10</span><div>add 0 &rarr; zeros=3 &gt; K, shrink to L=5 (zeros=2)</div><span class="wstep-act">length=6, best stays 6
+Answer: 6</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm</h2>
+<div class="steps"><ol>
+<li>Set <code>L = 0</code>, <code>zeros = 0</code>, <code>best = 0</code>.</li>
+<li>For each R: if <code>nums[R] == 0</code>, <code>zeros++</code>.</li>
+<li>While <code>zeros &gt; K</code>: if <code>nums[L] == 0</code> then <code>zeros&minus;&minus;</code>; <code>L++</code>.</li>
+<li><code>best = max(best, R &minus; L + 1)</code>.</li>
+</ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public int longestOnes(int[] nums, int K) {
+    int L = 0, zeros = 0, best = 0;
+    for (int R = 0; R &lt; nums.length; R++) {
+        if (nums[R] == 0) zeros++;
+        while (zeros &gt; K) {
+            if (nums[L] == 0) zeros--;
+            L++;
+        }
+        best = Math.max(best, R - L + 1);
+    }
+    return best;
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>At-Most-K Counter:</strong> Track a single integer that captures &ldquo;how badly the constraint is violated.&rdquo; Shrink while count exceeds K. Update best when the constraint holds.</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> Rephrasing &ldquo;flip up to K&rdquo; as &ldquo;allow up to K zeros&rdquo; converts a transformation problem into a standard window-with-counter problem.</div>
+
+<div class="footer">Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

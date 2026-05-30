@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strings · Two Pointer Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}.t4{border-left-color:#7c3aed;background:#faf5ff}.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}
+.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}
+.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}
+.ac.aS{background:#052e16;border-color:#22c55e;color:#86efac}
+.ac.aF{background:#431407;border-color:#f97316;color:#fdba74}
+.ac.aM{background:#2e1065;border-color:#a855f7;color:#d8b4fe}
+.pl{font-size:.7rem;font-weight:700;min-height:13px;margin-top:3px;line-height:1}
+.pL{color:#60a5fa}.pR{color:#f87171}.pS{color:#34d399}.pF{color:#fb923c}.pM{color:#d8b4fe}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}
+.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}
+.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{body{background:#fff}.page{padding:20px}.section{break-inside:avoid}pre,code{break-inside:avoid}header{break-after:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Strings · Two Pointer &mdash; Complete Masterclass</h1>
+  <div class="meta">Strings &rsaquo; Two Pointer &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Is Two Pointer on Strings? (Layman's Explanation)</h2>
+<p>Same idea as arrays, but the &ldquo;cells&rdquo; are characters. Place two fingers on a string and let them <em>walk</em>: toward each other (palindrome check), away from a center (palindromic substring expansion), or in lockstep across two strings (is this a subsequence of that?).</p>
+<p>The win is the same: instead of nested loops (O(n&sup2;)), each pointer crosses the string at most once &mdash; O(n).</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster (Confusing Terms Explained)</h2>
+<div class="glossary"><dl>
+  <dt>Palindrome</dt><dd>A string that reads the same forwards and backwards: <code>"racecar"</code>, <code>"abba"</code>.</dd>
+  <dt>Substring vs Subsequence</dt><dd><strong>Substring</strong> = contiguous slice. <strong>Subsequence</strong> = pick chars in order but can skip. <code>"act"</code> is a subsequence of <code>"cactus"</code>, not a substring.</dd>
+  <dt>In-place</dt><dd>Modify the input directly without allocating a new string. Java strings are immutable &mdash; use <code>char[]</code> or <code>StringBuilder</code>.</dd>
+  <dt>Two pointers vs Two indices</dt><dd>Same thing. The "pointer" terminology is a convention; in Java these are just <code>int L, int R</code>.</dd>
+  <dt>Expand around center</dt><dd>A palindrome-finding trick. Plant a center on every index (and between every pair) and walk two pointers outward while characters keep matching.</dd>
+  <dt>Token / Word boundary</dt><dd>The transitions between groups of characters (e.g., between spaces). Multi-pointer tricks parse one token at a time.</dd>
+  <dt>Anchor vs Probe</dt><dd>Used in <em>strStr</em>-style problems. The anchor (i) marks a candidate start; the probe (j) walks the needle to verify.</dd>
+  <dt>Vertical scan</dt><dd>Walk one character position across <em>multiple</em> strings at once (used in Longest Common Prefix).</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Two Pointer on Strings?</h2>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>Checking <strong>palindromes</strong> (forward equals reverse).</li>
+  <li><strong>Reversing</strong> a string or its parts in place.</li>
+  <li>Comparing two strings <strong>character by character</strong>.</li>
+  <li>Matching <strong>subsequence</strong> or <strong>prefix</strong>.</li>
+  <li>Finding the <strong>longest palindromic substring</strong> (expand around center).</li>
+  <li>Walking <strong>two strings simultaneously</strong> with different rules per side.</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 5 Types of String Two Pointer &mdash; Full Breakdown</h2>
+
+<!-- TYPE 1 — OPPOSITE ENDS (Palindrome) -->
+<div class="type-card t1">
+<div class="type-title">&#9312; Opposite Ends (Palindrome / Reverse)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> One pointer at index 0, one at index <code>n&minus;1</code>. Compare and move inward.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Is this a palindrome?"</li>
+  <li>Reverse all or part of a string in place</li>
+  <li>Skip non-letters or non-alphanumerics while checking symmetry</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>If <code>s[L] == s[R]</code>: L++, R--</li>
+  <li>If they differ: return false (or try skipping one side for "valid palindrome II")</li>
+</ul>
+</div>
+
+<strong>Worked Example: Valid Palindrome</strong> &mdash; <code>"A man, a plan, a canal: Panama"</code>
+
+<div class="walk">
+<div class="walk-title">Filtered to <code>"amanaplanacanalpanama"</code>, compare from both ends</div>
+<div class="wstep"><span class="wstep-n">Start</span><div><div class="arow"><span class="abk">[</span><span class="ac aL">a</span><span class="ac">m</span><span class="ac">a</span><span class="ac">&hellip;</span><span class="ac">a</span><span class="ac">m</span><span class="ac aR">a</span><span class="abk">]</span></div></div><span class="wstep-act">L=0, R=n&minus;1. Match &check;. Move both.</span></div>
+<div class="wstep"><span class="wstep-n">Loop</span><div>continue matching inward</div><span class="wstep-act">Every step matches; pointers meet &rarr; true</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int L = 0, R = s.length() - 1;
+while (L &lt; R) {
+    if (s.charAt(L) != s.charAt(R)) return false;
+    L++; R--;
+}
+return true;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 Valid Palindrome</span>
+  <span class="prob-tag">P02 Reverse Vowels</span>
+  <span class="prob-tag">P03 Valid Palindrome II</span>
+  <span class="prob-tag">P06 Reverse String</span>
+  <span class="prob-tag">P07 Reverse String II</span>
+  <span class="prob-tag">P08 Reverse Only Letters</span>
+</div>
+</div>
+
+<!-- TYPE 2 — EXPAND AROUND CENTER -->
+<div class="type-card t2">
+<div class="type-title">&#9313; Expand Around Center (Palindromic Substrings)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Place a center on every index (odd-length palindromes) AND between every adjacent pair (even-length palindromes). From each center, walk two pointers outward as long as the characters match.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Longest palindromic substring"</li>
+  <li>"Count palindromic substrings"</li>
+  <li>Brute force is O(n&sup3;) (try every substring + check palindrome)</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>For each i: expand center=i (odd) and center=(i, i+1) (even)</li>
+  <li>While L &ge; 0, R &lt; n, s[L]==s[R]: L--, R++</li>
+  <li>Record longest length / increment count per successful expansion</li>
+</ul>
+</div>
+
+<strong>Worked Example: Longest Palindromic Substring</strong> &mdash; <code>"babad"</code>
+
+<div class="walk">
+<div class="walk-title">Center at index 2 ('b' in "ba**b**ad")</div>
+<div class="wstep"><span class="wstep-n">Init</span><div><div class="arow"><span class="ac">b</span><span class="ac">a</span><span class="ac aM">b</span><span class="ac">a</span><span class="ac">d</span></div></div><span class="wstep-act">L=R=2 (center='b')</span></div>
+<div class="wstep"><span class="wstep-n">Step</span><div><div class="arow"><span class="ac">b</span><span class="ac aL">a</span><span class="ac aM">b</span><span class="ac aR">a</span><span class="ac">d</span></div></div><span class="wstep-act">L=1, R=3. s[L]=='a', s[R]=='a' &check;</span></div>
+<div class="wstep"><span class="wstep-n">Step</span><div><div class="arow"><span class="ac aL">b</span><span class="ac">a</span><span class="ac aM">b</span><span class="ac">a</span><span class="ac aR">d</span></div></div><span class="wstep-act">L=0, R=4. 'b' vs 'd' ✗ &mdash; stop.
+Palindrome = "aba" (length 3)</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>for (int i = 0; i &lt; n; i++) {
+    expand(s, i, i);     // odd-length center
+    expand(s, i, i + 1); // even-length center
+}
+void expand(String s, int L, int R) {
+    while (L &gt;= 0 &amp;&amp; R &lt; s.length() &amp;&amp; s.charAt(L) == s.charAt(R)) {
+        L--; R++;
+    }
+    // s[L+1..R-1] is the palindrome
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P04 Longest Palindromic Substring</span>
+  <span class="prob-tag">P05 Palindromic Substrings</span>
+</div>
+</div>
+
+<!-- TYPE 3 — SAME DIRECTION TWO STRINGS -->
+<div class="type-card t3">
+<div class="type-title">&#9314; Same Direction, Two Inputs (Subseq / Merge / Compare)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> One pointer per string. Both walk forward. Advancement rules differ per problem: advance one on match, advance both alternately, etc.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Is <em>s</em> a subsequence of <em>t</em>?"</li>
+  <li>Merging two strings alternately</li>
+  <li>Long-pressed name / typo verification</li>
+  <li>Comparing version strings token by token</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Walk i over A and j over B</li>
+  <li>On match: do something + advance one or both</li>
+  <li>Termination: i or j hits end</li>
+</ul>
+</div>
+
+<strong>Worked Example: Is Subsequence</strong> &mdash; <code>s = "abc"</code>, <code>t = "ahbgdc"</code>
+
+<div class="walk">
+<div class="walk-title">i over s, j over t; advance i only on match</div>
+<div class="wstep"><span class="wstep-n">j=0</span><div>t[0]='a' == s[0]='a' &check;</div><span class="wstep-act">i=1, j=1</span></div>
+<div class="wstep"><span class="wstep-n">j=1</span><div>t[1]='h' != s[1]='b'</div><span class="wstep-act">just j++</span></div>
+<div class="wstep"><span class="wstep-n">j=2</span><div>t[2]='b' == s[1]='b' &check;</div><span class="wstep-act">i=2, j=3</span></div>
+<div class="wstep"><span class="wstep-n">j=3..5</span><div>skip g, d; t[5]='c' == s[2]='c' &check;</div><span class="wstep-act">i=3 == s.length() &rarr; true</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int i = 0, j = 0;
+while (i &lt; s.length() &amp;&amp; j &lt; t.length()) {
+    if (s.charAt(i) == t.charAt(j)) i++;
+    j++;
+}
+return i == s.length();</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P11 Merge Strings Alternately</span>
+  <span class="prob-tag">P12 Long Pressed Name</span>
+  <span class="prob-tag">P14 Is Subsequence</span>
+  <span class="prob-tag">P15 Backspace String Compare</span>
+  <span class="prob-tag">P16 Compare Version Numbers</span>
+  <span class="prob-tag">P18 strStr / First Occurrence</span>
+</div>
+</div>
+
+<!-- TYPE 4 — SLOW + FAST WRITE -->
+<div class="type-card t4">
+<div class="type-title">&#9315; Slow + Fast (In-Place Compression)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Two pointers in the same direction: <span class="S">slow</span> is the write head, <span class="F">fast</span> is the scanner. Same idea as &ldquo;Move Zeroes&rdquo; on arrays but on a <code>char[]</code>.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Compress runs of identical chars in place</li>
+  <li>Remove certain characters in place</li>
+  <li>Output must overwrite the input</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>fast walks every character</li>
+  <li>slow only advances when a finalized chunk is written</li>
+  <li>Return slow at the end &mdash; it's the new length</li>
+</ul>
+</div>
+
+<strong>Worked Example: String Compression</strong> &mdash; <code>"aaabbc"</code> &rarr; <code>"a3b2c1"</code> in place (when run &ge; 2; else just the char)
+
+<div class="walk">
+<div class="walk-title">slow = write head, fast = scanner</div>
+<div class="wstep"><span class="wstep-n">Run 'a'</span><div>fast finds 3 a's</div><span class="wstep-act">write 'a' then "3", slow moves past both</span></div>
+<div class="wstep"><span class="wstep-n">Run 'b'</span><div>fast finds 2 b's</div><span class="wstep-act">write 'b' then "2"</span></div>
+<div class="wstep"><span class="wstep-n">Run 'c'</span><div>1 'c'</div><span class="wstep-act">write 'c' only (count of 1 omitted in this variant)</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int slow = 0, fast = 0;
+while (fast &lt; n) {
+    char c = chars[fast];
+    int run = 0;
+    while (fast &lt; n &amp;&amp; chars[fast] == c) { fast++; run++; }
+    chars[slow++] = c;
+    if (run &gt; 1) for (char d : Integer.toString(run).toCharArray()) chars[slow++] = d;
+}
+return slow;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P13 String Compression</span>
+</div>
+</div>
+
+<!-- TYPE 5 — TWO-PASS / VERTICAL SCAN -->
+<div class="type-card t5">
+<div class="type-title">&#9316; Two-Pass / Vertical Scan</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Sometimes the "pointer" sweeps the same string twice (once forward, once backward), or sweeps the same index across several strings at once. Both fall under "specialized two-pointer."</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Each index needs info from both sides (Shortest Distance to Character)</li>
+  <li>Compare characters at the same position across multiple inputs (Longest Common Prefix)</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>For two-pass: forward sweep tracks one side; backward sweep tracks the other; combine</li>
+  <li>For vertical scan: outer loop = column index; inner loop = string index; stop at the first mismatch</li>
+</ul>
+</div>
+
+<strong>Worked Example: Shortest Distance to Character</strong> &mdash; <code>s = "loveleetcode"</code>, <code>c = 'e'</code>
+
+<div class="walk">
+<div class="walk-title">Pass 1 (left&rarr;right): distance to last seen 'e' on the left</div>
+<div class="wstep"><span class="wstep-n">Sweep</span><div>track <code>prev</code> = index of last 'e' (init &minus;&infin;)</div><span class="wstep-act">res[i] = i &minus; prev</span></div>
+<div class="walk-title">Pass 2 (right&rarr;left): distance to next 'e' on the right</div>
+<div class="wstep"><span class="wstep-n">Sweep</span><div>track prev (init +&infin;)</div><span class="wstep-act">res[i] = min(res[i], prev &minus; i)</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int[] res = new int[n];
+int prev = -n;
+for (int i = 0; i &lt; n; i++) {
+    if (s.charAt(i) == c) prev = i;
+    res[i] = i - prev;
+}
+prev = 2 * n;
+for (int i = n - 1; i &gt;= 0; i--) {
+    if (s.charAt(i) == c) prev = i;
+    res[i] = Math.min(res[i], prev - i);
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P09 Reverse Words in a String III</span>
+  <span class="prob-tag">P10 Reverse Words in a String</span>
+  <span class="prob-tag">P17 Shortest Distance to a Character</span>
+  <span class="prob-tag">P19 Longest Common Prefix</span>
+  <span class="prob-tag">P20 Shortest Palindrome</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal String Two Pointer Templates</h2>
+<pre>// Opposite ends (palindrome)
+int L = 0, R = s.length() - 1;
+while (L &lt; R) {
+    if (s.charAt(L) != s.charAt(R)) return false;
+    L++; R--;
+}
+
+// Expand around center (palindromic substrings)
+for (int i = 0; i &lt; n; i++) {
+    expand(s, i, i);      // odd
+    expand(s, i, i + 1);  // even
+}
+
+// Same direction, two strings
+int i = 0, j = 0;
+while (i &lt; a.length() &amp;&amp; j &lt; b.length()) {
+    // decide whether to advance i, j, or both
+}</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Brute force</div><div class="kv-val">O(n²) or O(n³)</div></div><div class="kv-item"><div class="kv-label">Two Pointer</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Expand around center</div><div class="kv-val">O(n²)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1) usually</div></div></div>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_Valid_Palindrome.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_Valid_Palindrome.html" style="color:#2563eb;text-decoration:none">Valid Palindrome</a></td><td style="padding:7px;text-align:center">125</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_Reverse_Vowels_of_a_String.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_Reverse_Vowels_of_a_String.html" style="color:#2563eb;text-decoration:none">Reverse Vowels of a String</a></td><td style="padding:7px;text-align:center">345</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends (skip)</td></tr>
+<tr><td style="padding:7px"><a href="P03_Valid_Palindrome_II.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_Valid_Palindrome_II.html" style="color:#2563eb;text-decoration:none">Valid Palindrome II</a></td><td style="padding:7px;text-align:center">680</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends + Retry</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_Longest_Palindromic_Substring.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_Longest_Palindromic_Substring.html" style="color:#2563eb;text-decoration:none">Longest Palindromic Substring</a></td><td style="padding:7px;text-align:center">5</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Expand Around Center</td></tr>
+<tr><td style="padding:7px"><a href="P05_Palindromic_Substrings.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_Palindromic_Substrings.html" style="color:#2563eb;text-decoration:none">Palindromic Substrings</a></td><td style="padding:7px;text-align:center">647</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Expand Around Center</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_Reverse_String.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_Reverse_String.html" style="color:#2563eb;text-decoration:none">Reverse String</a></td><td style="padding:7px;text-align:center">344</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends</td></tr>
+<tr><td style="padding:7px"><a href="P07_Reverse_String_II.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_Reverse_String_II.html" style="color:#2563eb;text-decoration:none">Reverse String II</a></td><td style="padding:7px;text-align:center">541</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Block Reverse</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_Reverse_Only_Letters.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_Reverse_Only_Letters.html" style="color:#2563eb;text-decoration:none">Reverse Only Letters</a></td><td style="padding:7px;text-align:center">917</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Opposite Ends (skip)</td></tr>
+<tr><td style="padding:7px"><a href="P09_Reverse_Words_in_a_String_III.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_Reverse_Words_in_a_String_III.html" style="color:#2563eb;text-decoration:none">Reverse Words in a String III</a></td><td style="padding:7px;text-align:center">557</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Per-Word Reverse</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_Reverse_Words_in_a_String.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_Reverse_Words_in_a_String.html" style="color:#2563eb;text-decoration:none">Reverse Words in a String</a></td><td style="padding:7px;text-align:center">151</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Token Walk</td></tr>
+<tr><td style="padding:7px"><a href="P11_Merge_Strings_Alternately.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_Merge_Strings_Alternately.html" style="color:#2563eb;text-decoration:none">Merge Strings Alternately</a></td><td style="padding:7px;text-align:center">1768</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Same Direction (2 inputs)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_Long_Pressed_Name.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_Long_Pressed_Name.html" style="color:#2563eb;text-decoration:none">Long Pressed Name</a></td><td style="padding:7px;text-align:center">925</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Same Direction (2 inputs)</td></tr>
+<tr><td style="padding:7px"><a href="P13_String_Compression.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_String_Compression.html" style="color:#2563eb;text-decoration:none">String Compression</a></td><td style="padding:7px;text-align:center">443</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Slow + Fast</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_Is_Subsequence.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_Is_Subsequence.html" style="color:#2563eb;text-decoration:none">Is Subsequence</a></td><td style="padding:7px;text-align:center">392</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Same Direction (2 inputs)</td></tr>
+<tr><td style="padding:7px"><a href="P15_Backspace_String_Compare.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_Backspace_String_Compare.html" style="color:#2563eb;text-decoration:none">Backspace String Compare</a></td><td style="padding:7px;text-align:center">844</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Right-to-Left Same Direction</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_Compare_Version_Numbers.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_Compare_Version_Numbers.html" style="color:#2563eb;text-decoration:none">Compare Version Numbers</a></td><td style="padding:7px;text-align:center">165</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Token Walk (2 inputs)</td></tr>
+<tr><td style="padding:7px"><a href="P17_Shortest_Distance_to_a_Character.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_Shortest_Distance_to_a_Character.html" style="color:#2563eb;text-decoration:none">Shortest Distance to a Character</a></td><td style="padding:7px;text-align:center">821</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Two-Pass Sweep</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_Find_Index_of_First_Occurrence.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_Find_Index_of_First_Occurrence.html" style="color:#2563eb;text-decoration:none">strStr / First Occurrence</a></td><td style="padding:7px;text-align:center">28</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Anchor + Probe</td></tr>
+<tr><td style="padding:7px"><a href="P19_Longest_Common_Prefix.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_Longest_Common_Prefix.html" style="color:#2563eb;text-decoration:none">Longest Common Prefix</a></td><td style="padding:7px;text-align:center">14</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Vertical Scan</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_Shortest_Palindrome.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_Shortest_Palindrome.html" style="color:#2563eb;text-decoration:none">Shortest Palindrome</a></td><td style="padding:7px;text-align:center">214</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Palindrome Anchor</td></tr>
+</table>
+</div>
+
+<div class="footer">Strings · Two Pointer Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body>
+</html>

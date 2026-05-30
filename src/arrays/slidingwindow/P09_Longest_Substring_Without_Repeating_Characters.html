@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P09 – Longest Substring Without Repeating Characters</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;text-transform:uppercase;font-family:Consolas,monospace}.wstep{display:flex;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:Consolas,monospace;font-size:.81rem;padding-top:8px}.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:Consolas,monospace;padding-top:8px;flex:1;white-space:pre-line}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; SW Masterclass</a> &rsaquo; Variable Window</div>
+<h1>P09 &mdash; Longest Substring Without Repeating Characters</h1>
+<div class="meta"><span class="badge medium">Medium</span> &bull; LC #3 &bull; Pattern: <strong>Variable Window + Last-Seen Map</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Given a string <code>s</code>, return the length of the longest substring with all distinct characters.</p>
+<p><strong>Example:</strong> <code>"abcabcbb"</code> &rarr; <code>3</code> (<code>"abc"</code>)</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Substring</dt><dd>A contiguous slice of <code>s</code>. Not to be confused with subsequence (can skip).</dd>
+<dt>All distinct</dt><dd>No character repeats inside the window.</dd>
+<dt>Last-seen index map</dt><dd>For each character, store the most recent index we saw it at. Lets us jump L past the duplicate in O(1).</dd>
+<dt>Jump vs Shrink</dt><dd>Instead of slowly shrinking L one step at a time, we can <em>jump</em> L directly to <code>lastSeen[c] + 1</code> &mdash; faster, fewer iterations.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Slide a window left-to-right. The moment R sees a character that's already inside the window, slide L past where you last saw it. The map tells you exactly where to slide L to.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>L only ever needs to move forward. If a duplicate appears at index R and we last saw it at index <code>p</code>, the new L must be at least <code>p+1</code>. Take <code>max(L, lastSeen[c]+1)</code> to never go backwards.</p></div>
+
+<div class="section blue"><h2>&#128250; Visual Walkthrough</h2>
+<div class="walk"><div class="walk-title">s = "abcabcbb"</div>
+<div class="wstep"><span class="wstep-n">R=0..2</span><span class="wstep-act">Window grows: "a", "ab", "abc". best=3</span></div>
+<div class="wstep"><span class="wstep-n">R=3</span><span class="wstep-act">char 'a' seen at index 0 &rarr; L = max(0, 0+1) = 1. Window = "bca". best=3</span></div>
+<div class="wstep"><span class="wstep-n">R=4</span><span class="wstep-act">char 'b' seen at 1 &rarr; L = max(1, 1+1) = 2. Window = "cab". best=3</span></div>
+<div class="wstep"><span class="wstep-n">R=5</span><span class="wstep-act">char 'c' seen at 2 &rarr; L = max(2, 2+1) = 3. Window = "abc". best=3</span></div>
+<div class="wstep"><span class="wstep-n">R=6</span><span class="wstep-act">char 'b' seen at 4 &rarr; L = max(3, 4+1) = 5. Window = "cb". best=3</span></div>
+<div class="wstep"><span class="wstep-n">R=7</span><span class="wstep-act">char 'b' seen at 6 &rarr; L = 7. Window = "b". Final best=3</span></div>
+</div></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Maintain <code>lastSeen[c]</code> (init &minus;1), <code>L = 0</code>, <code>best = 0</code>.</li>
+<li>For each R: <code>L = max(L, lastSeen[s[R]] + 1)</code>.</li>
+<li>Update <code>lastSeen[s[R]] = R</code>; <code>best = max(best, R &minus; L + 1)</code>.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int lengthOfLongestSubstring(String s) {
+    int[] last = new int[128];
+    java.util.Arrays.fill(last, -1);
+    int L = 0, best = 0;
+    for (int R = 0; R &lt; s.length(); R++) {
+        L = Math.max(L, last[s.charAt(R)] + 1);
+        last[s.charAt(R)] = R;
+        best = Math.max(best, R - L + 1);
+    }
+    return best;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(|alphabet|)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Variable Window + Last-Seen Map:</strong> A jump-style window: instead of shrinking one step at a time, leap L past the duplicate's previous position.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> The window is always &ldquo;the longest stretch ending at R with no repeats.&rdquo; A single map lookup tells you the minimum L that keeps that true.</div>
+
+<div class="footer">Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sliding Window Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}.t4{border-left-color:#7c3aed;background:#faf5ff}.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}
+.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}
+.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}
+.ac.aSum{background:#422006;border-color:#facc15;color:#fde047}
+.pl{font-size:.7rem;font-weight:700;min-height:13px;margin-top:3px;line-height:1}
+.pL{color:#60a5fa}.pR{color:#f87171}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{body{background:#fff}.page{padding:20px}.section{break-inside:avoid}pre,code{break-inside:avoid}header{break-after:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Sliding Window &mdash; Complete Masterclass</h1>
+  <div class="meta">Arrays &rsaquo; Sliding Window &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Is Sliding Window? (Layman's Explanation)</h2>
+<p>Imagine looking through a <strong>letterbox</strong> at a long parade. You can only see a few floats at a time. As the parade moves, one new float enters the view from the right and one leaves from the left. You never have to look back &mdash; you just update your view incrementally.</p>
+<p>That's the trick: instead of recomputing your &ldquo;answer&rdquo; for every possible subarray (O(n&middot;k)), you let the answer <em>slide</em> with the window. Each step:</p>
+<ol style="padding-left:22px;margin:10px 0">
+  <li>Add the new element entering on the right.</li>
+  <li>Remove the element leaving on the left (if the window has shifted).</li>
+</ol>
+<p>One pass, O(n). The hard part is just deciding what to track inside the window.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster (Confusing Terms Explained)</h2>
+<div class="glossary"><dl>
+  <dt>Window</dt><dd>A contiguous range <code>[L, R]</code> of the array (or string). The &ldquo;window&rdquo; is whatever's inside those two pointers.</dd>
+  <dt>Fixed-size window</dt><dd>The window's length stays constant (e.g., &ldquo;size K&rdquo;). Both pointers move together. Add right, remove left, repeat.</dd>
+  <dt>Variable-size / dynamic window</dt><dd>The window grows and shrinks based on a condition (e.g., &ldquo;sum &le; target&rdquo;). Right pointer expands; left pointer contracts when the condition breaks.</dd>
+  <dt>Expand / Shrink</dt><dd><strong>Expand</strong> = move right pointer further right (window grows). <strong>Shrink</strong> = move left pointer right (window gets smaller).</dd>
+  <dt>Invariant</dt><dd>A property the window must always maintain (e.g., &ldquo;sum stays &le; target,&rdquo; or &ldquo;at most K distinct characters&rdquo;). When it breaks, you shrink until it holds again.</dd>
+  <dt>Frequency map / count map</dt><dd>A HashMap (or int array of 26 for lowercase letters) counting characters/values in the window. Constant-time updates as the window moves.</dd>
+  <dt>Have vs Need</dt><dd>Common in &ldquo;Minimum Window Substring&rdquo; style problems. <em>Need</em> = how many distinct chars the target requires. <em>Have</em> = how many of those are currently satisfied. Window is &ldquo;valid&rdquo; when have == need.</dd>
+  <dt>Deque (double-ended queue)</dt><dd>A queue you can push/pop from both ends. Used in &ldquo;Sliding Window Maximum&rdquo; to keep candidate maxes in monotonic order.</dd>
+  <dt>Monotonic deque</dt><dd>A deque whose stored values are kept in strictly decreasing (or increasing) order. Lets you grab the max (or min) of the current window in O(1).</dd>
+  <dt>Subarray vs Substring</dt><dd>&ldquo;Subarray&rdquo; for numbers, &ldquo;substring&rdquo; for strings. Both mean a <strong>contiguous</strong> slice &mdash; nothing skipped.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Sliding Window?</h2>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>You need the <strong>longest</strong>, <strong>shortest</strong>, <strong>max</strong>, or <strong>min</strong> over all contiguous subarrays/substrings.</li>
+  <li>The window has a property that updates <strong>incrementally</strong> as elements enter/leave (sum, count, distinct, max).</li>
+  <li>Brute force is O(n&sup2;) or O(n&middot;k) over all subarrays.</li>
+  <li>Words like &ldquo;at most K&rdquo;, &ldquo;exactly K&rdquo;, &ldquo;sum &ge; target&rdquo;, &ldquo;contains all characters of&rdquo;.</li>
+  <li>Crucially: <strong>moving the right pointer can only make things harder, never easier</strong> &mdash; that monotonicity is what lets you shrink the left without losing answers.</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 4 Types of Sliding Window &mdash; Full Breakdown</h2>
+
+<!-- TYPE 1 — FIXED -->
+<div class="type-card t1">
+<div class="type-title">&#9312; Fixed-Size Window</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> A window of <em>exactly</em> K elements. Slide it one step at a time, adding the new right element and removing the leaving left element. Track a running stat (sum, count, max).</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>The window size is given as a constant K</li>
+  <li>You're asked &ldquo;max/min sum of subarray of size K&rdquo;, &ldquo;average of K consecutive&rdquo;, etc.</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Build the first window of size K, capture its stat</li>
+  <li>For each subsequent position: <code>stat += nums[R] &minus; nums[R&minus;K]</code></li>
+  <li>Update answer with current stat</li>
+</ul>
+</div>
+
+<strong>Worked Example: Max sum of subarray of size 3</strong> &mdash; <code>[2, 1, 5, 1, 3, 2]</code>
+
+<div class="walk">
+<div class="walk-title">Build first window, then slide</div>
+<div class="wstep"><span class="wstep-n">Init</span><div><div class="arow"><span class="ac aL">2</span><span class="ac aL">1</span><span class="ac aR">5</span><span class="ac">1</span><span class="ac">3</span><span class="ac">2</span></div></div><span class="wstep-act">first window [2,1,5]
+sum = 8, best = 8</span></div>
+<div class="wstep"><span class="wstep-n">Slide</span><div><div class="arow"><span class="ac">2</span><span class="ac aL">1</span><span class="ac aL">5</span><span class="ac aR">1</span><span class="ac">3</span><span class="ac">2</span></div></div><span class="wstep-act">drop nums[0]=2, add nums[3]=1
+sum = 8 - 2 + 1 = 7, best = 8</span></div>
+<div class="wstep"><span class="wstep-n">Slide</span><div><div class="arow"><span class="ac">2</span><span class="ac">1</span><span class="ac aL">5</span><span class="ac aL">1</span><span class="ac aR">3</span><span class="ac">2</span></div></div><span class="wstep-act">drop nums[1]=1, add nums[4]=3
+sum = 7 - 1 + 3 = 9, best = 9</span></div>
+<div class="wstep"><span class="wstep-n">Slide</span><div><div class="arow"><span class="ac">2</span><span class="ac">1</span><span class="ac">5</span><span class="ac aL">1</span><span class="ac aL">3</span><span class="ac aR">2</span></div></div><span class="wstep-act">drop nums[2]=5, add nums[5]=2
+sum = 9 - 5 + 2 = 6, best = 9
+Answer: 9</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int sum = 0;
+for (int i = 0; i &lt; K; i++) sum += nums[i];
+int best = sum;
+for (int r = K; r &lt; n; r++) {
+    sum += nums[r] - nums[r - K];
+    best = Math.max(best, sum);
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 Max Sum Subarray of Size K</span>
+</div>
+</div>
+
+<!-- TYPE 2 — VARIABLE GROW/SHRINK -->
+<div class="type-card t2">
+<div class="type-title">&#9313; Variable Window (Grow + Shrink on Constraint)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Window expands as long as a condition holds (e.g., &ldquo;sum &le; K&rdquo; or &ldquo;at most one zero&rdquo;). When the condition breaks, shrink from the left until it holds again. Update the answer at each valid state.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>&ldquo;Longest&rdquo; or &ldquo;shortest&rdquo; subarray satisfying some constraint</li>
+  <li>All values are non-negative (otherwise sliding window's monotonicity breaks &mdash; use prefix sums)</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Move R right, update window state</li>
+  <li>While state violates the constraint: move L right, undo its contribution</li>
+  <li>Update answer with current window length</li>
+</ul>
+</div>
+
+<strong>Worked Example: Smallest subarray with sum &ge; 7</strong> in <code>[2, 1, 5, 2, 3, 2]</code>
+
+<div class="walk">
+<div class="walk-title">Expand until valid, then shrink to minimize</div>
+<div class="wstep"><span class="wstep-n">R=0..2</span><div><div class="arow"><span class="ac aL">2</span><span class="ac">1</span><span class="ac aR">5</span><span class="ac">2</span><span class="ac">3</span><span class="ac">2</span></div></div><span class="wstep-act">sum=8 &ge; 7 &check;
+best length = 3 (from [2,1,5])</span></div>
+<div class="wstep"><span class="wstep-n">shrink</span><div><div class="arow"><span class="ac">2</span><span class="ac aL">1</span><span class="ac aR">5</span><span class="ac">2</span><span class="ac">3</span><span class="ac">2</span></div></div><span class="wstep-act">drop 2, sum=6 &lt; 7 &mdash; stop shrinking</span></div>
+<div class="wstep"><span class="wstep-n">R=3</span><div><div class="arow"><span class="ac">2</span><span class="ac aL">1</span><span class="ac">5</span><span class="ac aR">2</span><span class="ac">3</span><span class="ac">2</span></div></div><span class="wstep-act">add 2, sum=8 &ge; 7 &check;
+length=3 &mdash; tie</span></div>
+<div class="wstep"><span class="wstep-n">shrink</span><div><div class="arow"><span class="ac">2</span><span class="ac">1</span><span class="ac aL aR">5</span><span class="ac aR">2</span><span class="ac">3</span><span class="ac">2</span></div></div><span class="wstep-act">drop 1, sum=7 &check;, length=2 &mdash; new best!</span></div>
+<div class="wstep"><span class="wstep-n">shrink</span><div><div class="arow"><span class="ac">2</span><span class="ac">1</span><span class="ac">5</span><span class="ac aL aR">2</span><span class="ac">3</span><span class="ac">2</span></div></div><span class="wstep-act">drop 5, sum=2 &lt; 7 &mdash; stop
+Answer: 2 ([5,2])</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int L = 0, sum = 0, best = Integer.MAX_VALUE;
+for (int R = 0; R &lt; n; R++) {
+    sum += nums[R];
+    while (sum &gt;= target) {            // valid &mdash; try to shrink
+        best = Math.min(best, R - L + 1);
+        sum -= nums[L++];
+    }
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 Max Consecutive Ones</span>
+  <span class="prob-tag">P03 Longest Subarray with Sum K</span>
+  <span class="prob-tag">P04 Minimum Size Subarray Sum</span>
+  <span class="prob-tag">P05 Max Consecutive Ones III</span>
+</div>
+</div>
+
+<!-- TYPE 3 — COUNT/FREQUENCY -->
+<div class="type-card t3">
+<div class="type-title">&#9314; Window with Frequency Map (Char/Count Tracking)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Same expand/shrink pattern as Type 2, but the &ldquo;state&rdquo; is a frequency table of values in the window. You check the table to decide if the window is valid.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>String problems with characters and counts</li>
+  <li>&ldquo;Longest with at most K distinct&rdquo;, &ldquo;contains all of T&rdquo;</li>
+  <li>Constraint involves multiplicities of items</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Use <code>int[26]</code> (lowercase) or HashMap for counts</li>
+  <li>On expand: increment count of new char</li>
+  <li>On shrink: decrement count of leaving char</li>
+  <li>Track a derived metric (max frequency, distinct count, &ldquo;have&rdquo; counter)</li>
+</ul>
+</div>
+
+<strong>Worked Example: Longest Repeating Character Replacement</strong> &mdash; max window where at most K chars differ from the most frequent char.
+
+<div class="walk">
+<div class="walk-title">s=&quot;AABABBA&quot;, K=1</div>
+<div class="wstep"><span class="wstep-n">R=0..3</span><div>window=&quot;AABA&quot;, freq={A:3, B:1}, maxFreq=3
+windowLen=4, needToReplace = 4-3 = 1 &le; K &check;</div><span class="wstep-act">best = 4</span></div>
+<div class="wstep"><span class="wstep-n">R=4</span><div>window=&quot;AABAB&quot;, freq={A:3, B:2}, maxFreq=3
+windowLen=5, needToReplace = 5-3 = 2 &gt; K &cross;</div><span class="wstep-act">shrink: drop &quot;A&quot;, L=1, freq={A:2,B:2}, maxFreq still tracked as 3
+windowLen=4, OK &check; (best stays 4)</span></div>
+<div class="wstep"><span class="wstep-n">R=5..6</span><div>window grows to length 4 with mostly B's
+Final best = 4</span></div></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int[] count = new int[26];
+int L = 0, maxFreq = 0, best = 0;
+for (int R = 0; R &lt; s.length(); R++) {
+    count[s.charAt(R) - 'A']++;
+    maxFreq = Math.max(maxFreq, count[s.charAt(R) - 'A']);
+    while ((R - L + 1) - maxFreq &gt; K) {
+        count[s.charAt(L++) - 'A']--;
+    }
+    best = Math.max(best, R - L + 1);
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P06 Longest Repeating Char Replacement</span>
+  <span class="prob-tag">P07 Minimum Window Substring</span>
+</div>
+</div>
+
+<!-- TYPE 4 — MONOTONIC DEQUE -->
+<div class="type-card t4">
+<div class="type-title">&#9315; Window with Monotonic Deque</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> You need <em>max</em> (or <em>min</em>) of the current window in O(1). A regular variable doesn't work because when the max leaves the window you'd need to recompute. A deque holding candidates in <strong>decreasing order</strong> solves it: the front is always the current max.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>You need running max/min over every window</li>
+  <li>The window slides one step at a time</li>
+</ul>
+<p><strong>The decision rule (max version):</strong></p>
+<ul>
+  <li>On expand: pop from the back while back &lt; new element (those values can never be max again), then push new index</li>
+  <li>On shrink: if front index is out of window, pop front</li>
+  <li>Front of deque is the current window's max</li>
+</ul>
+</div>
+
+<strong>Worked Example: Sliding Window Maximum, K=3</strong> &mdash; <code>[1, 3, &minus;1, &minus;3, 5, 3, 6, 7]</code>
+
+<div class="walk">
+<div class="walk-title">Deque stores INDICES whose values are in decreasing order</div>
+<div class="wstep"><span class="wstep-n">i=0</span><div>push 0 &rarr; dq=[0] (val 1)</div><span class="wstep-act">window not full yet</span></div>
+<div class="wstep"><span class="wstep-n">i=1</span><div>nums[0]=1 &lt; nums[1]=3 &rarr; pop 0; push 1 &rarr; dq=[1]</div><span class="wstep-act">window not full yet</span></div>
+<div class="wstep"><span class="wstep-n">i=2</span><div>nums[1]=3 &gt; nums[2]=&minus;1 &rarr; just push 2 &rarr; dq=[1,2]</div><span class="wstep-act">window=[1,3,&minus;1], max = nums[dq.front] = 3</span></div>
+<div class="wstep"><span class="wstep-n">i=3</span><div>nums[2]=&minus;1 &gt; nums[3]=&minus;3 &rarr; push 3 &rarr; dq=[1,2,3]</div><span class="wstep-act">window=[3,&minus;1,&minus;3], max = 3</span></div>
+<div class="wstep"><span class="wstep-n">i=4</span><div>pop 3, 2 (vals smaller than 5); pop 1 (out of window, i&minus;K=1); push 4 &rarr; dq=[4]</div><span class="wstep-act">window=[&minus;1,&minus;3,5], max = 5</span></div>
+<div class="wstep"><span class="wstep-n">i=5</span><div>nums[4]=5 &gt; nums[5]=3 &rarr; push 5 &rarr; dq=[4,5]</div><span class="wstep-act">max = 5</span></div>
+<div class="wstep"><span class="wstep-n">i=6</span><div>pop 5, 4 (smaller than 6); push 6 &rarr; dq=[6]</div><span class="wstep-act">max = 6</span></div>
+<div class="wstep"><span class="wstep-n">i=7</span><div>pop 6 (smaller than 7); push 7 &rarr; dq=[7]</div><span class="wstep-act">max = 7
+Result: [3, 3, 5, 5, 6, 7]</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>Deque&lt;Integer&gt; dq = new ArrayDeque&lt;&gt;();
+int[] ans = new int[n - K + 1];
+for (int i = 0; i &lt; n; i++) {
+    while (!dq.isEmpty() &amp;&amp; nums[dq.peekLast()] &lt; nums[i]) dq.pollLast();
+    dq.offerLast(i);
+    if (dq.peekFirst() == i - K) dq.pollFirst();      // outside window
+    if (i &gt;= K - 1) ans[i - K + 1] = nums[dq.peekFirst()];
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P08 Sliding Window Maximum</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal Sliding Window Template</h2>
+<pre>// Variable window (most common form)
+int L = 0;
+&lt;state&gt; window = init;
+for (int R = 0; R &lt; n; R++) {
+    add nums[R] to window;
+    while (window is INVALID) {
+        remove nums[L] from window;
+        L++;
+    }
+    // window [L..R] is valid &mdash; update answer
+    best = best vs (R - L + 1) or sum or whatever;
+}</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Brute force</div><div class="kv-val">O(n&middot;k) or O(n&sup2;)</div></div><div class="kv-item"><div class="kv-label">Sliding window</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1) or O(k) for map/deque</div></div></div>
+<p style="margin-top:12px">Each element enters and leaves the window at most once. That's why even though there's a nested <code>while</code>, the total cost is still O(n).</p>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_Maximum_Sum_Subarray_of_Size_K.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_Maximum_Sum_Subarray_of_Size_K.html" style="color:#2563eb;text-decoration:none">Maximum Sum Subarray of Size K</a></td><td style="padding:7px;text-align:center">2461</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Fixed Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_Max_Consecutive_ones.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_Max_Consecutive_ones.html" style="color:#2563eb;text-decoration:none">Max Consecutive Ones</a></td><td style="padding:7px;text-align:center">485</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Variable Window</td></tr>
+<tr><td style="padding:7px"><a href="P03_Longest_Subarray_with_Sum_K.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_Longest_Subarray_with_Sum_K.html" style="color:#2563eb;text-decoration:none">Longest Subarray with Sum K</a></td><td style="padding:7px;text-align:center">560*</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_Minimum_Size_Subarray_Sum.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_Minimum_Size_Subarray_Sum.html" style="color:#2563eb;text-decoration:none">Minimum Size Subarray Sum</a></td><td style="padding:7px;text-align:center">209</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window</td></tr>
+<tr><td style="padding:7px"><a href="P05_Max_Consecutive_Ones_III.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_Max_Consecutive_Ones_III.html" style="color:#2563eb;text-decoration:none">Max Consecutive Ones III</a></td><td style="padding:7px;text-align:center">1004</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable + Counter</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_Longest_Repeating_Character_Replacement.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_Longest_Repeating_Character_Replacement.html" style="color:#2563eb;text-decoration:none">Longest Repeating Char Replacement</a></td><td style="padding:7px;text-align:center">424</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Frequency Map</td></tr>
+<tr><td style="padding:7px"><a href="P07_Minimum_Window_Substring.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_Minimum_Window_Substring.html" style="color:#2563eb;text-decoration:none">Minimum Window Substring</a></td><td style="padding:7px;text-align:center">76</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Frequency Map (Have/Need)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_Sliding_Window_Maximum.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_Sliding_Window_Maximum.html" style="color:#2563eb;text-decoration:none">Sliding Window Maximum</a></td><td style="padding:7px;text-align:center">239</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Monotonic Deque</td></tr>
+<tr><td style="padding:7px"><a href="P09_Longest_Substring_Without_Repeating_Characters.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_Longest_Substring_Without_Repeating_Characters.html" style="color:#2563eb;text-decoration:none">Longest Substring W/o Repeating Chars</a></td><td style="padding:7px;text-align:center">3</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_Permutation_in_String.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_Permutation_in_String.html" style="color:#2563eb;text-decoration:none">Permutation in String</a></td><td style="padding:7px;text-align:center">567</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window + Freq</td></tr>
+<tr><td style="padding:7px"><a href="P11_Find_All_Anagrams_in_a_String.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_Find_All_Anagrams_in_a_String.html" style="color:#2563eb;text-decoration:none">Find All Anagrams in a String</a></td><td style="padding:7px;text-align:center">438</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window + Freq</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_Fruit_Into_Baskets.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_Fruit_Into_Baskets.html" style="color:#2563eb;text-decoration:none">Fruit Into Baskets</a></td><td style="padding:7px;text-align:center">904</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">At-Most-K Distinct</td></tr>
+<tr><td style="padding:7px"><a href="P13_Subarrays_with_K_Different_Integers.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_Subarrays_with_K_Different_Integers.html" style="color:#2563eb;text-decoration:none">Subarrays with K Different Integers</a></td><td style="padding:7px;text-align:center">992</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Exactly-K trick</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_Longest_Substring_with_At_Most_K_Distinct.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_Longest_Substring_with_At_Most_K_Distinct.html" style="color:#2563eb;text-decoration:none">Longest Substring At Most K Distinct</a></td><td style="padding:7px;text-align:center">340</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">At-Most-K Distinct</td></tr>
+<tr><td style="padding:7px"><a href="P15_Longest_Substring_with_At_Most_Two_Distinct.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_Longest_Substring_with_At_Most_Two_Distinct.html" style="color:#2563eb;text-decoration:none">Longest Substring At Most Two Distinct</a></td><td style="padding:7px;text-align:center">159</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">At-Most-K Distinct</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_Subarrays_Size_K_Average_Threshold.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_Subarrays_Size_K_Average_Threshold.html" style="color:#2563eb;text-decoration:none">Sub-arrays Size K Avg ≥ Threshold</a></td><td style="padding:7px;text-align:center">1343</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window</td></tr>
+<tr><td style="padding:7px"><a href="P17_Maximum_Number_of_Vowels_in_Substring.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_Maximum_Number_of_Vowels_in_Substring.html" style="color:#2563eb;text-decoration:none">Max Vowels in Substring of Length K</a></td><td style="padding:7px;text-align:center">1456</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_Count_Number_of_Nice_Subarrays.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_Count_Number_of_Nice_Subarrays.html" style="color:#2563eb;text-decoration:none">Count Number of Nice Subarrays</a></td><td style="padding:7px;text-align:center">1248</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Exactly-K trick</td></tr>
+<tr><td style="padding:7px"><a href="P19_Binary_Subarrays_With_Sum.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_Binary_Subarrays_With_Sum.html" style="color:#2563eb;text-decoration:none">Binary Subarrays With Sum</a></td><td style="padding:7px;text-align:center">930</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Exactly-K trick</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_Subarray_Product_Less_Than_K.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_Subarray_Product_Less_Than_K.html" style="color:#2563eb;text-decoration:none">Subarray Product Less Than K</a></td><td style="padding:7px;text-align:center">713</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window</td></tr>
+</table>
+</div>
+
+<div class="footer">Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body>
+</html>

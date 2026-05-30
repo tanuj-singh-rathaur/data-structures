@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P03 – Valid Palindrome II</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.easy{background:#dcfce7;color:#15803d}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Strings · Two Pointer Masterclass</a> &rsaquo; Opposite Ends + Retry</div>
+<h1>P03 &mdash; Valid Palindrome II</h1>
+<div class="meta"><span class="badge easy">Easy</span> &bull; LC #680 &bull; Pattern: <strong>Opposite Ends + One Skip</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Return <code>true</code> if you can make <code>s</code> a palindrome by deleting at most one character.</p>
+<p><strong>Example:</strong> <code>"abca"</code> &rarr; <code>true</code> (remove 'b' or 'c')</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>One-deletion palindrome</dt><dd>The string is one edit away from being a palindrome.</dd>
+<dt>Helper sub-check</dt><dd>When the two pointers disagree, we try skipping the left character OR the right character and check if the remaining slice is a palindrome.</dd>
+<dt>Greedy disambiguation</dt><dd>Either the left or right pointer must be the "bad" one. Both candidates must be tested.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Walk inward from both ends. The instant you spot a mismatch, you have two choices: delete the left char or delete the right char. Check both substrings with a vanilla palindrome test; succeed if either works.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>You don't have to backtrack from earlier matches. The first mismatch is the only place a deletion could matter, so check exactly two candidate substrings.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Walk L and R. On mismatch, return <code>isPalin(s, L+1, R) || isPalin(s, L, R-1)</code>.</li>
+<li>If pointers meet without mismatch: true.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public boolean validPalindrome(String s) {
+    int L = 0, R = s.length() - 1;
+    while (L &lt; R) {
+        if (s.charAt(L) != s.charAt(R)) {
+            return isPalin(s, L + 1, R) || isPalin(s, L, R - 1);
+        }
+        L++; R--;
+    }
+    return true;
+}
+private boolean isPalin(String s, int L, int R) {
+    while (L &lt; R) {
+        if (s.charAt(L) != s.charAt(R)) return false;
+        L++; R--;
+    }
+    return true;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Two Pointer Pattern</h2>
+<div class="pattern-box"><strong>Opposite Ends + One Retry:</strong> Standard palindrome check with a single allowed "rewind" branching into two sub-checks at the first mismatch.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> The two pre-mismatch sides are already palindromic mirrors. So you only need to test the inner remainder &mdash; the skip choice is binary.</div>
+
+<div class="footer">Strings · Two Pointer Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

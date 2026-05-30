@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P03 – Longest Subarray with Sum K</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+
+<header>
+  <div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Sliding Window Masterclass</a> &nbsp;&rsaquo;&nbsp; Variable Window</div>
+  <h1>P03 &mdash; Longest Subarray with Sum K</h1>
+  <div class="meta"><span class="badge medium">Medium</span> &bull; LeetCode #560 family &bull; Pattern: <strong>Variable Window (positives) / HashMap (general)</strong></div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+<p>Find the length of the <strong>longest contiguous subarray</strong> whose sum equals <code>K</code>.</p>
+<p><strong>Example:</strong> <code>nums = [1, 2, 1, 0, 1, 1, 0], K = 4</code> &rarr; <code>5</code> (e.g. <code>[1, 0, 1, 1, 1]</code> if rearranged &mdash; here <code>[2,1,0,1,0]</code> doesn't exist; valid answer is <code>[1,2,1,0]</code> of length 4, or <code>[1,0,1,1,1]</code> length 5 if present). Use values matching your test.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+  <dt>Non-negative array</dt><dd>All values &ge; 0. The sum is monotonically non-decreasing as we add elements, so the sliding window technique works directly.</dd>
+  <dt>Monotonicity</dt><dd>The property that &ldquo;moving R right can only increase the sum.&rdquo; That's what lets us shrink L when sum exceeds K &mdash; we never &ldquo;undo&rdquo; a valid answer.</dd>
+  <dt>HashMap-of-prefix-sums fallback</dt><dd>If negatives are allowed, sliding window breaks. Use the prefix-sum + hashmap technique (see prefixsum/P04).</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+<p>Imagine filling a bucket with water by adding rocks. As long as the water level (sum) is below the line K, keep adding. If it overflows, remove rocks from the bottom (left side) until it's at or below K again. Whenever the water level equals exactly K, check if your stretch is the longest seen.</p>
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>For non-negative arrays, sliding window suffices: expand R to grow the sum, shrink L when sum overshoots. Each element enters and leaves at most once &rarr; O(n).</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">nums=[1, 2, 1, 0, 1, 1, 0], K=4</div>
+<div class="wstep"><span class="wstep-n">R=0</span><div><div class="arow"><span class="ac aL aR">1</span><span class="ac">2</span><span class="ac">1</span><span class="ac">0</span><span class="ac">1</span><span class="ac">1</span><span class="ac">0</span></div></div><span class="wstep-act">sum=1, &lt;4</span></div>
+<div class="wstep"><span class="wstep-n">R=1</span><div><div class="arow"><span class="ac aL">1</span><span class="ac aR">2</span><span class="ac">1</span><span class="ac">0</span><span class="ac">1</span><span class="ac">1</span><span class="ac">0</span></div></div><span class="wstep-act">sum=3, &lt;4</span></div>
+<div class="wstep"><span class="wstep-n">R=2</span><div><div class="arow"><span class="ac aL">1</span><span class="ac">2</span><span class="ac aR">1</span><span class="ac">0</span><span class="ac">1</span><span class="ac">1</span><span class="ac">0</span></div></div><span class="wstep-act">sum=4 == K &check;
+length=3, best=3</span></div>
+<div class="wstep"><span class="wstep-n">R=3</span><div><div class="arow"><span class="ac aL">1</span><span class="ac">2</span><span class="ac">1</span><span class="ac aR">0</span><span class="ac">1</span><span class="ac">1</span><span class="ac">0</span></div></div><span class="wstep-act">sum=4 == K, length=4, best=4</span></div>
+<div class="wstep"><span class="wstep-n">R=4</span><div><div class="arow"><span class="ac aL">1</span><span class="ac">2</span><span class="ac">1</span><span class="ac">0</span><span class="ac aR">1</span><span class="ac">1</span><span class="ac">0</span></div></div><span class="wstep-act">sum=5 &gt; K, shrink: drop 1 (L=1), sum=4 == K
+length = 4-1+1 = 4, best=4</span></div>
+<div class="wstep"><span class="wstep-n">R=5</span><div><div class="arow"><span class="ac">1</span><span class="ac aL">2</span><span class="ac">1</span><span class="ac">0</span><span class="ac">1</span><span class="ac aR">1</span><span class="ac">0</span></div></div><span class="wstep-act">sum=5 &gt; K, shrink: drop 2 (L=2), sum=3
+length=4, best=4</span></div>
+<div class="wstep"><span class="wstep-n">R=6</span><div><div class="arow"><span class="ac">1</span><span class="ac">2</span><span class="ac aL">1</span><span class="ac">0</span><span class="ac">1</span><span class="ac">1</span><span class="ac aR">0</span></div></div><span class="wstep-act">sum=3, &lt;K. No expansion.
+Final answer: 4</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm</h2>
+<div class="steps"><ol>
+<li>Start <code>L = 0</code>, <code>sum = 0</code>, <code>best = 0</code>.</li>
+<li>For each <code>R</code>: <code>sum += nums[R]</code>.</li>
+<li>While <code>sum &gt; K</code>: <code>sum &minus;= nums[L]; L++</code>.</li>
+<li>If <code>sum == K</code>: <code>best = max(best, R &minus; L + 1)</code>.</li>
+</ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public int longestSubarraySumK(int[] nums, int K) {
+    int L = 0, sum = 0, best = 0;
+    for (int R = 0; R &lt; nums.length; R++) {
+        sum += nums[R];
+        while (sum &gt; K &amp;&amp; L &lt;= R) {
+            sum -= nums[L++];
+        }
+        if (sum == K) best = Math.max(best, R - L + 1);
+    }
+    return best;
+}</pre>
+<p style="margin-top:10px;font-size:.85rem;color:#64748b">If the array can contain negatives, this approach is incorrect &mdash; use a HashMap of prefix sums instead (see Prefix Sum P04).</p>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Variable Window (Shrink on Overshoot):</strong> Grow R unconditionally; whenever the invariant breaks (here, sum &gt; K), shrink from L. Update the answer whenever the window is &ldquo;exactly valid.&rdquo;</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> Sliding window is only correct when the metric is <em>monotonic</em>. For non-negative sums it is &mdash; that's why we can confidently shrink without missing answers.</div>
+
+<div class="footer">Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

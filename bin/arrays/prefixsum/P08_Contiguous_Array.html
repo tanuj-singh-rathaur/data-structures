@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P08 – Contiguous Array</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.medium{background:#fef9c3;color:#a16207}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Prefix Sum Masterclass</a> &rsaquo; HashMap (0 as &minus;1)</div>
+<h1>P08 &mdash; Contiguous Array</h1>
+<div class="meta"><span class="badge medium">Medium</span> &bull; LC #525 &bull; Pattern: <strong>Transform Trick + HashMap of First Occurrence</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Given a binary array <code>nums</code>, return the maximum length of a contiguous subarray with equal numbers of 0s and 1s.</p>
+<p><strong>Example:</strong> <code>[0, 1, 0, 0, 1, 1, 0]</code> &rarr; <code>6</code></p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>The 0 &rarr; &minus;1 trick</dt><dd>Replace 0 with &minus;1. Now "equal 0s and 1s" becomes "subarray sum = 0."</dd>
+<dt>First-occurrence map</dt><dd>For each prefix-sum value, store the earliest index where it appeared. Later, if the same sum reappears at index <code>j</code>, the subarray from <code>map[sum]+1</code> to <code>j</code> sums to 0 (and is the longest one for that sum).</dd>
+<dt>Seed map with {0: &minus;1}</dt><dd>Empty prefix has sum 0 at "before index 0," i.e. position &minus;1. Lets a prefix-sum-of-0 at index <code>j</code> produce length <code>j &minus; (&minus;1) = j + 1</code>.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Substitute each 0 with &minus;1. Now an &ldquo;equal 0s and 1s&rdquo; subarray sums to 0. Walk the array tracking running sum; whenever you've seen this sum before, the chunk in between is a 0-sum (equal counts) subarray.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Reframing 0 as &minus;1 turns a counting problem into a sum problem &mdash; one we already know how to solve with a HashMap of prefix sums.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Treat 0 as &minus;1 implicitly while summing.</li>
+<li>Map first occurrence of each running sum. Seed <code>{0: &minus;1}</code>.</li>
+<li>If sum repeats at index <code>i</code>: <code>best = max(best, i &minus; map[sum])</code>.</li>
+<li>Otherwise store <code>map[sum] = i</code>.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int findMaxLength(int[] nums) {
+    Map&lt;Integer, Integer&gt; first = new HashMap&lt;&gt;();
+    first.put(0, -1);
+    int sum = 0, best = 0;
+    for (int i = 0; i &lt; nums.length; i++) {
+        sum += (nums[i] == 1) ? 1 : -1;
+        if (first.containsKey(sum)) {
+            best = Math.max(best, i - first.get(sum));
+        } else {
+            first.put(sum, i);
+        }
+    }
+    return best;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(n)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Prefix Sum Pattern</h2>
+<div class="pattern-box"><strong>Transform + HashMap:</strong> Reframe the problem so that the answer corresponds to "subarray sum equals 0." Then prefix-sum + first-occurrence map yields the longest such subarray.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Whenever a problem says &ldquo;equal count of A and B,&rdquo; convert A &rarr; +1 and B &rarr; &minus;1. The &ldquo;balanced&rdquo; condition becomes a sum-of-zero condition.</div>
+
+<div class="footer">Prefix Sum Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

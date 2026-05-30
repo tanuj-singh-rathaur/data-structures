@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P11 – Merge Strings Alternately</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.easy{background:#dcfce7;color:#15803d}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Strings · Two Pointer Masterclass</a> &rsaquo; Same Direction (2 inputs)</div>
+<h1>P11 &mdash; Merge Strings Alternately</h1>
+<div class="meta"><span class="badge easy">Easy</span> &bull; LC #1768 &bull; Pattern: <strong>Two Pointers + Flush Leftover</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Given two strings <code>word1</code> and <code>word2</code>, merge them by alternating one character from each (start with word1). If one runs out, append the rest of the other.</p>
+<p><strong>Example:</strong> <code>"abc"</code>, <code>"pqr"</code> &rarr; <code>"apbqcr"</code></p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Alternating merge</dt><dd>Char from A, then B, then A, then B, &hellip;</dd>
+<dt>Flush leftover</dt><dd>After one string runs out, dump the entire remainder of the other.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Two stacks of letter cards (word1 and word2). Lay them down alternately: card from pile A, then pile B, repeat. When one pile is empty, slap the rest of the other on top.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>One pointer per string lets you advance independently. The leftover flush is two lines &mdash; no special-case logic needed.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>i = j = 0. While i &lt; |w1| AND j &lt; |w2|: append w1[i++], then w2[j++].</li>
+<li>Append the rest of whichever still has characters.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public String mergeAlternately(String w1, String w2) {
+    StringBuilder sb = new StringBuilder();
+    int i = 0, j = 0;
+    while (i &lt; w1.length() &amp;&amp; j &lt; w2.length()) {
+        sb.append(w1.charAt(i++));
+        sb.append(w2.charAt(j++));
+    }
+    if (i &lt; w1.length()) sb.append(w1.substring(i));
+    if (j &lt; w2.length()) sb.append(w2.substring(j));
+    return sb.toString();
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(|w1| + |w2|)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(|w1| + |w2|)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Two Pointer Pattern</h2>
+<div class="pattern-box"><strong>Same Direction (2 Inputs):</strong> The textbook "two-pointer over two sequences" merge. Advancement order is the only thing that varies between problems.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Don't try to handle leftover inside the main loop. A separate flush at the end is cleaner and easier to reason about.</div>
+
+<div class="footer">Strings · Two Pointer Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

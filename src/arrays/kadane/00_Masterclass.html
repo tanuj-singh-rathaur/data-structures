@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kadane's Algorithm Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}.t4{border-left-color:#7c3aed;background:#faf5ff}.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}.ac.aP{background:#172554;border-color:#3b82f6;color:#93c5fd}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{body{background:#fff}.page{padding:20px}.section{break-inside:avoid}pre,code{break-inside:avoid}header{break-after:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body><div class="page">
+
+<header>
+  <h1>Kadane's Algorithm &mdash; Complete Masterclass</h1>
+  <div class="meta">Arrays &rsaquo; Kadane &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Is Kadane? (Layman's Explanation)</h2>
+<p>Imagine you're walking along a coastline at sunrise, and the height of the cliff goes up and down. You want the <strong>biggest stretch</strong> where the cumulative cliff height stayed highest.</p>
+<p>Kadane's trick is brutally simple: at every step ask one question:</p>
+<blockquote style="border-left:3px solid #2563eb;padding-left:14px;margin:10px 0;color:#1e40af;font-style:italic">&ldquo;Does the running total so far <em>help</em> me &mdash; or is it dragging me down? If it's negative, abandon it and restart from here.&rdquo;</blockquote>
+<p>That's the entire algorithm. One pass, O(n). You're not searching all subarrays &mdash; you're letting the &ldquo;current run&rdquo; auto-reset whenever it goes underwater.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster (Confusing Terms Explained)</h2>
+<div class="glossary"><dl>
+  <dt>Maximum subarray</dt><dd>The contiguous slice of the array with the highest sum. &ldquo;Subarray&rdquo; means contiguous &mdash; you can't skip elements.</dd>
+  <dt>Local max (curMax)</dt><dd>The best sum of any subarray <em>ending at the current index</em>. Recomputed each step.</dd>
+  <dt>Global max (best)</dt><dd>The overall winner so far &mdash; the maximum of all curMax values we've ever seen.</dd>
+  <dt>Reset</dt><dd>When curMax goes negative, restart it at the current element. The previous run is &ldquo;abandoned&rdquo; because keeping it can only hurt future sums.</dd>
+  <dt>Extend vs Restart</dt><dd>At each step Kadane picks: &ldquo;extend the current subarray by including <code>nums[i]</code>&rdquo; OR &ldquo;start a brand new subarray at <code>nums[i]</code>.&rdquo; Choose whichever gives the larger curMax.</dd>
+  <dt>Dynamic programming (1D)</dt><dd>Kadane is DP in disguise &mdash; the recurrence is <code>dp[i] = max(nums[i], dp[i&minus;1] + nums[i])</code>. We just don't bother with an array; a single variable suffices.</dd>
+  <dt>Circular subarray</dt><dd>A subarray that may &ldquo;wrap around&rdquo; the end of the array back to the front. P03 uses a clever inversion trick to handle this.</dd>
+  <dt>Negative-product flip (Product variant)</dt><dd>For products, a negative times a negative is positive &mdash; so the smallest negative running product can suddenly become the largest. P04 keeps both <em>min</em> and <em>max</em> trails.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Kadane?</h2>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>Find <strong>maximum (or minimum) sum / product</strong> over all contiguous subarrays.</li>
+  <li>Brute force is O(n&sup2;) or O(n&sup3;) and you want O(n).</li>
+  <li>The metric you're maximizing has the property: <em>extending a run depends only on the previous run's value</em>.</li>
+  <li>Variants: max absolute sum, longest alternating, with one deletion allowed, etc.</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 4 Types of Kadane Variants &mdash; Full Breakdown</h2>
+
+<!-- TYPE 1 — VANILLA -->
+<div class="type-card t1">
+<div class="type-title">&#9312; Vanilla Kadane (Max Subarray Sum)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Walk the array once. At each index, decide: extend the previous run, or restart from here. Track the best result seen.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>&ldquo;Max sum contiguous subarray&rdquo;</li>
+  <li>Mix of positives and negatives</li>
+  <li>You want O(n) time and O(1) space</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li><code>cur = max(nums[i], cur + nums[i])</code></li>
+  <li><code>best = max(best, cur)</code></li>
+</ul>
+</div>
+
+<strong>Worked Example:</strong> <code>[&minus;2, 1, &minus;3, 4, &minus;1, 2, 1, &minus;5, 4]</code>
+
+<div class="walk">
+<div class="walk-title">Track cur (running) and best (global)</div>
+<div class="wstep"><span class="wstep-n">i=0</span><div>cur = max(&minus;2, 0+(&minus;2)) = &minus;2</div><span class="wstep-act">best = &minus;2</span></div>
+<div class="wstep"><span class="wstep-n">i=1</span><div>cur = max(1, &minus;2+1) = max(1, &minus;1) = 1 &nbsp;&larr; RESTART</div><span class="wstep-act">best = 1</span></div>
+<div class="wstep"><span class="wstep-n">i=2</span><div>cur = max(&minus;3, 1+(&minus;3)) = max(&minus;3, &minus;2) = &minus;2</div><span class="wstep-act">best = 1</span></div>
+<div class="wstep"><span class="wstep-n">i=3</span><div>cur = max(4, &minus;2+4) = max(4, 2) = 4 &nbsp;&larr; RESTART</div><span class="wstep-act">best = 4</span></div>
+<div class="wstep"><span class="wstep-n">i=4..6</span><div>cur grows: 4&minus;1=3, 3+2=5, 5+1=6</div><span class="wstep-act">best = 6 &nbsp;(from [4,&minus;1,2,1])</span></div>
+<div class="wstep"><span class="wstep-n">i=7</span><div>cur = max(&minus;5, 6&minus;5) = 1</div><span class="wstep-act">best = 6</span></div>
+<div class="wstep"><span class="wstep-n">i=8</span><div>cur = max(4, 1+4) = 5</div><span class="wstep-act">best = 6
+Answer: 6</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int cur = nums[0], best = nums[0];
+for (int i = 1; i &lt; n; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 Maximum Subarray</span>
+</div>
+</div>
+
+<!-- TYPE 2 — PROFIT (Buy/Sell) -->
+<div class="type-card t2">
+<div class="type-title">&#9313; Kadane on Differences (Buy/Sell Profit)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> If we reframe the problem as &ldquo;sum of daily price changes,&rdquo; finding max profit is exactly Kadane on the difference array. In practice we don't even build the difference array &mdash; we track the lowest price seen so far.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>&ldquo;Max profit from one buy and one sell&rdquo;</li>
+  <li>Any &ldquo;max gain between two points where you can choose the start&rdquo; pattern</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Track the minimum price seen so far</li>
+  <li>profit at day i = price[i] &minus; minSoFar</li>
+  <li>Best profit = max over all days</li>
+</ul>
+</div>
+
+<strong>Worked Example:</strong> <code>prices = [7, 1, 5, 3, 6, 4]</code>
+
+<div class="walk">
+<div class="walk-title">minSoFar starts at +&infin;</div>
+<div class="wstep"><span class="wstep-n">i=0</span><div>price=7. minSoFar=7. profit=0.</div><span class="wstep-act">best=0</span></div>
+<div class="wstep"><span class="wstep-n">i=1</span><div>price=1. minSoFar=1. profit=0.</div><span class="wstep-act">best=0</span></div>
+<div class="wstep"><span class="wstep-n">i=2</span><div>price=5. minSoFar=1. profit=5&minus;1=4.</div><span class="wstep-act">best=4</span></div>
+<div class="wstep"><span class="wstep-n">i=3</span><div>price=3. minSoFar=1. profit=2.</div><span class="wstep-act">best=4</span></div>
+<div class="wstep"><span class="wstep-n">i=4</span><div>price=6. minSoFar=1. profit=5.</div><span class="wstep-act">best=5 &check;</span></div>
+<div class="wstep"><span class="wstep-n">i=5</span><div>price=4. profit=3.</div><span class="wstep-act">best=5
+Answer: 5 (buy at 1, sell at 6)</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int minPrice = Integer.MAX_VALUE, best = 0;
+for (int p : prices) {
+    minPrice = Math.min(minPrice, p);
+    best = Math.max(best, p - minPrice);
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 Best Time to Buy and Sell Stock</span>
+</div>
+</div>
+
+<!-- TYPE 3 — CIRCULAR -->
+<div class="type-card t3">
+<div class="type-title">&#9314; Circular Kadane (Wrap-Around)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> The subarray may wrap around the end of the array. Two cases: (a) best subarray is entirely inside &mdash; vanilla Kadane handles it. (b) Best wraps around &mdash; equivalent to <em>total &minus; (minimum subarray)</em>. Take the max of the two.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>The problem mentions a &ldquo;circular&rdquo; or &ldquo;wrap-around&rdquo; array</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Run Kadane for max sum &rarr; <code>maxSum</code></li>
+  <li>Run Kadane for min sum &rarr; <code>minSum</code></li>
+  <li>Total = sum of all</li>
+  <li>If all numbers negative, answer = maxSum (don't pick empty)</li>
+  <li>Otherwise answer = max(maxSum, total &minus; minSum)</li>
+</ul>
+</div>
+
+<strong>Worked Example:</strong> <code>[5, &minus;3, 5]</code>
+
+<div class="walk">
+<div class="walk-title">total = 7</div>
+<div class="wstep"><span class="wstep-n">Max</span><div>Kadane(max) = 7 &nbsp;(the whole array)</div><span class="wstep-act">straight case: 7</span></div>
+<div class="wstep"><span class="wstep-n">Min</span><div>Kadane(min) = &minus;3 &nbsp;(just [&minus;3])</div><span class="wstep-act">total &minus; minSum = 7 &minus; (&minus;3) = 10
+But 10 corresponds to picking [5, 5] (wrap)</span></div>
+<div class="wstep"><span class="wstep-n">Answer</span><div>max(7, 10) = 10</div><span class="wstep-act">[5, _, 5] wrapping the array</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int maxSum = nums[0], curMax = nums[0];
+int minSum = nums[0], curMin = nums[0];
+int total = nums[0];
+for (int i = 1; i &lt; n; i++) {
+    curMax = Math.max(nums[i], curMax + nums[i]);  maxSum = Math.max(maxSum, curMax);
+    curMin = Math.min(nums[i], curMin + nums[i]);  minSum = Math.min(minSum, curMin);
+    total += nums[i];
+}
+return maxSum &lt; 0 ? maxSum : Math.max(maxSum, total - minSum);</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P03 Max Sum Circular Subarray</span>
+</div>
+</div>
+
+<!-- TYPE 4 — PRODUCT / TWO-STATE -->
+<div class="type-card t4">
+<div class="type-title">&#9315; Two-State Kadane (Product, One-Deletion)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> When the metric isn't simply additive, one running variable isn't enough. You need <em>two</em> states updated together at each index.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>Product of subarray (negatives make &ldquo;min&rdquo; matter too)</li>
+  <li>&ldquo;Allowed to skip one element&rdquo; (two DP rows: with/without skip)</li>
+</ul>
+<p><strong>The decision rule (product version):</strong></p>
+<ul>
+  <li>Track both <code>curMax</code> and <code>curMin</code> (smallest negative might flip to biggest)</li>
+  <li>At each step, recompute both using all three candidates: <code>nums[i]</code>, <code>curMax&middot;nums[i]</code>, <code>curMin&middot;nums[i]</code></li>
+  <li>Update <code>best = max(best, curMax)</code></li>
+</ul>
+</div>
+
+<strong>Worked Example: Max Product Subarray</strong> &mdash; <code>[2, 3, &minus;2, 4]</code>
+
+<div class="walk">
+<div class="walk-title">curMax and curMin both move forward</div>
+<div class="wstep"><span class="wstep-n">i=0</span><div>curMax=2, curMin=2</div><span class="wstep-act">best=2</span></div>
+<div class="wstep"><span class="wstep-n">i=1</span><div>candidates of 3 &times; {2, 2, 1 nums[i]itself}: 3, 6, 6
+curMax=6, curMin=3</div><span class="wstep-act">best=6</span></div>
+<div class="wstep"><span class="wstep-n">i=2</span><div>nums[i]=&minus;2. Candidates: &minus;2, 6&middot;(&minus;2)=&minus;12, 3&middot;(&minus;2)=&minus;6
+curMax = max(&minus;2, &minus;12, &minus;6) = &minus;2
+curMin = min(&minus;2, &minus;12, &minus;6) = &minus;12</div><span class="wstep-act">best=6 still</span></div>
+<div class="wstep"><span class="wstep-n">i=3</span><div>nums[i]=4. Candidates: 4, &minus;2&middot;4=&minus;8, &minus;12&middot;4=&minus;48
+curMax = 4, curMin = &minus;48</div><span class="wstep-act">best=6 final
+Answer: 6 (from [2,3])</span></div>
+</div>
+
+<strong>Code Template (Max Product):</strong>
+<pre>int curMax = nums[0], curMin = nums[0], best = nums[0];
+for (int i = 1; i &lt; n; i++) {
+    int a = nums[i], b = curMax * nums[i], c = curMin * nums[i];
+    curMax = Math.max(a, Math.max(b, c));
+    curMin = Math.min(a, Math.min(b, c));
+    best = Math.max(best, curMax);
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P04 Maximum Product Subarray</span>
+  <span class="prob-tag">P05 Max Subarray Sum with One Deletion</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal Kadane Template</h2>
+<pre>// Vanilla
+int cur = nums[0], best = nums[0];
+for (int i = 1; i &lt; n; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+}
+
+// Two-state (product, with-deletion, etc.)
+int state1 = nums[0], state2 = ..., best = ...;
+for (int i = 1; i &lt; n; i++) {
+    // recompute both states from the previous step
+    // best = max(best, ...);
+}</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Brute Force</div><div class="kv-val">O(n&sup2;) or O(n&sup3;)</div></div><div class="kv-item"><div class="kv-label">Kadane</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div>
+<p style="margin-top:12px">A single linear sweep with two scalars (current run, best seen). That's hard to beat.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_Maximum_Subarray.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_Maximum_Subarray.html" style="color:#2563eb;text-decoration:none">Maximum Subarray</a></td><td style="padding:7px;text-align:center">53</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Vanilla</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_Best_Time_to_Buy_and_Sell_Stock.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_Best_Time_to_Buy_and_Sell_Stock.html" style="color:#2563eb;text-decoration:none">Best Time to Buy and Sell Stock</a></td><td style="padding:7px;text-align:center">121</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">On Differences</td></tr>
+<tr><td style="padding:7px"><a href="P03_Maximum_Sum_Circular_Subarray.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_Maximum_Sum_Circular_Subarray.html" style="color:#2563eb;text-decoration:none">Maximum Sum Circular Subarray</a></td><td style="padding:7px;text-align:center">918</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Circular Trick</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_Maximum_Product_Subarray.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_Maximum_Product_Subarray.html" style="color:#2563eb;text-decoration:none">Maximum Product Subarray</a></td><td style="padding:7px;text-align:center">152</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Two-State (Min/Max)</td></tr>
+<tr><td style="padding:7px"><a href="P05_Maximum_Subarray_Sum_with_One_Deletion.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_Maximum_Subarray_Sum_with_One_Deletion.html" style="color:#2563eb;text-decoration:none">Max Subarray Sum with One Deletion</a></td><td style="padding:7px;text-align:center">1186</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Two-State (No-Del / Del)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_Best_Time_to_Buy_and_Sell_Stock_II.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_Best_Time_to_Buy_and_Sell_Stock_II.html" style="color:#2563eb;text-decoration:none">Buy and Sell Stock II</a></td><td style="padding:7px;text-align:center">122</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Greedy on Diffs</td></tr>
+<tr><td style="padding:7px"><a href="P07_Maximum_Absolute_Sum_of_Any_Subarray.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_Maximum_Absolute_Sum_of_Any_Subarray.html" style="color:#2563eb;text-decoration:none">Max Absolute Sum of Any Subarray</a></td><td style="padding:7px;text-align:center">1749</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Max + Min Kadane</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_Longest_Turbulent_Subarray.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_Longest_Turbulent_Subarray.html" style="color:#2563eb;text-decoration:none">Longest Turbulent Subarray</a></td><td style="padding:7px;text-align:center">978</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Two-State on Trend</td></tr>
+<tr><td style="padding:7px"><a href="P09_K_Concatenation_Maximum_Sum.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_K_Concatenation_Maximum_Sum.html" style="color:#2563eb;text-decoration:none">K-Concatenation Maximum Sum</a></td><td style="padding:7px;text-align:center">1191</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Kadane × Cases</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_Maximum_Alternating_Subsequence_Sum.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_Maximum_Alternating_Subsequence_Sum.html" style="color:#2563eb;text-decoration:none">Max Alternating Subsequence Sum</a></td><td style="padding:7px;text-align:center">1911</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Two-State DP</td></tr>
+<tr><td style="padding:7px"><a href="P11_Jump_Game.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_Jump_Game.html" style="color:#2563eb;text-decoration:none">Jump Game</a></td><td style="padding:7px;text-align:center">55</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Greedy Reach</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_Jump_Game_II.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_Jump_Game_II.html" style="color:#2563eb;text-decoration:none">Jump Game II</a></td><td style="padding:7px;text-align:center">45</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">BFS-Greedy</td></tr>
+<tr><td style="padding:7px"><a href="P13_House_Robber.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_House_Robber.html" style="color:#2563eb;text-decoration:none">House Robber</a></td><td style="padding:7px;text-align:center">198</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Take/Skip DP</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_House_Robber_II.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_House_Robber_II.html" style="color:#2563eb;text-decoration:none">House Robber II</a></td><td style="padding:7px;text-align:center">213</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Take/Skip × Two Pass</td></tr>
+<tr><td style="padding:7px"><a href="P15_Maximum_Sum_of_3_Non_Overlapping_Subarrays.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_Maximum_Sum_of_3_Non_Overlapping_Subarrays.html" style="color:#2563eb;text-decoration:none">Max Sum of 3 Non-Overlapping</a></td><td style="padding:7px;text-align:center">689</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Three-Way Prefix/Suffix</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_Maximum_Subarray_Min_Product.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_Maximum_Subarray_Min_Product.html" style="color:#2563eb;text-decoration:none">Maximum Subarray Min-Product</a></td><td style="padding:7px;text-align:center">1856</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Mono-Stack + Prefix</td></tr>
+<tr><td style="padding:7px"><a href="P17_Gas_Station.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_Gas_Station.html" style="color:#2563eb;text-decoration:none">Gas Station</a></td><td style="padding:7px;text-align:center">134</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Greedy Restart</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_Best_Time_to_Buy_and_Sell_Stock_with_Cooldown.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_Best_Time_to_Buy_and_Sell_Stock_with_Cooldown.html" style="color:#2563eb;text-decoration:none">Buy and Sell Stock with Cooldown</a></td><td style="padding:7px;text-align:center">309</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Three-State DP</td></tr>
+<tr><td style="padding:7px"><a href="P19_Best_Time_to_Buy_and_Sell_Stock_with_Fee.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_Best_Time_to_Buy_and_Sell_Stock_with_Fee.html" style="color:#2563eb;text-decoration:none">Buy and Sell Stock with Fee</a></td><td style="padding:7px;text-align:center">714</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Two-State DP</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_Substring_with_Largest_Variance.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_Substring_with_Largest_Variance.html" style="color:#2563eb;text-decoration:none">Substring with Largest Variance</a></td><td style="padding:7px;text-align:center">2272</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Per-Pair Kadane</td></tr>
+</table>
+</div>
+
+<div class="footer">Kadane's Algorithm Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body></html>

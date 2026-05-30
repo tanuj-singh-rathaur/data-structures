@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P04 – Trapping Rain Water</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}
+.medium{background:#fef9c3;color:#a16207}
+.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.lc-link{color:#2563eb;text-decoration:none;font-weight:600}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}
+.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}
+.section.purple{border-left:4px solid #7c3aed}
+.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}
+.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}
+.t4{border-left-color:#7c3aed;background:#faf5ff}
+.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}
+.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}
+.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}
+.ac.aS{background:#052e16;border-color:#22c55e;color:#86efac}
+.ac.aF{background:#431407;border-color:#f97316;color:#fdba74}
+.ac.ai{background:#2e1065;border-color:#a855f7;color:#d8b4fe}
+.ac.aH{background:#1e1b4b;border-color:#818cf8;color:#c7d2fe}
+.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}
+.pl{font-size:.7rem;font-weight:700;min-height:13px;margin-top:3px;line-height:1}
+.pL{color:#60a5fa}.pR{color:#f87171}
+.pS{color:#34d399}.pF{color:#fb923c}
+.pi{color:#d8b4fe}.pH{color:#c7d2fe}
+.L{color:#60a5fa;font-weight:700}.R{color:#f87171;font-weight:700}
+.S{color:#34d399;font-weight:700}.F{color:#fb923c;font-weight:700}
+.i{color:#e879f9;font-weight:700}.M{color:#a78bfa;font-weight:700}
+.found{color:#fcd34d;font-weight:700}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+.diagram{background:#1e293b;color:#94a3b8;padding:16px 20px;border-radius:8px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.8;margin:10px 0;white-space:pre}
+.steps ol{padding-left:22px}
+.steps li{margin-bottom:8px}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}
+.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}
+.pattern-box strong{color:#6d28d9}
+.comment{color:#6ee7b7}
+.kw{color:#93c5fd}
+.str{color:#fca5a5}
+.num{color:#fcd34d}
+.divider{border:none;border-top:2px solid #e2e8f0;margin:28px 0}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{
+  body{background:#fff}
+  .page{padding:20px}
+  .section{break-inside:avoid}
+  pre,code{break-inside:avoid}
+  header{break-after:avoid}
+  h2{break-after:avoid}
+}
+</style>
+
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="meta">Arrays &rsaquo; Two Pointer &rsaquo; Opposite Ends</div>
+  <h1>P04 &mdash; Trapping Rain Water</h1>
+  <div class="meta">
+    <span class="badge hard">Hard</span>
+    &nbsp;&bull;&nbsp; LeetCode #42
+    &nbsp;&bull;&nbsp; Pattern: <strong>Opposite Ends</strong>
+  </div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+
+<p>Given an elevation map as an array of heights, compute how much water it can trap after rain. Water at position <code>i</code> is limited by the shortest wall on either side.</p>
+<p><strong>Example:</strong> <code>[0,1,0,2,1,0,1,3,2,1,2,1]</code> &rarr; <code>6</code></p>
+
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+
+<p>Each column can hold water up to <code>min(tallest wall on its left, tallest wall on its right) - its own height</code>. The trick: you don't need to scan both sides separately for every column. Use two pointers from the ends. Whichever side has the <strong>smaller max-so-far</strong> is the definite bottleneck. Process that side — its water amount is already decided. Move that pointer inward.</p>
+
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>Water at a position depends on the min of the two sides' maximums. Two pointers let you process whichever side's maximum is smaller — that side's water is already fully determined.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">Trace — blue=L &nbsp;|&nbsp; red=R &nbsp;|&nbsp; array=[3,0,2,0,4] (simplified) — process side with smaller max</div>
+<div class="wstep"><span class="wstep-n">Start</span><div><div class="arow"><span class="abk">[</span><span class="ac aL">3<span class="pl pL">L</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aR">4<span class="pl pR">R</span></span><span class="abk">]</span></div></div><span class="wstep-act">leftMax=3, rightMax=4. leftMax&lt;rightMax &rarr; process L side</span></div>
+<div class="wstep"><span class="wstep-n">Step 1</span><div><div class="arow"><span class="abk">[</span><span class="ac aL">3<span class="pl pL">L</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aR">4<span class="pl pR">R</span></span><span class="abk">]</span></div></div><span class="wstep-act">h[L]=3 &ge; leftMax=3 &rarr; update leftMax=3, no water here. L++</span></div>
+<div class="wstep"><span class="wstep-n">Step 2</span><div><div class="arow"><span class="abk">[</span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac aL">0<span class="pl pL">L</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aR">4<span class="pl pR">R</span></span><span class="abk">]</span></div></div><span class="wstep-act">leftMax=3 &lt; rightMax=4 &rarr; process L. h[L]=0 &lt; leftMax=3 &rarr; water+=3-0=3. L++</span></div>
+<div class="wstep"><span class="wstep-n">Step 3</span><div><div class="arow"><span class="abk">[</span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aL">2<span class="pl pL">L</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac aR">4<span class="pl pR">R</span></span><span class="abk">]</span></div></div><span class="wstep-act">leftMax=3 &lt; rightMax=4 &rarr; process L. h[L]=2 &lt; leftMax=3 &rarr; water+=3-2=1. L++</span></div>
+<div class="wstep"><span class="wstep-n">Step 4</span><div><div class="arow"><span class="abk">[</span><span class="ac">3<span class="pl">&nbsp;</span></span><span class="ac">0<span class="pl">&nbsp;</span></span><span class="ac">2<span class="pl">&nbsp;</span></span><span class="ac aL">0<span class="pl pL">L</span></span><span class="ac aR">4<span class="pl pR">R</span></span><span class="abk">]</span></div></div><span class="wstep-act">leftMax=3 &lt; rightMax=4 &rarr; process L. h[L]=0 &lt; leftMax=3 &rarr; water+=3-0=3. L++</span></div>
+<div class="wstep"><span class="wstep-n">Done</span><div style="color:#6ee7b7;font-family:monospace;font-size:.82rem;padding:8px 0">Total water = 3+1+3 = 7 units</div><span class="wstep-act">L&ge;R &rarr; loop ends. Key insight: leftMax guaranteed the water — rightMax was always larger.</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm (Step by Step)</h2>
+<div class="steps"><ol><li>Set <code>left=0</code>, <code>right=n-1</code>, <code>leftMax=0</code>, <code>rightMax=0</code>, <code>water=0</code>.</li><li>While <code>left &lt; right</code>: if <code>height[left] &lt; height[right]</code>, process left side; else right side.</li><li>Process left: if <code>height[left] &gt;= leftMax</code>, update <code>leftMax</code>; else <code>water += leftMax - height[left]</code>. Then <code>left++</code>.</li><li>Process right: same logic mirrored. Then <code>right--</code>.</li></ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public int trap(int[] height) {
+    int left = 0, right = height.length - 1;
+    int leftMax = 0, rightMax = 0, water = 0;
+    while (left &lt; right) {
+        if (height[left] &lt; height[right]) {
+            if (height[left] &gt;= leftMax) leftMax = height[left];
+            else                          water += leftMax - height[left];
+            left++;
+        } else {
+            if (height[right] &gt;= rightMax) rightMax = height[right];
+            else                            water += rightMax - height[right];
+            right--;
+        }
+    }
+    return water;
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Two Pointer Pattern</h2>
+<div class="pattern-box"><strong>Two Pointer Pattern:</strong> Same opposite-end two-pointer as Container. But instead of finding a pair, you're accumulating a result by processing one cell at a time, guided by which side's max is smaller.</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> Process the side with the smaller running max — that side's water is already 100% determined.</div>
+
+<div class="footer">Two Pointer Masterclass &mdash; DSA Practice Series</div>
+</div>
+</body>
+</html>

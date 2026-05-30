@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P06 – Substring with Concatenation of All Words</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.hard{background:#fee2e2;color:#b91c1c}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Strings · Sliding Window Masterclass</a> &rsaquo; Have / Need (word grain)</div>
+<h1>P06 &mdash; Substring with Concatenation of All Words</h1>
+<div class="meta"><span class="badge hard">Hard</span> &bull; LC #30 &bull; Pattern: <strong>Fixed Window of Words + Frequency</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Given <code>s</code> and a list <code>words</code> where each word has the same length, find all starting indices where <code>s</code> contains a concatenation of every word in <code>words</code> exactly once, in any order.</p>
+<p><strong>Example:</strong> <code>s = "barfoothefoobarman", words = ["foo","bar"]</code> &rarr; <code>[0, 9]</code></p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Word grain</dt><dd>The "unit" of the window is one word (length <code>w</code>) instead of one character. Slide by <code>w</code> per step.</dd>
+<dt>Total window length</dt><dd><code>w &middot; words.length</code>. The fixed window covers all required words.</dd>
+<dt>Per-offset pass</dt><dd>The window can start at any of the first <code>w</code> offsets (0, 1, ..., w-1). Run the sliding loop once for each offset.</dd>
+<dt>Frequency match on words</dt><dd>HashMap of word -> count, just like char freq but per-word.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Pretend each word is a single character of an "alphabet of words." The window length is fixed at <code>w &middot; n</code>. Slide by one <em>word</em> at a time. Compare word counts inside the window with the required word counts.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>You only need to try <code>w</code> starting offsets (0..w-1). Within each offset, the window can slide by full words &mdash; never by a character &mdash; giving O(n) per offset.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Build need HashMap from words.</li>
+<li>For offset = 0..w-1: slide a window over s in steps of w; maintain a word-count map; add when window matches.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public List&lt;Integer&gt; findSubstring(String s, String[] words) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    int w = words[0].length(), n = words.length, total = w * n;
+    if (s.length() &lt; total) return res;
+    Map&lt;String, Integer&gt; need = new HashMap&lt;&gt;();
+    for (String word : words) need.merge(word, 1, Integer::sum);
+    for (int off = 0; off &lt; w; off++) {
+        Map&lt;String, Integer&gt; win = new HashMap&lt;&gt;();
+        int L = off, count = 0;
+        for (int R = off; R + w &lt;= s.length(); R += w) {
+            String wd = s.substring(R, R + w);
+            if (need.containsKey(wd)) {
+                win.merge(wd, 1, Integer::sum);
+                count++;
+                while (win.get(wd) &gt; need.get(wd)) {
+                    String left = s.substring(L, L + w);
+                    win.merge(left, -1, Integer::sum);
+                    L += w;
+                    count--;
+                }
+                if (count == n) res.add(L);
+            } else {
+                win.clear();
+                count = 0;
+                L = R + w;
+            }
+        }
+    }
+    return res;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n · w)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(N · w)</div></div></div>
+<p style="font-size:.85rem;color:#64748b;margin-top:6px">N = # words.</p></div>
+
+<div class="section orange"><h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Word-Grain Window:</strong> The "character" of the alphabet is a fixed-length word. Sliding by <code>w</code> instead of 1 makes the inner loop linear; w outer offsets cover every possible alignment.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Don't restart the window from scratch each step. Maintain the word-count map incrementally and shrink with L when a word overflows its allowance &mdash; just like Have/Need in P05.</div>
+
+<div class="footer">Strings · Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P06 – Longest Repeating Character Replacement</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+
+<header>
+  <div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Sliding Window Masterclass</a> &nbsp;&rsaquo;&nbsp; Frequency Map</div>
+  <h1>P06 &mdash; Longest Repeating Character Replacement</h1>
+  <div class="meta"><span class="badge medium">Medium</span> &bull; LeetCode #424 &bull; Pattern: <strong>Window + Frequency Map</strong></div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+<p>Given a string <code>s</code> (uppercase letters only) and an integer <code>K</code>, you may replace up to <code>K</code> characters with any letter. Return the length of the longest substring containing the same letter after replacements.</p>
+<p><strong>Example:</strong> <code>s = "AABABBA", K = 1</code> &rarr; <code>4</code> (replace one B in &quot;AABA&quot; or &quot;ABBA&quot;)</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+  <dt>Frequency map (int[26])</dt><dd>An array indexed by letter where <code>count[c]</code> = how many times <code>c</code> appears in the current window. For uppercase letters use 26 slots.</dd>
+  <dt>maxFreq</dt><dd>The highest count any letter has reached in the window. The number of characters we'd need to replace = <code>windowSize &minus; maxFreq</code>.</dd>
+  <dt>Why we never decrement maxFreq</dt><dd>It's a clever trick. If maxFreq stays artificially high after shrinking, the window won't grow until a <em>real</em> new maxFreq beats it. That's actually fine because the answer never decreases &mdash; we only care about windows that exceed the current best.</dd>
+  <dt>Replacement count</dt><dd><code>windowLength &minus; maxFreq</code> &mdash; how many letters in the window are <em>not</em> the dominant one. Window valid &harr; this &le; K.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+<p>You're picking a window of letters. Keep track of which letter shows up most often inside; everyone else needs to be replaced. If &ldquo;everyone else&rdquo; is more than K, the window is too greedy &mdash; shrink from the left. The goal: max out the window size while keeping &ldquo;non-majority count&rdquo; &le; K.</p>
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>You don't need to recompute maxFreq when shrinking. The answer can only grow when a new larger maxFreq appears &mdash; so a stale (but never-too-small) maxFreq is harmless. This keeps the loop O(n) instead of O(26&middot;n).</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">s=&quot;AABABBA&quot;, K=1</div>
+<div class="wstep"><span class="wstep-n">R=0..2</span><div>window=&quot;AAB&quot;, count={A:2,B:1}, maxFreq=2
+windowLen=3, need=3&minus;2=1 &le; K &check;</div><span class="wstep-act">best=3</span></div>
+<div class="wstep"><span class="wstep-n">R=3</span><div>window=&quot;AABA&quot;, count={A:3,B:1}, maxFreq=3
+windowLen=4, need=1 &le; K</div><span class="wstep-act">best=4</span></div>
+<div class="wstep"><span class="wstep-n">R=4</span><div>window=&quot;AABAB&quot;, count={A:3,B:2}, maxFreq=3
+windowLen=5, need=2 &gt; K &mdash; shrink</div><span class="wstep-act">drop A, L=1, count={A:2,B:2}
+windowLen=4, need=4&minus;3=1 (maxFreq still 3) &le; K
+best=4</span></div>
+<div class="wstep"><span class="wstep-n">R=5</span><div>window=&quot;ABABB&quot;, count={A:2,B:3}, maxFreq=3
+windowLen=5, need=2 &gt; K &mdash; shrink</div><span class="wstep-act">drop A, L=2, count={A:1,B:3}
+need=4&minus;3=1 &le; K
+best=4</span></div>
+<div class="wstep"><span class="wstep-n">R=6</span><div>window=&quot;BABBA&quot;, count={A:2,B:3}, maxFreq=3
+windowLen=5, need=2 &gt; K &mdash; shrink</div><span class="wstep-act">drop B, L=3, count={A:2,B:2}
+need=1 &le; K
+best=4 (unchanged)
+Answer: 4</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm</h2>
+<div class="steps"><ol>
+<li>Maintain <code>count[26]</code>, pointers <code>L=0</code>, and <code>maxFreq=0</code>.</li>
+<li>For each R: increment <code>count[s[R]]</code>; update <code>maxFreq</code>.</li>
+<li>If <code>(R &minus; L + 1) &minus; maxFreq &gt; K</code>: decrement <code>count[s[L]]</code> and <code>L++</code>.</li>
+<li>Update <code>best = max(best, R &minus; L + 1)</code>.</li>
+</ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public int characterReplacement(String s, int K) {
+    int[] count = new int[26];
+    int L = 0, maxFreq = 0, best = 0;
+    for (int R = 0; R &lt; s.length(); R++) {
+        count[s.charAt(R) - 'A']++;
+        maxFreq = Math.max(maxFreq, count[s.charAt(R) - 'A']);
+        if ((R - L + 1) - maxFreq &gt; K) {
+            count[s.charAt(L) - 'A']--;
+            L++;
+        }
+        best = Math.max(best, R - L + 1);
+    }
+    return best;
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(26) = O(1)</div></div></div>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Frequency Map Window:</strong> The window tracks per-character counts. Validity is derived from those counts via <code>length &minus; maxFreq &le; K</code>. Notice we use <code>if</code>, not <code>while</code> &mdash; the window length never shrinks past the previous best, so a single shift is enough.</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> The clever optimization &mdash; not decrementing maxFreq on shrink &mdash; only works because we're tracking the maximum answer, not the current truth. A &ldquo;stale optimistic&rdquo; maxFreq is harmless for that goal.</div>
+
+<div class="footer">Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

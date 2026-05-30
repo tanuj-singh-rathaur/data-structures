@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P07 – Minimum Window Substring</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+
+<header>
+  <div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Sliding Window Masterclass</a> &nbsp;&rsaquo;&nbsp; Have / Need</div>
+  <h1>P07 &mdash; Minimum Window Substring</h1>
+  <div class="meta"><span class="badge hard">Hard</span> &bull; LeetCode #76 &bull; Pattern: <strong>Have / Need with Frequency Map</strong></div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+<p>Given strings <code>s</code> and <code>t</code>, return the shortest substring of <code>s</code> that contains every character of <code>t</code> (counting multiplicities). Return an empty string if no such substring exists.</p>
+<p><strong>Example:</strong> <code>s = &quot;ADOBECODEBANC&quot;, t = &quot;ABC&quot;</code> &rarr; <code>&quot;BANC&quot;</code></p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+  <dt>Need map</dt><dd>Frequency map of <code>t</code>: how many of each character we still owe. Stays constant.</dd>
+  <dt>Window map</dt><dd>Frequency map of the current window of <code>s</code>: how many of each char we currently hold.</dd>
+  <dt>have / need counters</dt><dd>Two integers. <em>need</em> = number of <strong>distinct</strong> chars in t (how many independent requirements). <em>have</em> = how many of those requirements are currently fully met. Window is valid when <code>have == need</code>.</dd>
+  <dt>Why we use have/need instead of map equality</dt><dd>Comparing two frequency maps every step would be O(26) or O(128). Using two counters makes the validity check O(1).</dd>
+  <dt>Multiplicities</dt><dd>If t = &quot;AAB&quot;, the window needs <strong>two</strong> A's, not just one. Frequency maps naturally handle this.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+<p>You have a shopping list (t). You walk down an aisle (s) putting items into a cart. The window is what's currently in the cart. Once your cart contains everything on the list, try removing things from the back &mdash; if it's still complete, the smaller cart is better. Keep walking, repeating this expand-then-shrink dance until you've checked everything.</p>
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>You can detect &ldquo;cart has everything&rdquo; in O(1) by maintaining a counter <code>have</code>. Each time the window's count of a required char reaches the needed count, increment <code>have</code>. Window is complete &harr; <code>have == need</code>.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">s=&quot;ADOBECODEBANC&quot;, t=&quot;ABC&quot; &nbsp;&mdash;&nbsp; need: {A:1,B:1,C:1}, total need=3</div>
+<div class="wstep"><span class="wstep-n">Expand</span><div>R sweeps right, adding to window map until have==need.</div><span class="wstep-act">Window grows to &quot;ADOBEC&quot; &mdash; A&check;, B&check;, C&check; &rarr; have=3=need
+length=6, best=6, store window</span></div>
+<div class="wstep"><span class="wstep-n">Shrink</span><div>L moves right: A leaves. window map A drops below need &rarr; have=2.</div><span class="wstep-act">Stop shrinking. Resume expanding.</span></div>
+<div class="wstep"><span class="wstep-n">Continue</span><div>Eventually find &quot;CODEBA&quot; (have=3 again), then &quot;ODEBAN&quot;, then &quot;BANC&quot;.</div><span class="wstep-act">Final: &quot;BANC&quot;, length 4 &mdash; smallest seen.</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm</h2>
+<div class="steps"><ol>
+<li>Build <code>need</code> map from <code>t</code>. Compute <code>needCount = need.size()</code> (distinct chars).</li>
+<li>Initialize <code>have = 0</code>, <code>L = 0</code>, <code>bestLen = &infin;</code>, <code>bestStart = 0</code>.</li>
+<li>For each <code>R</code>: add <code>s[R]</code> to window map. If <code>window[c] == need[c]</code>, <code>have++</code>.</li>
+<li>While <code>have == needCount</code>: record window if smaller. Remove <code>s[L]</code> from window; if <code>window[c]</code> drops below <code>need[c]</code>, <code>have&minus;&minus;</code>; <code>L++</code>.</li>
+<li>Return <code>s.substring(bestStart, bestStart + bestLen)</code> or "".</li>
+</ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public String minWindow(String s, String t) {
+    if (t.length() &gt; s.length()) return "";
+    Map&lt;Character, Integer&gt; need = new HashMap&lt;&gt;();
+    for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+    int needCount = need.size(), have = 0;
+    Map&lt;Character, Integer&gt; window = new HashMap&lt;&gt;();
+    int L = 0, bestLen = Integer.MAX_VALUE, bestStart = 0;
+    for (int R = 0; R &lt; s.length(); R++) {
+        char c = s.charAt(R);
+        window.merge(c, 1, Integer::sum);
+        if (need.containsKey(c) &amp;&amp; window.get(c).intValue() == need.get(c).intValue()) {
+            have++;
+        }
+        while (have == needCount) {
+            if (R - L + 1 &lt; bestLen) { bestLen = R - L + 1; bestStart = L; }
+            char lc = s.charAt(L);
+            window.merge(lc, -1, Integer::sum);
+            if (need.containsKey(lc) &amp;&amp; window.get(lc) &lt; need.get(lc)) {
+                have--;
+            }
+            L++;
+        }
+    }
+    return bestLen == Integer.MAX_VALUE ? "" : s.substring(bestStart, bestStart + bestLen);
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(|s| + |t|)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(|alphabet|)</div></div></div>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Have / Need:</strong> The general pattern for &ldquo;window must contain X&rdquo; problems. Two counters &mdash; <em>need</em> (distinct requirements) and <em>have</em> (currently met) &mdash; let you check window validity in O(1).</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> Don't compare full frequency maps each step. Track only the boundary crossings &mdash; when a count reaches the required amount, you've &ldquo;earned&rdquo; that requirement. When it dips below, you've &ldquo;lost&rdquo; it. Increment/decrement <code>have</code> only at those moments.</div>
+
+<div class="footer">Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

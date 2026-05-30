@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P04 – Minimum Size Subarray Sum</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}.ac.aW{background:#14291e;border-color:#4ade80;color:#4ade80}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+
+<header>
+  <div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Sliding Window Masterclass</a> &nbsp;&rsaquo;&nbsp; Variable Window (shrink-to-min)</div>
+  <h1>P04 &mdash; Minimum Size Subarray Sum</h1>
+  <div class="meta"><span class="badge medium">Medium</span> &bull; LeetCode #209 &bull; Pattern: <strong>Variable Window (Shrink to Minimize)</strong></div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+<p>Given positive integers <code>nums</code> and a target <code>S</code>, return the minimal length of a contiguous subarray whose sum is &ge; <code>S</code>. Return 0 if no such subarray exists.</p>
+<p><strong>Example:</strong> <code>nums = [2, 3, 1, 2, 4, 3], S = 7</code> &rarr; <code>2</code> (from <code>[4, 3]</code>)</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+  <dt>Minimal length</dt><dd>We want the shortest window that <em>satisfies</em> the condition (sum &ge; S), not the longest. Different goal &rarr; we shrink whenever the window is valid (to test if smaller still works).</dd>
+  <dt>Shrink-to-minimize</dt><dd>The opposite of P03. There we shrunk only when invalid; here we shrink <em>while</em> valid, recording each shrink-step's length, and stop only when the window becomes invalid.</dd>
+  <dt>Positive integers</dt><dd>All values &gt; 0. Critical &mdash; sliding window correctness depends on it.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+<p>Imagine pouring sand into a bucket until you've passed a weight threshold. Once you're at or past the threshold, start scooping sand off the bottom (left side) and check after each scoop &mdash; if you're still at threshold, the bucket is smaller, that's better. Stop scooping when you drop below; then keep pouring more.</p>
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>Once the window's sum is &ge; S, every shorter sub-window from the same R could also be valid. Shrink L greedily; every time the sum is still &ge; S, record the new (smaller) length.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">nums=[2, 3, 1, 2, 4, 3], S=7</div>
+<div class="wstep"><span class="wstep-n">R=0..2</span><div><div class="arow"><span class="ac aL">2</span><span class="ac">3</span><span class="ac aR">1</span><span class="ac">2</span><span class="ac">4</span><span class="ac">3</span></div></div><span class="wstep-act">sum=6 &lt; 7, no shrink</span></div>
+<div class="wstep"><span class="wstep-n">R=3</span><div><div class="arow"><span class="ac aL">2</span><span class="ac">3</span><span class="ac">1</span><span class="ac aR">2</span><span class="ac">4</span><span class="ac">3</span></div></div><span class="wstep-act">sum=8 &ge; 7 &check;, length=4, best=4
+shrink: drop 2 &rarr; sum=6 &lt; 7, stop</span></div>
+<div class="wstep"><span class="wstep-n">R=4</span><div><div class="arow"><span class="ac">2</span><span class="ac aL">3</span><span class="ac">1</span><span class="ac">2</span><span class="ac aR">4</span><span class="ac">3</span></div></div><span class="wstep-act">sum=10 &ge; 7, length=4, best=4
+shrink 3 &rarr; sum=7 &ge; 7, length=3, best=3
+shrink 1 &rarr; sum=6 &lt; 7, stop</span></div>
+<div class="wstep"><span class="wstep-n">R=5</span><div><div class="arow"><span class="ac">2</span><span class="ac">3</span><span class="ac">1</span><span class="ac aL">2</span><span class="ac">4</span><span class="ac aR">3</span></div></div><span class="wstep-act">sum=9 &ge; 7, length=3, best=3
+shrink 2 &rarr; sum=7 &ge; 7, length=2, best=2 &check;
+shrink 4 &rarr; sum=3 &lt; 7, stop
+Final: 2</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm</h2>
+<div class="steps"><ol>
+<li>Set <code>L = 0</code>, <code>sum = 0</code>, <code>best = &infin;</code>.</li>
+<li>For each R: <code>sum += nums[R]</code>.</li>
+<li>While <code>sum &ge; S</code>: <code>best = min(best, R &minus; L + 1)</code>; <code>sum &minus;= nums[L]; L++</code>.</li>
+<li>Return <code>best</code> (or 0 if never updated).</li>
+</ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public int minSubArrayLen(int target, int[] nums) {
+    int L = 0, sum = 0, best = Integer.MAX_VALUE;
+    for (int R = 0; R &lt; nums.length; R++) {
+        sum += nums[R];
+        while (sum &gt;= target) {
+            best = Math.min(best, R - L + 1);
+            sum -= nums[L++];
+        }
+    }
+    return best == Integer.MAX_VALUE ? 0 : best;
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Sliding Window Pattern</h2>
+<div class="pattern-box"><strong>Shrink-to-Minimize:</strong> Whenever the window <em>satisfies</em> the goal, try shrinking from L &mdash; record each smaller-but-still-valid length. The opposite direction of &ldquo;shrink-when-invalid&rdquo; problems.</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> For &ldquo;shortest valid&rdquo; you shrink <em>while</em> valid. For &ldquo;longest valid&rdquo; you shrink <em>while</em> invalid. The condition flips but the skeleton is the same.</div>
+
+<div class="footer">Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

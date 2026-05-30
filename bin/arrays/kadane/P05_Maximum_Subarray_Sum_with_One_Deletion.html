@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P05 – Maximum Subarray Sum with One Deletion</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+
+<header>
+  <div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Kadane Masterclass</a> &nbsp;&rsaquo;&nbsp; Two-State Kadane</div>
+  <h1>P05 &mdash; Maximum Subarray Sum with One Deletion</h1>
+  <div class="meta"><span class="badge medium">Medium</span> &bull; LeetCode #1186 &bull; Pattern: <strong>Two-State DP (No-Skip / Skipped)</strong></div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+<p>Given an array <code>arr</code>, you may delete <strong>at most one</strong> element. Return the maximum possible sum of a non-empty contiguous subarray (after the optional deletion).</p>
+<p><strong>Example:</strong> <code>arr = [1, &minus;2, 0, 3]</code> &rarr; <code>4</code> (delete &minus;2 &rarr; subarray <code>[1, 0, 3]</code> sums to 4)</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+  <dt>At most one deletion</dt><dd>You're allowed zero or one removal &mdash; either case is valid. The answer is the max over both.</dd>
+  <dt>Two states per index</dt><dd><strong>noDel[i]</strong> = best subarray ending at i that hasn't used its delete. <strong>del[i]</strong> = best subarray ending at i that has used its delete.</dd>
+  <dt>Transition rule</dt><dd>
+    <code>noDel[i] = max(arr[i], noDel[i&minus;1] + arr[i])</code> &mdash; classic Kadane.<br>
+    <code>del[i] = max(noDel[i&minus;1], del[i&minus;1] + arr[i])</code> &mdash; either delete <code>arr[i]</code> now (drop to noDel[i&minus;1]) or extend an already-deleted run.
+  </dd>
+  <dt>Answer</dt><dd>Max over all <code>i</code> of <code>max(noDel[i], del[i])</code>.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+<p>Think of it as carrying two parallel tallies at each index. Tally A is &ldquo;best run if I haven't deleted anything yet.&rdquo; Tally B is &ldquo;best run if I've already used my one deletion.&rdquo; Each step you update both. The deletion is implicit: deleting <code>arr[i]</code> means you continue B from yesterday's A.</p>
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>You don't need to try every possible deletion explicitly. Two parallel DP states &mdash; one before deletion, one after &mdash; capture everything. The transition into &ldquo;deleted&rdquo; mode happens when you skip the current element.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">arr = [1, &minus;2, 0, 3]</div>
+<div class="wstep"><span class="wstep-n">i=0</span><div>noDel = 1, del = 0 (can't delete from empty)
+best = 1</div><span class="wstep-act">Start with no run deleted.</span></div>
+<div class="wstep"><span class="wstep-n">i=1</span><div>noDel = max(&minus;2, 1+(&minus;2)) = &minus;1
+del   = max(noDel_prev=1, del_prev+arr[i]=0+(&minus;2)=&minus;2) = 1</div><span class="wstep-act">del means &ldquo;delete arr[1]=&minus;2 and keep [1]&rdquo;
+best = 1</span></div>
+<div class="wstep"><span class="wstep-n">i=2</span><div>noDel = max(0, &minus;1+0=&minus;1) = 0
+del   = max(noDel_prev=&minus;1, del_prev+0=1+0=1) = 1</div><span class="wstep-act">best = 1</span></div>
+<div class="wstep"><span class="wstep-n">i=3</span><div>noDel = max(3, 0+3=3) = 3
+del   = max(noDel_prev=0, del_prev+3=1+3=4) = 4</div><span class="wstep-act">best = 4 &check;
+Answer: 4 (subarray [1, 0, 3] with &minus;2 deleted)</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm</h2>
+<div class="steps"><ol>
+<li>Initialize <code>noDel = arr[0]</code>, <code>del = 0</code> (or use sentinel), <code>best = arr[0]</code>.</li>
+<li>For each <code>i</code> from 1:
+  <ul>
+    <li><code>newDel = max(noDel, del + arr[i])</code></li>
+    <li><code>noDel  = max(arr[i], noDel + arr[i])</code></li>
+    <li><code>del    = newDel</code></li>
+    <li><code>best   = max(best, noDel, del)</code></li>
+  </ul>
+</li>
+</ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public int maximumSum(int[] arr) {
+    int noDel = arr[0];     // Kadane without deletion
+    int del   = 0;          // Kadane after using one deletion
+    int best  = arr[0];
+    for (int i = 1; i &lt; arr.length; i++) {
+        int newDel = Math.max(noDel, del + arr[i]);  // delete arr[i] or extend
+        noDel = Math.max(arr[i], noDel + arr[i]);
+        del = newDel;
+        best = Math.max(best, Math.max(noDel, del));
+    }
+    return best;
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Kadane Pattern</h2>
+<div class="pattern-box"><strong>Two-State Kadane (No-Skip / Skipped):</strong> When the problem allows &ldquo;up to one X,&rdquo; encode it as two parallel DP states &mdash; one before using the freebie, one after. Transition between them when the freebie is used.</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> &ldquo;At most one deletion&rdquo; isn't a search over n possible deletions &mdash; it's a single binary state (used / not used) tracked alongside the normal Kadane.</div>
+
+<div class="footer">Kadane's Algorithm Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strings · Sliding Window Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}.t4{border-left-color:#7c3aed;background:#faf5ff}.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}
+.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}
+.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}
+.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}
+.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{body{background:#fff}.page{padding:20px}.section{break-inside:avoid}pre,code{break-inside:avoid}header{break-after:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Strings · Sliding Window &mdash; Complete Masterclass</h1>
+  <div class="meta">Strings &rsaquo; Sliding Window &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Is Sliding Window on Strings? (Layman's Explanation)</h2>
+<p>A window is a contiguous slice <code>[L..R]</code> of the string. The pointers walk forward; the window state (character counts, distinct count, vowel count, &hellip;) updates incrementally as characters enter on the right and leave on the left. One pass &mdash; O(n).</p>
+<p>For strings the &ldquo;state&rdquo; is almost always a <strong>frequency map</strong> (often a 26-slot int array for lowercase letters).</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster (Confusing Terms Explained)</h2>
+<div class="glossary"><dl>
+  <dt>Substring</dt><dd>A contiguous slice of a string (no skipping).</dd>
+  <dt>Anagram / Permutation</dt><dd>Same characters with the same counts, possibly reordered. <code>"abc"</code> and <code>"bca"</code> are anagrams.</dd>
+  <dt>Distinct count</dt><dd>How many different characters are currently in the window. With a HashMap, this is <code>map.size()</code>.</dd>
+  <dt>Frequency map (int[26])</dt><dd>An array of length 26 where <code>count[c-'a']</code> = occurrences of <code>c</code> in the window. Constant-time updates.</dd>
+  <dt>Have / Need counters</dt><dd>Used in &ldquo;contains all of t&rdquo; problems. <em>need</em> = distinct chars required; <em>have</em> = currently satisfied. Window is valid iff <code>have == need</code>.</dd>
+  <dt>Expand / Shrink</dt><dd><strong>Expand</strong> = move R right (window grows). <strong>Shrink</strong> = move L right (window gets smaller).</dd>
+  <dt>At-Most-K trick</dt><dd>Count subarrays with ≤ K of something. Pure sliding-window template; cheap.</dd>
+  <dt>Exactly-K trick</dt><dd><code>exactly(K) = atMost(K) − atMost(K−1)</code>. Converts a tricky &ldquo;exactly K&rdquo; question into two easy &ldquo;at most&rdquo; calls.</dd>
+  <dt>Complement window</dt><dd>For some problems (&ldquo;Take K of each from ends&rdquo;) you ask &ldquo;what's the largest middle slice I can <em>keep</em>?&rdquo; instead of &ldquo;what's the smallest combined left+right I can remove?&rdquo;</dd>
+  <dt>Bitmask state</dt><dd>For 5 vowels or other small alphabets, encode &ldquo;which letters have I seen&rdquo; as a small integer (each bit = one letter). Compare bitmasks instead of maps.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Sliding Window on Strings?</h2>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>"Longest" / "shortest" substring with a property (≤ K distinct, all vowels, valid budget, &hellip;)</li>
+  <li>"Smallest substring containing all of T" (Have/Need)</li>
+  <li>"Count substrings of size K that ..." (Fixed window)</li>
+  <li>"How many anagrams / permutations of P appear in S?" (Fixed window + freq match)</li>
+  <li>"Count substrings with exactly K of X" (At-most-K trick)</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 5 Types of String Sliding Window &mdash; Full Breakdown</h2>
+
+<!-- TYPE 1 — VARIABLE WINDOW -->
+<div class="type-card t1">
+<div class="type-title">&#9312; Variable Window (Longest / Shortest with Condition)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Expand R unconditionally. When the constraint breaks, shrink L until it holds. Update the best at each valid step.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Longest substring without repeating characters"</li>
+  <li>"Longest substring with at most K distinct"</li>
+  <li>"Longest substring after replacing K chars"</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>add s[R] to window state</li>
+  <li>while invalid: remove s[L] from state, L++</li>
+  <li>best = max(best, R − L + 1)</li>
+</ul>
+</div>
+
+<strong>Worked Example: Longest Substring Without Repeating</strong> &mdash; <code>"abcabcbb"</code>
+
+<div class="walk">
+<div class="walk-title">Track last-seen index of each char; L = max(L, lastSeen + 1)</div>
+<div class="wstep"><span class="wstep-n">R=0..2</span><div>"abc" &mdash; all new</div><span class="wstep-act">best = 3</span></div>
+<div class="wstep"><span class="wstep-n">R=3</span><div>'a' seen at 0 &rarr; L = 1, window = "bca"</div><span class="wstep-act">best stays 3</span></div>
+<div class="wstep"><span class="wstep-n">R=4..7</span><div>repeats keep pushing L forward</div><span class="wstep-act">Final best = 3</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int L = 0, best = 0;
+&lt;state&gt; window = init;
+for (int R = 0; R &lt; s.length(); R++) {
+    add s[R] to window;
+    while (invalid) { remove s[L]; L++; }
+    best = Math.max(best, R - L + 1);
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 Longest Substring Without Repeating</span>
+  <span class="prob-tag">P04 Longest with At Most K Distinct</span>
+  <span class="prob-tag">P07 Longest Repeating Char Replacement</span>
+  <span class="prob-tag">P08 Longest with At Most Two Distinct</span>
+  <span class="prob-tag">P15 Maximum Erasure Value</span>
+</div>
+</div>
+
+<!-- TYPE 2 — FIXED WINDOW -->
+<div class="type-card t2">
+<div class="type-title">&#9313; Fixed-Size Window (Size K)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Window length is fixed at K. Slide one step at a time, updating the metric on add/remove.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Max vowels in substring of length K"</li>
+  <li>"K-length substrings with no repeated characters"</li>
+  <li>"All anagrams / permutations of length |p|" (fixed window of size |p|)</li>
+  <li>Repeated DNA substrings of length 10</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>build first window of size K, capture metric</li>
+  <li>for each slide: metric updates via add s[R], remove s[R−K]</li>
+</ul>
+</div>
+
+<strong>Worked Example: Max Vowels in Substring of Length K</strong>
+
+<div class="walk">
+<div class="walk-title">s = "abciiidef", K = 3</div>
+<div class="wstep"><span class="wstep-n">Window</span><div>"abc" &rarr; 1 vowel</div><span class="wstep-act">best = 1</span></div>
+<div class="wstep"><span class="wstep-n">Slide</span><div>"bci" &rarr; 1; "cii" &rarr; 2; "iii" &rarr; 3</div><span class="wstep-act">best = 3</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int K = ..., cur = 0;
+for (int i = 0; i &lt; K; i++) cur += score(s.charAt(i));
+int best = cur;
+for (int r = K; r &lt; s.length(); r++) {
+    cur += score(s.charAt(r)) - score(s.charAt(r - K));
+    best = ...;  // max / min / count
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 Find All Anagrams</span>
+  <span class="prob-tag">P03 Permutation in String</span>
+  <span class="prob-tag">P09 Max Vowels in Length-K Substring</span>
+  <span class="prob-tag">P10 Repeated DNA Sequences</span>
+  <span class="prob-tag">P11 K-Length Substrings No Repeats</span>
+  <span class="prob-tag">P19 Min Recolors K Consecutive Black</span>
+  <span class="prob-tag">P20 Max Occurrences of Substring</span>
+</div>
+</div>
+
+<!-- TYPE 3 — HAVE / NEED -->
+<div class="type-card t3">
+<div class="type-title">&#9314; Have / Need (Contains All of T)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Maintain a need-map (frequencies of <code>t</code>) and a window-map. Two integers, <em>have</em> and <em>need</em>, count how many required characters are currently satisfied. Window valid when <code>have == need</code>.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Smallest substring containing all of t"</li>
+  <li>"All substrings that are anagrams of p"</li>
+  <li>Multiplicities matter (need 2 a's, not just 1)</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>when window[c] reaches need[c]: <code>have++</code></li>
+  <li>when window[c] drops below need[c]: <code>have--</code></li>
+  <li>while have == need: try to shrink to find a smaller valid window</li>
+</ul>
+</div>
+
+<strong>Worked Example: Minimum Window Substring</strong> &mdash; <code>s = "ADOBECODEBANC", t = "ABC"</code>
+
+<div class="walk">
+<div class="walk-title">need = {A:1, B:1, C:1}, needCount = 3</div>
+<div class="wstep"><span class="wstep-n">Expand</span><div>"ADOBEC" &rarr; have == 3 &check;</div><span class="wstep-act">record length 6</span></div>
+<div class="wstep"><span class="wstep-n">Shrink</span><div>drop 'A', have drops to 2 &mdash; stop shrinking, resume expanding</div><span class="wstep-act"></span></div>
+<div class="wstep"><span class="wstep-n">More</span><div>eventually "BANC" (length 4) &mdash; smallest valid window</div><span class="wstep-act">Answer: "BANC"</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>Map&lt;Character, Integer&gt; need = freq(t);
+int needCount = need.size(), have = 0;
+Map&lt;Character, Integer&gt; window = new HashMap&lt;&gt;();
+int L = 0, bestLen = INF, bestL = 0;
+for (int R = 0; R &lt; s.length(); R++) {
+    window.merge(s.charAt(R), 1, Integer::sum);
+    if (need.containsKey(s.charAt(R)) &amp;&amp; window.get(s.charAt(R)).equals(need.get(s.charAt(R)))) have++;
+    while (have == needCount) {
+        if (R - L + 1 &lt; bestLen) { bestLen = R - L + 1; bestL = L; }
+        char lc = s.charAt(L);
+        window.merge(lc, -1, Integer::sum);
+        if (need.containsKey(lc) &amp;&amp; window.get(lc) &lt; need.get(lc)) have--;
+        L++;
+    }
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 Find All Anagrams</span>
+  <span class="prob-tag">P03 Permutation in String</span>
+  <span class="prob-tag">P05 Minimum Window Substring</span>
+  <span class="prob-tag">P06 Substring w/ Concatenation of All Words</span>
+</div>
+</div>
+
+<!-- TYPE 4 — AT-MOST-K / EXACTLY-K TRICK -->
+<div class="type-card t4">
+<div class="type-title">&#9315; At-Most-K (and Exactly-K via Subtraction)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> A reusable subroutine: count subarrays with <em>at most</em> K of something. The variable window template applies directly. Counting subarrays ending at each R: add <code>R − L + 1</code>.</p>
+<p>For &ldquo;exactly K&rdquo; problems, use <code>exactly(K) = atMost(K) − atMost(K−1)</code>.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Number of substrings with all three characters"</li>
+  <li>"Vowel substrings" (exactly 5 distinct vowels)</li>
+  <li>"Cost within budget" (at-most-budget)</li>
+</ul>
+</div>
+
+<strong>Worked Example: Number of Substrings Containing All Three (a, b, c)</strong>
+
+<div class="walk">
+<div class="walk-title">Track last-seen index of a, b, c. For each R, # of valid substrings ending here = min(lastA, lastB, lastC) + 1</div>
+<div class="wstep"><span class="wstep-n">Sweep</span><div>once all three have been seen, every L ≤ min(last_a, last_b, last_c) works</div><span class="wstep-act">add min(...) + 1 to total per R</span></div>
+</div>
+
+<strong>Code Template (At-Most-K Distinct, generic):</strong>
+<pre>int atMost(String s, int K) {
+    Map&lt;Character, Integer&gt; cnt = new HashMap&lt;&gt;();
+    int L = 0, total = 0;
+    for (int R = 0; R &lt; s.length(); R++) {
+        cnt.merge(s.charAt(R), 1, Integer::sum);
+        while (cnt.size() &gt; K) {
+            char lc = s.charAt(L++);
+            cnt.merge(lc, -1, Integer::sum);
+            if (cnt.get(lc) == 0) cnt.remove(lc);
+        }
+        total += R - L + 1;
+    }
+    return total;
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P12 Substrings Containing All Three</span>
+  <span class="prob-tag">P14 Equal Substrings Within Budget</span>
+  <span class="prob-tag">P16 Count Vowel Substrings</span>
+</div>
+</div>
+
+<!-- TYPE 5 — REFRAME / COMPLEMENT / BITMASK -->
+<div class="type-card t5">
+<div class="type-title">&#9316; Reframe / Complement / Bitmask</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Some problems aren't obviously sliding-window. The trick is to <em>reframe</em>: maybe ask for the largest middle slice you can keep instead of the smallest piece you remove. Or encode small-alphabet state as a bitmask.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Remove from both ends to satisfy X" &harr; "largest middle satisfying complement of X"</li>
+  <li>"All cases of letter present in both cases" &mdash; bitmask of (lowercase, uppercase) presence</li>
+  <li>"Balanced string" &mdash; largest middle window such that outside counts ≤ n/4</li>
+</ul>
+</div>
+
+<strong>Worked Example: Take K of Each Character from Left and Right</strong>
+<p>Total of char <code>c</code> = total<sub>c</sub>. After taking K of each, the remaining <em>middle</em> must have <code>count[c] ≤ total<sub>c</sub> − K</code> for every <code>c</code>. So: find the longest such middle window; answer = n − that length.</p>
+
+<strong>Code Template (Complement Window):</strong>
+<pre>// reframe: find longest middle window s.t. each count ≤ total[c] - K
+// then answer = n - bestMiddleLen</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P13 Replace Substring for Balanced</span>
+  <span class="prob-tag">P17 Longest Nice Substring</span>
+  <span class="prob-tag">P18 Take K of Each Character</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal String Sliding Window Templates</h2>
+<pre>// Variable window
+int L = 0, best = 0;
+for (int R = 0; R &lt; s.length(); R++) {
+    add s[R] to window;
+    while (invalid) { remove s[L++]; }
+    best = Math.max(best, R - L + 1);
+}
+
+// Fixed window of size K
+int score = 0;
+for (int i = 0; i &lt; K; i++) score += val(s.charAt(i));
+int best = score;
+for (int r = K; r &lt; s.length(); r++) {
+    score += val(s.charAt(r)) - val(s.charAt(r - K));
+    best = Math.max(best, score);
+}
+
+// Have / Need
+// (see Type 3 above)</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Brute force</div><div class="kv-val">O(n²) or O(n·k)</div></div><div class="kv-item"><div class="kv-label">Sliding window</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(|alphabet|) or O(K)</div></div></div>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_Longest_Substring_Without_Repeating_Characters.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_Longest_Substring_Without_Repeating_Characters.html" style="color:#2563eb;text-decoration:none">Longest Substring W/o Repeating</a></td><td style="padding:7px;text-align:center">3</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_Find_All_Anagrams_in_a_String.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_Find_All_Anagrams_in_a_String.html" style="color:#2563eb;text-decoration:none">Find All Anagrams</a></td><td style="padding:7px;text-align:center">438</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window + Freq</td></tr>
+<tr><td style="padding:7px"><a href="P03_Permutation_in_String.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_Permutation_in_String.html" style="color:#2563eb;text-decoration:none">Permutation in String</a></td><td style="padding:7px;text-align:center">567</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window + Freq</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_Longest_Substring_with_At_Most_K_Distinct_Characters.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_Longest_Substring_with_At_Most_K_Distinct_Characters.html" style="color:#2563eb;text-decoration:none">Longest with At Most K Distinct</a></td><td style="padding:7px;text-align:center">340</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window</td></tr>
+<tr><td style="padding:7px"><a href="P05_Minimum_Window_Substring.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_Minimum_Window_Substring.html" style="color:#2563eb;text-decoration:none">Minimum Window Substring</a></td><td style="padding:7px;text-align:center">76</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Have / Need</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_Substring_with_Concatenation_of_All_Words.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_Substring_with_Concatenation_of_All_Words.html" style="color:#2563eb;text-decoration:none">Concatenation of All Words</a></td><td style="padding:7px;text-align:center">30</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Have / Need (word-grain)</td></tr>
+<tr><td style="padding:7px"><a href="P07_Longest_Repeating_Character_Replacement.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_Longest_Repeating_Character_Replacement.html" style="color:#2563eb;text-decoration:none">Longest Repeating Char Replacement</a></td><td style="padding:7px;text-align:center">424</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_Longest_Substring_with_At_Most_Two_Distinct.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_Longest_Substring_with_At_Most_Two_Distinct.html" style="color:#2563eb;text-decoration:none">At Most Two Distinct</a></td><td style="padding:7px;text-align:center">159</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window</td></tr>
+<tr><td style="padding:7px"><a href="P09_Maximum_Number_of_Vowels.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_Maximum_Number_of_Vowels.html" style="color:#2563eb;text-decoration:none">Max Vowels in Substring Length K</a></td><td style="padding:7px;text-align:center">1456</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_Repeated_DNA_Sequences.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_Repeated_DNA_Sequences.html" style="color:#2563eb;text-decoration:none">Repeated DNA Sequences</a></td><td style="padding:7px;text-align:center">187</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window + HashSet</td></tr>
+<tr><td style="padding:7px"><a href="P11_Find_K_Length_Substrings_No_Repeated.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_Find_K_Length_Substrings_No_Repeated.html" style="color:#2563eb;text-decoration:none">K-Length Substrings No Repeats</a></td><td style="padding:7px;text-align:center">1100</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_Number_of_Substrings_Containing_All_Three.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_Number_of_Substrings_Containing_All_Three.html" style="color:#2563eb;text-decoration:none">Substrings With All Three</a></td><td style="padding:7px;text-align:center">1358</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable + Last-Seen</td></tr>
+<tr><td style="padding:7px"><a href="P13_Replace_Substring_for_Balanced.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_Replace_Substring_for_Balanced.html" style="color:#2563eb;text-decoration:none">Replace Substring for Balanced</a></td><td style="padding:7px;text-align:center">1234</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Complement Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_Get_Equal_Substrings_Within_Budget.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_Get_Equal_Substrings_Within_Budget.html" style="color:#2563eb;text-decoration:none">Equal Substrings Within Budget</a></td><td style="padding:7px;text-align:center">1208</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window (budget)</td></tr>
+<tr><td style="padding:7px"><a href="P15_Maximum_Erasure_Value.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_Maximum_Erasure_Value.html" style="color:#2563eb;text-decoration:none">Maximum Erasure Value</a></td><td style="padding:7px;text-align:center">1695</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Variable Window + HashSet</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_Count_Vowel_Substrings.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_Count_Vowel_Substrings.html" style="color:#2563eb;text-decoration:none">Count Vowel Substrings</a></td><td style="padding:7px;text-align:center">2062</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">At-Most-K Trick</td></tr>
+<tr><td style="padding:7px"><a href="P17_Longest_Nice_Substring.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_Longest_Nice_Substring.html" style="color:#2563eb;text-decoration:none">Longest Nice Substring</a></td><td style="padding:7px;text-align:center">1763</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Divide / Bitmask</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_Take_K_of_Each_Character.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_Take_K_of_Each_Character.html" style="color:#2563eb;text-decoration:none">Take K of Each from Ends</a></td><td style="padding:7px;text-align:center">2516</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Complement Window</td></tr>
+<tr><td style="padding:7px"><a href="P19_Minimum_Recolors_K_Consecutive_Black.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_Minimum_Recolors_K_Consecutive_Black.html" style="color:#2563eb;text-decoration:none">Min Recolors for K Black Blocks</a></td><td style="padding:7px;text-align:center">2379</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Fixed Window</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_Max_Number_of_Occurrences_of_Substring.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_Max_Number_of_Occurrences_of_Substring.html" style="color:#2563eb;text-decoration:none">Max Occurrences of Substring</a></td><td style="padding:7px;text-align:center">1297</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fixed Window + Freq</td></tr>
+</table>
+</div>
+
+<div class="footer">Strings · Sliding Window Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body>
+</html>

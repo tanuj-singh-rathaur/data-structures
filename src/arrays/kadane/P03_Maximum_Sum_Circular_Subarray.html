@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P03 – Maximum Sum Circular Subarray</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+
+<header>
+  <div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Kadane Masterclass</a> &nbsp;&rsaquo;&nbsp; Circular Kadane</div>
+  <h1>P03 &mdash; Maximum Sum Circular Subarray</h1>
+  <div class="meta"><span class="badge medium">Medium</span> &bull; LeetCode #918 &bull; Pattern: <strong>Circular Kadane (Total &minus; Min)</strong></div>
+</header>
+
+<div class="section blue">
+<h2>&#128221; The Problem</h2>
+<p>Given a circular integer array <code>nums</code> (the last element connects back to the first), find the maximum possible sum of a non-empty subarray. The subarray may wrap around the boundary.</p>
+<p><strong>Example:</strong> <code>[5, &minus;3, 5]</code> &rarr; <code>10</code> (from <code>[5, _, 5]</code> wrapping the &minus;3)</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+  <dt>Circular array</dt><dd>The array is conceptually a ring &mdash; <code>nums[n&minus;1]</code> is adjacent to <code>nums[0]</code>. A &ldquo;wrap-around&rdquo; subarray includes both ends and skips the middle.</dd>
+  <dt>Straight (non-wrap) subarray</dt><dd>A normal contiguous slice that doesn't cross the boundary. Standard Kadane finds the max of these.</dd>
+  <dt>Wrap-around subarray</dt><dd>A subarray that starts somewhere in the array, wraps past the end, and ends somewhere near the beginning. Equivalent to &ldquo;total of all elements minus a middle subarray.&rdquo;</dd>
+  <dt>min-subarray-sum</dt><dd>The smallest possible sum of any contiguous subarray. Subtract it from the total and you get the largest wrap-around sum.</dd>
+  <dt>All-negative edge case</dt><dd>If every element is negative, <code>total &minus; minSum</code> would correspond to picking <em>nothing</em> &mdash; not allowed. In that case the answer is just <code>maxSubarraySum</code>.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127775; In Layman's Terms</h2>
+<p>Two scenarios. Either the best slice fits inside the array without wrapping (normal Kadane), or it wraps &mdash; in which case the <em>unselected middle</em> is itself a contiguous slice. So &ldquo;best wrapping&rdquo; = &ldquo;everything&rdquo; &minus; &ldquo;worst middle slice.&rdquo; Run Kadane twice (once for max, once for min) and take the better of the two cases.</p>
+</div>
+
+<div class="section orange">
+<h2>&#9889; The Aha Moment</h2>
+<p>The wrap-around case is the complement of a non-wrap subarray. Total minus the <em>smallest</em> contiguous subarray gives the largest wrap-around. Two Kadanes solve it.</p>
+</div>
+
+<div class="section blue">
+<h2>&#128250; Visual Walkthrough</h2>
+<div class="walk">
+<div class="walk-title">nums = [5, &minus;3, 5], total = 7</div>
+<div class="wstep"><span class="wstep-n">Max Kadane</span><div>cur sequence: 5, max(&minus;3, 5&minus;3)=2, max(5, 2+5)=7
+best = 7</div><span class="wstep-act">straight answer = 7 (the whole array)</span></div>
+<div class="wstep"><span class="wstep-n">Min Kadane</span><div>cur sequence: 5, min(&minus;3, 5&minus;3)=&minus;3, min(5, &minus;3+5)=2
+best (smallest) = &minus;3</div><span class="wstep-act">min subarray sum = &minus;3</span></div>
+<div class="wstep"><span class="wstep-n">Wrap</span><div>total &minus; minSum = 7 &minus; (&minus;3) = 10</div><span class="wstep-act">Corresponds to wrap [5, _, 5]</span></div>
+<div class="wstep"><span class="wstep-n">Compare</span><div>max(7, 10) = 10</div><span class="wstep-act">Answer: 10</span></div>
+</div>
+</div>
+
+<div class="section green">
+<h2>&#128295; Algorithm</h2>
+<div class="steps"><ol>
+<li>Run Kadane twice in one loop: track <code>curMax, maxSum</code> and <code>curMin, minSum</code>.</li>
+<li>Track <code>total</code> = sum of all.</li>
+<li>If <code>maxSum &lt; 0</code> (all negative), return <code>maxSum</code>.</li>
+<li>Otherwise return <code>max(maxSum, total &minus; minSum)</code>.</li>
+</ol></div>
+</div>
+
+<div class="section purple">
+<h2>&#9749; Java Solution</h2>
+<pre>public int maxSubarraySumCircular(int[] nums) {
+    int curMax = nums[0], maxSum = nums[0];
+    int curMin = nums[0], minSum = nums[0];
+    int total = nums[0];
+    for (int i = 1; i &lt; nums.length; i++) {
+        curMax = Math.max(nums[i], curMax + nums[i]);
+        maxSum = Math.max(maxSum, curMax);
+        curMin = Math.min(nums[i], curMin + nums[i]);
+        minSum = Math.min(minSum, curMin);
+        total += nums[i];
+    }
+    return maxSum &lt; 0 ? maxSum : Math.max(maxSum, total - minSum);
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div>
+</div>
+
+<div class="section orange">
+<h2>&#128200; Kadane Pattern</h2>
+<div class="pattern-box"><strong>Circular Kadane:</strong> Reduce a circular question to two linear ones. Min and max subarrays computed in the same pass; wrap case derived by complement.</div>
+</div>
+
+<div class="insight"><strong>Key Insight:</strong> A wrap-around subarray's complement is itself a non-wrapping subarray. That self-similarity is what lets us solve a ring with a straight-line algorithm &mdash; just run it twice.</div>
+
+<div class="footer">Kadane's Algorithm Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>
