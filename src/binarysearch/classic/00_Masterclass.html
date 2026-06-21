@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Binary Search · Classic Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}.t4{border-left-color:#7c3aed;background:#faf5ff}.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.walk{background:#0f172a;border-radius:8px;overflow:hidden;margin:12px 0}
+.walk-title{background:#1e293b;color:#94a3b8;padding:7px 16px;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;font-family:'Consolas','Courier New',monospace}
+.wstep{display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid #1e293b;padding:10px 16px}
+.wstep:last-child{border-bottom:none}
+.wstep-n{min-width:58px;color:#fbbf24;font-weight:700;font-family:'Consolas','Courier New',monospace;font-size:.81rem;padding-top:8px;flex-shrink:0}
+.wstep-act{color:#6ee7b7;font-size:.78rem;font-family:'Consolas','Courier New',monospace;padding-top:8px;line-height:1.7;flex:1;white-space:pre-line}
+.arow{display:flex;align-items:flex-end;gap:2px;margin:4px 0;flex-wrap:wrap}
+.abk{color:#64748b;font-family:'Consolas','Courier New',monospace;font-size:.9rem;padding:0 2px;line-height:1;padding-bottom:20px}
+.ac{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;background:#1e293b;border:1px solid #334155;border-radius:4px;padding:5px 4px 3px;font-family:'Consolas','Courier New',monospace;font-size:.82rem;color:#e2e8f0;font-weight:600}
+.ac.aL{background:#172554;border-color:#3b82f6;color:#93c5fd}
+.ac.aR{background:#450a0a;border-color:#ef4444;color:#fca5a5}
+.ac.aM{background:#422006;border-color:#facc15;color:#fde047}
+.ac.aF{background:#052e16;border-color:#22c55e;color:#86efac}
+.pl{font-size:.7rem;font-weight:700;min-height:13px;margin-top:3px;line-height:1}
+.pL{color:#60a5fa}.pR{color:#f87171}.pM{color:#fde047}.pF{color:#86efac}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}
+.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}
+.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{body{background:#fff}.page{padding:20px}.section{break-inside:avoid}pre,code{break-inside:avoid}header{break-after:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Binary Search · Classic &mdash; Complete Masterclass</h1>
+  <div class="meta">Binary Search &rsaquo; Classic &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Is Binary Search? (Layman's Explanation)</h2>
+<p>You're guessing a number between 1 and 100. Instead of trying 1, 2, 3, &hellip;, you guess 50. Too high? Now you know it's in 1–49 and you guess 25. Too low? It's in 26–49 and you guess 37. Each guess <strong>halves the remaining range</strong>. In 7 guesses you've covered all 100 numbers.</p>
+<p>That's binary search: you have a <em>sorted</em> sequence (or one with a monotonic property), and at each step you ask one yes/no question that lets you throw away half. O(log n) total.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster (Confusing Terms Explained)</h2>
+<div class="glossary"><dl>
+  <dt>Sorted / Monotonic</dt><dd>Values follow a pattern that lets you decide "go left" or "go right" from one comparison. Strict numerical sort is the obvious case; "first false then true" booleans (like First Bad Version) also count.</dd>
+  <dt>Invariant</dt><dd>The promise you keep across iterations &mdash; e.g., "answer lies in [L, R]." Choosing the right invariant fixes bugs about whether to write <code>L &lt; R</code> or <code>L &lt;= R</code>.</dd>
+  <dt>Half-open vs Closed intervals</dt><dd><code>[L, R]</code> (closed): both endpoints can be the answer; loop ends when L &gt; R. <code>[L, R)</code> (half-open): R is exclusive; loop ends when L == R. Both work; pick one and stick to it.</dd>
+  <dt>mid = L + (R − L) / 2</dt><dd>Use this instead of <code>(L + R) / 2</code>. The latter can overflow for large L + R. Both produce the same value when no overflow occurs.</dd>
+  <dt>Lower bound</dt><dd>Smallest index i such that <code>arr[i] &ge; target</code>. Equivalent to "where would target be inserted to keep the array sorted?"</dd>
+  <dt>Upper bound</dt><dd>Smallest index i such that <code>arr[i] &gt; target</code>. Useful for counting (<code>upper − lower = # occurrences of target</code>).</dd>
+  <dt>Predicate</dt><dd>A boolean function f(i) that's false then true (or true then false). Binary search finds the boundary. This is the generalized form &mdash; most binary search problems reduce to "find the boundary of this predicate."</dd>
+  <dt>Oracle</dt><dd>An external API (like <code>guess()</code> or <code>isBadVersion()</code>) that answers comparison queries. You binary search using its answers.</dd>
+  <dt>Rotated array</dt><dd>A sorted array shifted by some offset: <code>[4,5,6,7,0,1,2]</code>. One half is always sorted &mdash; figure out which, then act accordingly.</dd>
+  <dt>Peak element</dt><dd>An element greater than its neighbors. Even on an unsorted array, you can binary search for a peak if you can decide "the peak is on this side."</dd>
+  <dt>Off-by-one</dt><dd>The most common bug. Always sanity-check with a 2-element input and a 1-element input. If both work, the loop is probably right.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Classic Binary Search?</h2>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>The array (or answer space) is <strong>sorted</strong> or <strong>monotonic</strong>.</li>
+  <li>You're searching for an <strong>exact value</strong>, an <strong>insertion point</strong>, or a <strong>boundary</strong>.</li>
+  <li>The input size is large (O(log n) matters).</li>
+  <li>Brute force is O(n) and the constraints have an <code>n &le; 10⁵</code> or larger.</li>
+  <li>You have an <strong>oracle</strong> API that answers yes/no comparisons (<code>guess</code>, <code>isBadVersion</code>).</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 5 Types of Classic Binary Search &mdash; Full Breakdown</h2>
+
+<!-- TYPE 1 — EXACT MATCH -->
+<div class="type-card t1">
+<div class="type-title">&#9312; Exact Match (Standard Binary Search)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Find a target value in a sorted array; return its index, or &minus;1 if absent.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Given a sorted array and a target, return the index"</li>
+  <li>API-style oracle: "<code>guess()</code> returns &minus;1/0/+1"</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>If <code>arr[mid] == target</code>: return mid</li>
+  <li>If <code>arr[mid] &lt; target</code>: <code>L = mid + 1</code></li>
+  <li>If <code>arr[mid] &gt; target</code>: <code>R = mid &minus; 1</code></li>
+</ul>
+</div>
+
+<strong>Worked Example: Binary Search</strong> &mdash; find <code>9</code> in <code>[&minus;1, 0, 3, 5, 9, 12]</code>
+
+<div class="walk">
+<div class="walk-title">Closed interval [L, R]</div>
+<div class="wstep"><span class="wstep-n">Start</span><div><div class="arow"><span class="abk">[</span><span class="ac aL">-1<span class="pl pL">L</span></span><span class="ac">0</span><span class="ac aM">3<span class="pl pM">M</span></span><span class="ac">5</span><span class="ac">9</span><span class="ac aR">12<span class="pl pR">R</span></span><span class="abk">]</span></div></div><span class="wstep-act">L=0, R=5, mid=2 (val 3). 3 &lt; 9 &rarr; L = mid+1 = 3</span></div>
+<div class="wstep"><span class="wstep-n">Step 1</span><div><div class="arow"><span class="abk">[</span><span class="ac">-1</span><span class="ac">0</span><span class="ac">3</span><span class="ac aL">5<span class="pl pL">L</span></span><span class="ac aM">9<span class="pl pM">M</span></span><span class="ac aR">12<span class="pl pR">R</span></span><span class="abk">]</span></div></div><span class="wstep-act">L=3, R=5, mid=4 (val 9). 9 == 9 &rarr; return 4</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int L = 0, R = nums.length - 1;
+while (L &lt;= R) {
+    int mid = L + (R - L) / 2;
+    if      (nums[mid] == target) return mid;
+    else if (nums[mid] &lt; target)  L = mid + 1;
+    else                          R = mid - 1;
+}
+return -1;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 Binary Search</span>
+  <span class="prob-tag">P11 Guess Number Higher or Lower</span>
+  <span class="prob-tag">P18 Unknown Size</span>
+</div>
+</div>
+
+<!-- TYPE 2 — INSERT POSITION / FIRST TRUE -->
+<div class="type-card t2">
+<div class="type-title">&#9313; First-True Boundary (Insert Position / Lower Bound)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> A predicate is false then true at some boundary. Binary search the smallest index where the predicate is true.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Where should this value be inserted?" / "smallest index with arr[i] &ge; target"</li>
+  <li>"First bad version", "smallest letter greater than target"</li>
+  <li>"How many elements are &lt; X" — count = lower_bound(X)</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>If predicate(mid) is true: <code>R = mid</code> (might be the answer)</li>
+  <li>If predicate(mid) is false: <code>L = mid + 1</code></li>
+  <li>Use half-open: <code>L &lt; R</code>; answer is <code>L</code> at the end.</li>
+</ul>
+</div>
+
+<strong>Worked Example: Search Insert Position</strong> &mdash; insert 5 into <code>[1, 3, 5, 6]</code>
+
+<div class="walk">
+<div class="walk-title">Find smallest index i with nums[i] &ge; 5</div>
+<div class="wstep"><span class="wstep-n">Start</span><div><div class="arow"><span class="abk">[</span><span class="ac aL">1<span class="pl pL">L</span></span><span class="ac">3</span><span class="ac aM">5<span class="pl pM">M</span></span><span class="ac aR">6<span class="pl pR">R</span></span><span class="abk">]</span></div></div><span class="wstep-act">L=0, R=4 (exclusive), mid=2. nums[2]=5 &ge; 5 &rarr; R = mid = 2</span></div>
+<div class="wstep"><span class="wstep-n">Step</span><div><div class="arow"><span class="abk">[</span><span class="ac aL">1<span class="pl pL">L</span></span><span class="ac aM">3<span class="pl pM">M</span></span><span class="ac aR">5<span class="pl pR">R</span></span><span class="ac">6</span><span class="abk">]</span></div></div><span class="wstep-act">L=0, R=2, mid=1. nums[1]=3 &lt; 5 &rarr; L = mid+1 = 2</span></div>
+<div class="wstep"><span class="wstep-n">Done</span><div>L == R == 2</div><span class="wstep-act">Answer: 2</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int L = 0, R = nums.length;        // half-open
+while (L &lt; R) {
+    int mid = L + (R - L) / 2;
+    if (nums[mid] &gt;= target) R = mid;
+    else                     L = mid + 1;
+}
+return L;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 First Bad Version</span>
+  <span class="prob-tag">P03 Search Insert Position</span>
+  <span class="prob-tag">P09 Smallest Letter Greater</span>
+  <span class="prob-tag">P17 Time-Based KV Store</span>
+  <span class="prob-tag">P19 Max Count Pos/Neg</span>
+  <span class="prob-tag">P20 Successful Pairs</span>
+</div>
+</div>
+
+<!-- TYPE 3 — ROTATED ARRAYS -->
+<div class="type-card t3">
+<div class="type-title">&#9314; Rotated Sorted Array (Pivot-Aware Search)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Array is sorted then rotated, like <code>[4,5,6,7,0,1,2]</code>. One half (left of mid or right of mid) is always still sorted. Decide which, then act.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Sorted array, rotated by unknown amount"</li>
+  <li>"Find target", "Find minimum", "Search if exists" in rotated input</li>
+</ul>
+<p><strong>The decision rule (search for target):</strong></p>
+<ul>
+  <li>If <code>nums[L] &le; nums[mid]</code>: left half is sorted</li>
+  <li>If target is in <code>[nums[L], nums[mid])</code>: search left; else search right</li>
+  <li>Symmetric when the right half is sorted</li>
+  <li>If duplicates are allowed: when <code>nums[L] == nums[mid] == nums[R]</code>, you can't tell — shrink: <code>L++; R--</code>; worst-case O(n).</li>
+</ul>
+</div>
+
+<strong>Worked Example: Search Rotated Array</strong> &mdash; find <code>0</code> in <code>[4, 5, 6, 7, 0, 1, 2]</code>
+
+<div class="walk">
+<div class="walk-title">L=0, R=6, mid=3 (val 7)</div>
+<div class="wstep"><span class="wstep-n">Start</span><div><div class="arow"><span class="ac aL">4<span class="pl pL">L</span></span><span class="ac">5</span><span class="ac">6</span><span class="ac aM">7<span class="pl pM">M</span></span><span class="ac">0</span><span class="ac">1</span><span class="ac aR">2<span class="pl pR">R</span></span></div></div><span class="wstep-act">left half [4..7] is sorted; target 0 not in [4,7) &rarr; search right: L=4</span></div>
+<div class="wstep"><span class="wstep-n">Step</span><div><div class="arow"><span class="ac">4</span><span class="ac">5</span><span class="ac">6</span><span class="ac">7</span><span class="ac aL aM">0<span class="pl pM">L/M</span></span><span class="ac">1</span><span class="ac aR">2<span class="pl pR">R</span></span></div></div><span class="wstep-act">L=4, R=6, mid=5 (val 1). Right half [1..2] sorted; 0 not in [1,2] &rarr; L stays, R = mid-1 = 4
+&hellip; eventually find 0 at index 4</span></div>
+</div>
+
+<strong>Code Template (search):</strong>
+<pre>int L = 0, R = nums.length - 1;
+while (L &lt;= R) {
+    int mid = L + (R - L) / 2;
+    if (nums[mid] == target) return mid;
+    if (nums[L] &lt;= nums[mid]) {              // left half sorted
+        if (nums[L] &lt;= target &amp;&amp; target &lt; nums[mid]) R = mid - 1;
+        else                                          L = mid + 1;
+    } else {                                  // right half sorted
+        if (nums[mid] &lt; target &amp;&amp; target &lt;= nums[R]) L = mid + 1;
+        else                                          R = mid - 1;
+    }
+}
+return -1;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P04 Search in Rotated</span>
+  <span class="prob-tag">P05 Find Minimum in Rotated</span>
+  <span class="prob-tag">P06 Search in Rotated II (dupes)</span>
+  <span class="prob-tag">P07 Find Min II (dupes)</span>
+</div>
+</div>
+
+<!-- TYPE 4 — FIND PEAK / MOUNTAIN -->
+<div class="type-card t4">
+<div class="type-title">&#9315; Peak Finding (Mountain / Local Max)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> An array isn't sorted, but it goes up then down (mountain) or has any local max. Compare <code>arr[mid]</code> to <code>arr[mid+1]</code>: rising means peak is to the right; falling means peak is at mid or to the left.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Find a peak element" (any local max)</li>
+  <li>"Mountain array — find the peak / top"</li>
+  <li>"Single non-duplicate in sorted array" — index parity trick is the same idea</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>If <code>arr[mid] &lt; arr[mid+1]</code>: peak is to the right &rarr; <code>L = mid + 1</code></li>
+  <li>Else peak is at mid or to the left &rarr; <code>R = mid</code></li>
+  <li>Loop ends with <code>L == R</code> at the peak.</li>
+</ul>
+</div>
+
+<strong>Worked Example: Peak Index in Mountain</strong> &mdash; <code>[0, 2, 4, 6, 5, 3, 1]</code>
+
+<div class="walk">
+<div class="walk-title">Find the top of the mountain</div>
+<div class="wstep"><span class="wstep-n">Start</span><div><div class="arow"><span class="ac aL">0<span class="pl pL">L</span></span><span class="ac">2</span><span class="ac">4</span><span class="ac aM">6<span class="pl pM">M</span></span><span class="ac">5</span><span class="ac">3</span><span class="ac aR">1<span class="pl pR">R</span></span></div></div><span class="wstep-act">L=0, R=6, mid=3 (val 6). arr[3]=6, arr[4]=5 &rarr; falling &rarr; R = mid = 3</span></div>
+<div class="wstep"><span class="wstep-n">Step</span><div><div class="arow"><span class="ac aL">0<span class="pl pL">L</span></span><span class="ac aM">2<span class="pl pM">M</span></span><span class="ac">4</span><span class="ac aR">6<span class="pl pR">R</span></span><span class="ac">5</span><span class="ac">3</span><span class="ac">1</span></div></div><span class="wstep-act">L=0, R=3, mid=1. arr[1]=2 &lt; arr[2]=4 &rarr; rising &rarr; L = 2</span></div>
+<div class="wstep"><span class="wstep-n">Step</span><div>L=2, R=3, mid=2. arr[2]=4 &lt; arr[3]=6 &rarr; L = 3</div><span class="wstep-act">L == R == 3 &rarr; peak index 3</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int L = 0, R = nums.length - 1;
+while (L &lt; R) {
+    int mid = L + (R - L) / 2;
+    if (nums[mid] &lt; nums[mid + 1]) L = mid + 1;
+    else                           R = mid;
+}
+return L;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P08 Single Element Sorted</span>
+  <span class="prob-tag">P14 Peak Index Mountain</span>
+</div>
+</div>
+
+<!-- TYPE 5 — NUMERIC / MATH -->
+<div class="type-card t5">
+<div class="type-title">&#9316; Numeric Binary Search (Math: sqrt, pow, perfect square)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> The "array" is implicit — a numeric range. You binary search the answer space using a math predicate.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Compute sqrt(n) without sqrt()" → search 0..n, check mid² vs n</li>
+  <li>"Is n a perfect square?" → same</li>
+  <li>"Compute pow(x, n)" → halving the exponent (different but related divide-and-conquer)</li>
+  <li>"Largest k rows from k(k+1)/2 ≤ n" → arithmetic predicate</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>Use <code>long</code> when squaring or multiplying mid values (overflow trap!)</li>
+  <li>Otherwise same template as types 1 / 2 depending on whether you want exact match or boundary</li>
+</ul>
+</div>
+
+<strong>Worked Example: Valid Perfect Square</strong> &mdash; <code>num = 16</code>
+
+<div class="walk">
+<div class="walk-title">L=1, R=16</div>
+<div class="wstep"><span class="wstep-n">Step</span><div>mid=8, 8²=64 &gt; 16 &rarr; R=7</div><span class="wstep-act"></span></div>
+<div class="wstep"><span class="wstep-n">Step</span><div>mid=4, 4²=16 == 16 &rarr; true</div><span class="wstep-act">Answer: true</span></div>
+</div>
+
+<strong>Code Template:</strong>
+<pre>long L = 1, R = num;
+while (L &lt;= R) {
+    long mid = L + (R - L) / 2;
+    long sq = mid * mid;
+    if      (sq == num) return true;
+    else if (sq &lt; num)  L = mid + 1;
+    else                R = mid - 1;
+}
+return false;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P10 Valid Perfect Square</span>
+  <span class="prob-tag">P12 Pow(x, n)</span>
+  <span class="prob-tag">P13 Arranging Coins</span>
+  <span class="prob-tag">P15 H-Index II</span>
+  <span class="prob-tag">P16 Sum of Square Numbers</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal Classic Binary Search Templates</h2>
+<pre>// Type 1: exact match
+int L = 0, R = n - 1;
+while (L &lt;= R) {
+    int mid = L + (R - L) / 2;
+    if      (nums[mid] == target) return mid;
+    else if (nums[mid] &lt; target)  L = mid + 1;
+    else                          R = mid - 1;
+}
+return -1;
+
+// Type 2: first true (lower bound)
+int L = 0, R = n;
+while (L &lt; R) {
+    int mid = L + (R - L) / 2;
+    if (predicate(mid)) R = mid;
+    else                L = mid + 1;
+}
+return L;   // == n if predicate never true</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Brute force</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Binary search</div><div class="kv-val">O(log n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div><div class="kv-item"><div class="kv-label">Rotated w/ dupes</div><div class="kv-val">O(n) worst case</div></div></div>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_Binary_Search.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_Binary_Search.html" style="color:#2563eb;text-decoration:none">Binary Search</a></td><td style="padding:7px;text-align:center">704</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Exact Match</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_First_Bad_Version.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_First_Bad_Version.html" style="color:#2563eb;text-decoration:none">First Bad Version</a></td><td style="padding:7px;text-align:center">278</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">First-True Boundary</td></tr>
+<tr><td style="padding:7px"><a href="P03_Search_Insert_Position.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_Search_Insert_Position.html" style="color:#2563eb;text-decoration:none">Search Insert Position</a></td><td style="padding:7px;text-align:center">35</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Lower Bound</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_Search_in_Rotated_Sorted_Array.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_Search_in_Rotated_Sorted_Array.html" style="color:#2563eb;text-decoration:none">Search in Rotated Sorted Array</a></td><td style="padding:7px;text-align:center">33</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Rotated</td></tr>
+<tr><td style="padding:7px"><a href="P05_Find_Minimum_in_Rotated_Sorted_Array.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_Find_Minimum_in_Rotated_Sorted_Array.html" style="color:#2563eb;text-decoration:none">Find Min in Rotated</a></td><td style="padding:7px;text-align:center">153</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Rotated</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_Search_in_Rotated_Sorted_Array_II.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_Search_in_Rotated_Sorted_Array_II.html" style="color:#2563eb;text-decoration:none">Search in Rotated II (Duplicates)</a></td><td style="padding:7px;text-align:center">81</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Rotated + Dupes</td></tr>
+<tr><td style="padding:7px"><a href="P07_Find_Minimum_in_Rotated_Sorted_Array_II.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_Find_Minimum_in_Rotated_Sorted_Array_II.html" style="color:#2563eb;text-decoration:none">Find Min in Rotated II (Dupes)</a></td><td style="padding:7px;text-align:center">154</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Rotated + Dupes</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_Single_Element_in_a_Sorted_Array.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_Single_Element_in_a_Sorted_Array.html" style="color:#2563eb;text-decoration:none">Single Element in Sorted Array</a></td><td style="padding:7px;text-align:center">540</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Index Parity</td></tr>
+<tr><td style="padding:7px"><a href="P09_Find_Smallest_Letter_Greater_Than_Target.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_Find_Smallest_Letter_Greater_Than_Target.html" style="color:#2563eb;text-decoration:none">Smallest Letter Greater than Target</a></td><td style="padding:7px;text-align:center">744</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Upper Bound (wrap)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_Valid_Perfect_Square.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_Valid_Perfect_Square.html" style="color:#2563eb;text-decoration:none">Valid Perfect Square</a></td><td style="padding:7px;text-align:center">367</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Numeric / Math</td></tr>
+<tr><td style="padding:7px"><a href="P11_Guess_Number_Higher_or_Lower.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_Guess_Number_Higher_or_Lower.html" style="color:#2563eb;text-decoration:none">Guess Number Higher or Lower</a></td><td style="padding:7px;text-align:center">374</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Exact Match (Oracle)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_Pow_x_n.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_Pow_x_n.html" style="color:#2563eb;text-decoration:none">Pow(x, n)</a></td><td style="padding:7px;text-align:center">50</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Fast Halving</td></tr>
+<tr><td style="padding:7px"><a href="P13_Arranging_Coins.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_Arranging_Coins.html" style="color:#2563eb;text-decoration:none">Arranging Coins</a></td><td style="padding:7px;text-align:center">441</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Numeric / Math</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_Peak_Index_in_a_Mountain_Array.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_Peak_Index_in_a_Mountain_Array.html" style="color:#2563eb;text-decoration:none">Peak Index in Mountain Array</a></td><td style="padding:7px;text-align:center">852</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Peak Finding</td></tr>
+<tr><td style="padding:7px"><a href="P15_H_Index_II.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_H_Index_II.html" style="color:#2563eb;text-decoration:none">H-Index II</a></td><td style="padding:7px;text-align:center">275</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">First-True Predicate</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_Sum_of_Square_Numbers.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_Sum_of_Square_Numbers.html" style="color:#2563eb;text-decoration:none">Sum of Square Numbers</a></td><td style="padding:7px;text-align:center">633</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Numeric / Math</td></tr>
+<tr><td style="padding:7px"><a href="P17_Time_Based_Key_Value_Store.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_Time_Based_Key_Value_Store.html" style="color:#2563eb;text-decoration:none">Time-Based Key-Value Store</a></td><td style="padding:7px;text-align:center">981</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Upper Bound per key</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_Search_in_Sorted_Array_of_Unknown_Size.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_Search_in_Sorted_Array_of_Unknown_Size.html" style="color:#2563eb;text-decoration:none">Sorted Array of Unknown Size</a></td><td style="padding:7px;text-align:center">702</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Expand + Search</td></tr>
+<tr><td style="padding:7px"><a href="P19_Maximum_Count_of_Positive_and_Negative_Integer.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_Maximum_Count_of_Positive_and_Negative_Integer.html" style="color:#2563eb;text-decoration:none">Max Count Pos / Neg Integer</a></td><td style="padding:7px;text-align:center">2529</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Lower + Upper Bound</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_Successful_Pairs_of_Spells_and_Potions.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_Successful_Pairs_of_Spells_and_Potions.html" style="color:#2563eb;text-decoration:none">Successful Pairs of Spells/Potions</a></td><td style="padding:7px;text-align:center">2300</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Lower Bound per query</td></tr>
+</table>
+</div>
+
+<div class="footer">Binary Search · Classic Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body>
+</html>

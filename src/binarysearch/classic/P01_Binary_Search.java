@@ -1,5 +1,7 @@
 package binarysearch.classic;
 
+import util.Test;
+
 /**
  * Binary Search
  * Topic    : Binary Search
@@ -24,7 +26,10 @@ public class P01_Binary_Search {
 
     public static void main(String[] args) {
         P01_Binary_Search sol = new P01_Binary_Search();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1", sol.search(new int[]{-1,0,3,5,9,12}, 9), 4);
+
+        Test.summary();
     }
 }

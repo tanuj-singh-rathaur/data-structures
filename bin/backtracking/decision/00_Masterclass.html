@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Backtracking · Decision — Masterclass</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:980px;margin:0 auto;padding:32px 40px}h1{font-size:2rem;font-weight:700;margin-bottom:6px}h2{font-size:1.2rem;font-weight:600;margin:32px 0 12px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#dbeafe;color:#1d4ed8;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:22px 26px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:8px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.types{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.type{padding:14px 18px;border-radius:8px;border:1px solid}.t1{background:#eff6ff;border-color:#bfdbfe}.t1 h3{color:#1d4ed8}.t2{background:#ecfdf5;border-color:#bbf7d0}.t2 h3{color:#047857}.t3{background:#fffbeb;border-color:#fde68a}.t3 h3{color:#b45309}.t4{background:#faf5ff;border-color:#ddd6fe}.t4 h3{color:#7c3aed}.t5{background:#fef2f2;border-color:#fecaca}.t5 h3{color:#b91c1c}.type h3{font-size:.98rem;font-weight:700;margin-bottom:6px}.type p{font-size:.86rem;margin-bottom:6px}.type code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px;font-family:Consolas,monospace;font-size:.8rem}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;color:#1e293b;font-weight:700;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}td a:hover{text-decoration:underline}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style></head>
+<body><div class="page">
+<header><div><span class="tag">Backtracking</span><span class="tag" style="background:#fef3c7;color:#92400e">Decision</span></div>
+<h1>Backtracking · Decision &mdash; Masterclass</h1>
+<p style="color:#64748b">At each step you face a small number of decisions ("take or skip", "insert + or - or ×", "assign to bucket 1..k"). Recurse on each, backtrack the side-effect.</p></header>
+
+<div class="section blue"><h2>&#128221; What Is Decision-Based Backtracking?</h2>
+<p>Decision backtracking is the cousin of Choice. Where Choice enumerates arrangements (subsets, permutations), Decision answers "at this step, what action do I take?" — keep/skip a character, insert an operator, place an item into a bucket. Often produces YES/NO or count answers rather than full enumeration.</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Decision Tree</dt><dd>Each node represents a state; each edge is one possible action. Leaves are terminal states (valid solution, dead-end, or quota met).</dd>
+<dt>Memoise</dt><dd>Cache the answer for a given state (often (index, remaining-budget) or (index, bitmask-of-used)) to avoid recomputation.</dd>
+<dt>Action vs Element</dt><dd>Choice loops over "which element"; Decision loops over "which action to take with this element."</dd>
+<dt>Bitmask State</dt><dd>Compact integer encoding "which subset is used so far" — perfect for memoisation.</dd>
+<dt>Prune by Overflow</dt><dd>Cut branches once the partial answer exceeds the budget (sum &gt; target, bucket &gt; side, etc.).</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127919; When to use Decision Backtracking</h2>
+<ul style="margin-left:24px">
+<li>"Can the input be split / parsed / formed into …?" YES/NO answers.</li>
+<li>"How many ways to decode / partition / combine?" count answers.</li>
+<li>"What is the minimum / maximum value achievable?" optimisation answers.</li>
+<li>Bucket / assignment problems where each item picks one of k slots.</li>
+</ul></div>
+
+<div class="section"><h2>&#127981; The 5 Sub-Patterns</h2><div class="types">
+<div class="type t1"><h3>1. Take/Skip per Character</h3><p>At index i: include vs skip.</p><p><code>dfs(i+1, with) ; dfs(i+1, without)</code></p><p style="color:#475569;font-size:.8rem"><em>Decode Ways, Remove Invalid Parentheses</em></p></div>
+<div class="type t2"><h3>2. Split Prefix Recursively</h3><p>Try each prefix length; recurse on suffix.</p><p><code>for len: if valid(s[i..i+len]) dfs(i+len)</code></p><p style="color:#475569;font-size:.8rem"><em>Word Break II, Concatenated Words, Additive Number, Descending Split, Number of Atoms, Equal Parts</em></p></div>
+<div class="type t3"><h3>3. Bucket Assignment</h3><p>Place each item into one of k buckets.</p><p><code>for b in buckets: if fits, push, recurse</code></p><p style="color:#475569;font-size:.8rem"><em>Partition K Equal Sum, Matchsticks Square</em></p></div>
+<div class="type t4"><h3>4. Insert Operator / Branch</h3><p>Between symbols decide which operator.</p><p><code>for op in {+, -, *, none}: recurse</code></p><p style="color:#475569;font-size:.8rem"><em>Expression Add Operators, 24 Game</em></p></div>
+<div class="type t5"><h3>5. Bind / Assign + Memo</h3><p>Bind a key to a value; memoise state.</p><p><code>memo[bitmask][index]</code></p><p style="color:#475569;font-size:.8rem"><em>Word Pattern II, Stickers to Spell Word, Max Length Unique Concat, Optimal Account Balancing, Squareful Arrays, Confusing Number II, Letter Combinations, Word Search</em></p></div>
+</div></div>
+
+<div class="section purple"><h2>&#9881;&#65039; Universal Templates</h2>
+<p><strong>Take/Skip:</strong></p>
+<pre>int dfs(int i) {
+    if (i == n) return baseAnswer;
+    int take = canTake(i) ? dfs(i + 1) : 0;
+    int skip = dfs(i + 1);
+    return combine(take, skip);
+}</pre>
+<p><strong>Split Prefix:</strong></p>
+<pre>boolean dfs(int i) {
+    if (i == n) return true;
+    for (int j = i + 1; j &lt;= n; j++) {
+        if (validPiece(s, i, j) &amp;&amp; dfs(j)) return true;
+    }
+    return false;
+}</pre>
+<p><strong>Bucket Assignment:</strong></p>
+<pre>boolean dfs(int idx, int[] buckets, int target) {
+    if (idx == nums.length) return allEqual(buckets, target);
+    for (int b = 0; b &lt; buckets.length; b++) {
+        if (buckets[b] + nums[idx] &gt; target) continue;
+        buckets[b] += nums[idx];
+        if (dfs(idx + 1, buckets, target)) return true;
+        buckets[b] -= nums[idx];
+        if (buckets[b] == 0) break;       // symmetric prune
+    }
+    return false;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity Profile</h2>
+<table><thead><tr><th>Pattern</th><th>Typical Bound</th></tr></thead><tbody>
+<tr><td>Take/Skip per char</td><td>O(2ⁿ) without memo, O(n) with</td></tr>
+<tr><td>Split Prefix</td><td>O(n²) with memo on index</td></tr>
+<tr><td>Bucket Assignment</td><td>O(kⁿ) heavy pruning</td></tr>
+<tr><td>Bitmask State + Memo</td><td>O(2ⁿ · n)</td></tr>
+</tbody></table></div>
+
+<div class="section"><h2>&#128218; Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Letter_Combinations_of_a_Phone_Number.html">Letter Combinations</a></td><td>k-way per digit</td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_Word_Search.html">Word Search</a></td><td>Continue path or back</td><td class="diff-m">Medium</td></tr>
+<tr><td>3</td><td><a href="P03_Expression_Add_Operators.html">Expression Add Operators</a></td><td>Insert +, -, ×</td><td class="diff-h">Hard</td></tr>
+<tr><td>4</td><td><a href="P04_Remove_Invalid_Parentheses.html">Remove Invalid Parens</a></td><td>Keep/Skip char</td><td class="diff-h">Hard</td></tr>
+<tr><td>5</td><td><a href="P05_Decode_Ways.html">Decode Ways</a></td><td>1 or 2 digit step</td><td class="diff-m">Medium</td></tr>
+<tr><td>6</td><td><a href="P06_Word_Break_II.html">Word Break II</a></td><td>Split prefix + memo</td><td class="diff-h">Hard</td></tr>
+<tr><td>7</td><td><a href="P07_Partition_to_K_Equal_Sum_Subsets.html">Partition K Equal Subsets</a></td><td>Bucket assign</td><td class="diff-m">Medium</td></tr>
+<tr><td>8</td><td><a href="P08_Matchsticks_to_Square.html">Matchsticks to Square</a></td><td>Bucket assign (k=4)</td><td class="diff-m">Medium</td></tr>
+<tr><td>9</td><td><a href="P09_Additive_Number.html">Additive Number</a></td><td>Try first two lens</td><td class="diff-m">Medium</td></tr>
+<tr><td>10</td><td><a href="P10_Word_Pattern_II.html">Word Pattern II</a></td><td>Bind char → substring</td><td class="diff-m">Medium</td></tr>
+<tr><td>11</td><td><a href="P11_Splitting_String_Into_Descending_Consecutive_Values.html">Descending Split</a></td><td>Split with constraint</td><td class="diff-m">Medium</td></tr>
+<tr><td>12</td><td><a href="P12_Concatenated_Words.html">Concatenated Words</a></td><td>Split into dict words</td><td class="diff-h">Hard</td></tr>
+<tr><td>13</td><td><a href="P13_Number_of_Squareful_Arrays.html">Squareful Arrays</a></td><td>Permute + adjacency check</td><td class="diff-h">Hard</td></tr>
+<tr><td>14</td><td><a href="P14_Max_Length_Unique_Concat.html">Max Length Unique Concat</a></td><td>Include/skip + bitmask</td><td class="diff-m">Medium</td></tr>
+<tr><td>15</td><td><a href="P15_Optimal_Account_Balancing.html">Optimal Account Balancing</a></td><td>Settle balances</td><td class="diff-h">Hard</td></tr>
+<tr><td>16</td><td><a href="P16_24_Game.html">24 Game</a></td><td>Pick pair + op</td><td class="diff-h">Hard</td></tr>
+<tr><td>17</td><td><a href="P17_Stickers_to_Spell_Word.html">Stickers to Spell Word</a></td><td>Bitmask memo</td><td class="diff-h">Hard</td></tr>
+<tr><td>18</td><td><a href="P18_Confusing_Number_II.html">Confusing Number II</a></td><td>Branch valid digits</td><td class="diff-h">Hard</td></tr>
+<tr><td>19</td><td><a href="P19_Splitting_String_Equal_Parts.html">Split Into Max Unique</a></td><td>Split + used-set</td><td class="diff-m">Medium</td></tr>
+<tr><td>20</td><td><a href="P20_Number_of_Atoms.html">Number of Atoms</a></td><td>Recursive parse</td><td class="diff-h">Hard</td></tr>
+</tbody></table></div>
+
+<div class="footer">Backtracking &middot; Decision Masterclass &mdash; DSA Practice Series</div>
+</div><script src="../../util/progress.js" defer></script></body></html>

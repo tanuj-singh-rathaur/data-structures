@@ -1,18 +1,20 @@
 package binarysearch.onanswers;
 
+import util.Test;
+
 /**
  * Allocate Minimum Number of Pages
  * Topic    : Binary Search
  * Pattern  : Binary Search on Answers
  * Difficulty: Hard
- * LeetCode : https://leetcode.com/problems/
+ * Source   : Classic — books/students partition
  * ─────────────────────────────────────────────
  *
  * PROBLEM:
- *   Read on LeetCode: https://leetcode.com/problems/
+ *   Allocate books to students minimizing the max pages assigned. Each student gets a contiguous range.
  *
  * PATTERN HINT:
- *   [Binary Search on Answers — think how this pattern applies here]
+ *   [BS pages-limit in [max(book), sum(book)]; predicate: students-needed(limit) <= k]
  *
  * ─────────────────────────────────────────────
  * YOUR ATTEMPT BELOW
@@ -24,7 +26,11 @@ public class P05_Allocate_Minimum_Number_of_Pages {
 
     public static void main(String[] args) {
         P05_Allocate_Minimum_Number_of_Pages sol = new P05_Allocate_Minimum_Number_of_Pages();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.allocate(new int[]{12,34,67,90}, 2), 113);
+
+        Test.summary();
     }
 }

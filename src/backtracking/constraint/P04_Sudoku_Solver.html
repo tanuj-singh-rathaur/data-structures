@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P04 – Sudoku Solver</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P04 — Sudoku Solver</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #37 • Row/Col/Box bitmasks</div>
+<div class="section"><h2>Pattern</h2><p>Bitmask per row, column, and 3×3 box. At each empty cell try digits not in used = rows[r] | cols[c] | boxes[(r/3)*3+c/3].</p></div>
+<div class="section"><h2>Java</h2><pre>int[] rows=new int[9], cols=new int[9], boxes=new int[9];
+boolean solve(char[][] b, int r, int c) {
+    if (r==9) return true;
+    int nr=c==8?r+1:r, nc=c==8?0:c+1;
+    if (b[r][c]!='.') return solve(b,nr,nc);
+    int used = rows[r]|cols[c]|boxes[(r/3)*3+c/3];
+    for (int d=1;d&lt;=9;d++) {
+        if ((used &amp; (1&lt;&lt;d))!=0) continue;
+        b[r][c]=(char)('0'+d); flip(r,c,d);
+        if (solve(b,nr,nc)) return true;
+        b[r][c]='.'; flip(r,c,d);
+    }
+    return false;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> MRV heuristic (pick cell with fewest options first) speeds this up dramatically on hard puzzles.</div></body></html>

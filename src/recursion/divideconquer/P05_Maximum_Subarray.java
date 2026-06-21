@@ -1,9 +1,11 @@
 package recursion.divideconquer;
 
+import util.Test;
+
 /**
- * Maximum Subarray
+ * Maximum Subarray (Divide & Conquer variant)
  * Topic    : Recursion
- * Pattern  : Divide and Conquer
+ * Pattern  : Divide & Conquer (Left, Right, Cross-Mid)
  * Difficulty: Medium
  * LeetCode : https://leetcode.com/problems/maximum-subarray/
  * ─────────────────────────────────────────────
@@ -12,7 +14,7 @@ package recursion.divideconquer;
  *   Read on LeetCode: https://leetcode.com/problems/maximum-subarray/
  *
  * PATTERN HINT:
- *   [Divide and Conquer — think how this pattern applies here]
+ *   [max = max(left, right, crossingMidSum). Cross handles spans crossing the midpoint.]
  *
  * ─────────────────────────────────────────────
  * YOUR ATTEMPT BELOW
@@ -24,7 +26,11 @@ public class P05_Maximum_Subarray {
 
     public static void main(String[] args) {
         P05_Maximum_Subarray sol = new P05_Maximum_Subarray();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4}), 6);
+
+        Test.summary();
     }
 }

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Binary Search on Answers — Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:980px;margin:0 auto;padding:32px 40px}
+h1{font-size:2rem;font-weight:700;margin-bottom:6px}
+h2{font-size:1.2rem;font-weight:600;margin:32px 0 12px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+p{margin-bottom:10px}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#dbeafe;color:#1d4ed8;margin-right:6px}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:22px 26px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}
+.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}
+.section.purple{border-left:4px solid #7c3aed}
+.section.red{border-left:4px solid #dc2626}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:8px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}
+.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.type{padding:14px 18px;border-radius:8px;border:1px solid}
+.t1{background:#eff6ff;border-color:#bfdbfe}
+.t1 h3{color:#1d4ed8}
+.t2{background:#ecfdf5;border-color:#bbf7d0}
+.t2 h3{color:#047857}
+.t3{background:#fffbeb;border-color:#fde68a}
+.t3 h3{color:#b45309}
+.t4{background:#faf5ff;border-color:#ddd6fe}
+.t4 h3{color:#7c3aed}
+.t5{background:#fef2f2;border-color:#fecaca}
+.t5 h3{color:#b91c1c}
+.type h3{font-size:.98rem;font-weight:700;margin-bottom:6px}
+.type p{font-size:.86rem;margin-bottom:6px}
+.type code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px;font-family:Consolas,monospace;font-size:.8rem}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}
+th{background:#f1f5f9;color:#1e293b;font-weight:700;font-size:.78rem;text-transform:uppercase}
+td a{color:#2563eb;text-decoration:none}td a:hover{text-decoration:underline}
+.diff-e{color:#16a34a;font-weight:600}
+.diff-m{color:#d97706;font-weight:600}
+.diff-h{color:#dc2626;font-weight:600}
+.complete{background:#dcfce7 !important}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+<header>
+<div><span class="tag">Binary Search</span><span class="tag" style="background:#fef3c7;color:#92400e">On Answers</span></div>
+<h1>Binary Search on Answers &mdash; Masterclass</h1>
+<p style="color:#64748b">Search for the optimal numeric answer by binary-searching the answer space and verifying via a monotone predicate.</p>
+</header>
+
+<div class="section blue">
+<h2>&#128221; What Is Binary Search on Answers?</h2>
+<p>Instead of searching an array for a target, you search the <em>range of possible answers</em>. The key insight:</p>
+<ul style="margin-left:24px;margin-top:6px">
+<li>The answer is a number in some range <code>[lo, hi]</code>.</li>
+<li>A predicate <code>check(x)</code> exists such that if it's true for x, it's true for all x' "on one side" of x — i.e., the feasibility region is monotone.</li>
+<li>You binary-search the answer space and converge on the boundary.</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+<dt>Answer Space</dt><dd>The numeric range in which the optimal value lives, e.g. [1, max(arr)] or [min, sum].</dd>
+<dt>Monotone Predicate</dt><dd>A check function such that if check(x) holds, check(x+1) also holds (or vice versa). This monotonicity is what makes binary search work.</dd>
+<dt>Feasibility</dt><dd>"Can we achieve the goal at value x?" — typically encoded by a greedy or counting routine.</dd>
+<dt>Minimize / Maximize</dt><dd>Two variants: <em>min x s.t. check(x)</em> (push hi=mid) vs. <em>max x s.t. check(x)</em> (push lo=mid+1).</dd>
+<dt>Greedy Check</dt><dd>Most predicates simulate a greedy distribution / packing / placement at parameter x and count whether it meets the constraint.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127919; When to use Binary Search on Answers</h2>
+<ul style="margin-left:24px">
+<li>Problem asks "min / max value of X such that some count/feasibility holds."</li>
+<li>Brute force would test every candidate answer ⇒ too slow.</li>
+<li>The check at each candidate is fast (O(n) or O(n log n)).</li>
+<li>Monotonicity is obvious: if a slower / smaller X works, a faster / larger X works too.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>&#127981; The 5 Sub-Patterns</h2>
+<div class="types">
+<div class="type t1"><h3>1. Minimize X (rate / capacity)</h3>
+<p>Find smallest X s.t. work fits a constraint.</p>
+<p><code>BS [1, max]; predicate: workNeeded(X) &le; limit</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Koko, Capacity-to-Ship, Smallest Divisor</em></p></div>
+
+<div class="type t2"><h3>2. Maximize X (gap / per-share)</h3>
+<p>Find largest X feasible — usually "best minimum among many."</p>
+<p><code>BS [1, max]; predicate: greedy(X) &ge; required</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Aggressive Cows, Magnetic Force, Candies to K</em></p></div>
+
+<div class="type t3"><h3>3. Minimize max-of-groups (partition)</h3>
+<p>Split array into k contiguous parts; minimize max part-sum.</p>
+<p><code>BS [max(arr), sum(arr)]; predicate: greedy splits &le; k</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Allocate Pages, Painter's Partition, Split-Array, Ship-Packages</em></p></div>
+
+<div class="type t4"><h3>4. Real-valued / sqrt predicates</h3>
+<p>Answer is a real number or has a nonlinear predicate.</p>
+<p><code>BS integer [1, hi]; predicate uses sqrt, ceil, fractional time</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Nth Root, Min Speed on Time, Repair Cars</em></p></div>
+
+<div class="type t5"><h3>5. Partition / index binary search</h3>
+<p>BS the split index, not the value itself.</p>
+<p><code>BS partition i; verify with O(1) comparison</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Median of Two Sorted Arrays</em></p></div>
+</div>
+</div>
+
+<div class="section purple">
+<h2>&#9881;&#65039; Universal Templates</h2>
+<p><strong>MIN x s.t. check(x):</strong></p>
+<pre>int lo = lowBound, hi = highBound;
+while (lo &lt; hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (check(mid)) hi = mid;       // mid feasible — try smaller
+    else            lo = mid + 1;   // need larger
+}
+return lo;</pre>
+<p><strong>MAX x s.t. check(x):</strong></p>
+<pre>int lo = lowBound, hi = highBound;
+while (lo &lt; hi) {
+    int mid = lo + (hi - lo + 1) / 2;   // upper mid (avoid infinite loop)
+    if (check(mid)) lo = mid;           // mid feasible — try larger
+    else            hi = mid - 1;
+}
+return lo;</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity Profile</h2>
+<table><thead><tr><th>Step</th><th>Cost</th></tr></thead><tbody>
+<tr><td>Outer BS</td><td>O(log(hi - lo))</td></tr>
+<tr><td>Inner check</td><td>O(n) typical (sometimes O(n log n))</td></tr>
+<tr><td>Total</td><td>O(n · log(range))</td></tr>
+</tbody></table>
+</div>
+
+<div class="section">
+<h2>&#128218; Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th></tr></thead><tbody>
+<tr id="p01"><td>1</td><td><a href="P01_Koko_Eating_Bananas.html">Koko Eating Bananas</a></td><td>Minimize rate · sum(ceil)</td><td class="diff-m">Medium</td></tr>
+<tr id="p02"><td>2</td><td><a href="P02_Minimum_Number_of_Days_to_Make_m_Bouquets.html">Min Days for m Bouquets</a></td><td>BS day + adjacent runs</td><td class="diff-m">Medium</td></tr>
+<tr id="p03"><td>3</td><td><a href="P03_Capacity_To_Ship_Packages_Within_D_Days.html">Ship Within D Days</a></td><td>BS capacity + greedy days</td><td class="diff-m">Medium</td></tr>
+<tr id="p04"><td>4</td><td><a href="P04_Nth_Root_of_a_Number.html">Nth Root of a Number</a></td><td>BS x with safe pow</td><td class="diff-m">Medium</td></tr>
+<tr id="p05"><td>5</td><td><a href="P05_Allocate_Minimum_Number_of_Pages.html">Allocate Minimum Pages</a></td><td>BS pages + greedy students</td><td class="diff-h">Hard</td></tr>
+<tr id="p06"><td>6</td><td><a href="P06_Aggressive_Cows.html">Aggressive Cows</a></td><td>Max-Min distance</td><td class="diff-m">Medium</td></tr>
+<tr id="p07"><td>7</td><td><a href="P07_Minimize_the_Maximum_of_Two_Arrays.html">Minimize Max of Two Arrays</a></td><td>BS + Inclusion-Exclusion</td><td class="diff-m">Medium</td></tr>
+<tr id="p08"><td>8</td><td><a href="P08_Split_Array_Largest_Sum.html">Split Array Largest Sum</a></td><td>BS + greedy splits</td><td class="diff-h">Hard</td></tr>
+<tr id="p09"><td>9</td><td><a href="P09_Find_Smallest_Divisor.html">Find Smallest Divisor</a></td><td>BS divisor · sum(ceil)</td><td class="diff-m">Medium</td></tr>
+<tr id="p10"><td>10</td><td><a href="P10_Magnetic_Force_Between_Balls.html">Magnetic Force Between Balls</a></td><td>Max-Min placement</td><td class="diff-m">Medium</td></tr>
+<tr id="p11"><td>11</td><td><a href="P11_Minimum_Speed_to_Arrive_on_Time.html">Min Speed to Arrive on Time</a></td><td>BS speed · ceil + fractional</td><td class="diff-m">Medium</td></tr>
+<tr id="p12"><td>12</td><td><a href="P12_Maximum_Candies_Allocated_to_K_Children.html">Max Candies for K Children</a></td><td>BS per-share · sum(floor)</td><td class="diff-m">Medium</td></tr>
+<tr id="p13"><td>13</td><td><a href="P13_Minimized_Maximum_of_Products_Distributed.html">Minimized Max Products</a></td><td>BS x · sum(ceil)</td><td class="diff-m">Medium</td></tr>
+<tr id="p14"><td>14</td><td><a href="P14_Earliest_Day_to_Make_Bouquets.html">Earliest Day for Bouquets</a></td><td>BS day + groups</td><td class="diff-m">Medium</td></tr>
+<tr id="p15"><td>15</td><td><a href="P15_House_Robber_IV.html">House Robber IV</a></td><td>BS capability + non-adj greedy</td><td class="diff-m">Medium</td></tr>
+<tr id="p16"><td>16</td><td><a href="P16_Maximum_Running_Time_of_N_Computers.html">Max Running Time N Computers</a></td><td>BS time · sum(min)</td><td class="diff-h">Hard</td></tr>
+<tr id="p17"><td>17</td><td><a href="P17_Minimum_Time_to_Complete_Trips.html">Min Time to Complete Trips</a></td><td>BS time · sum(t/time)</td><td class="diff-m">Medium</td></tr>
+<tr id="p18"><td>18</td><td><a href="P18_Minimum_Time_to_Repair_Cars.html">Min Time to Repair Cars</a></td><td>BS time · sum(sqrt)</td><td class="diff-m">Medium</td></tr>
+<tr id="p19"><td>19</td><td><a href="P19_Painters_Partition_Problem.html">Painter's Partition</a></td><td>BS time + greedy painters</td><td class="diff-h">Hard</td></tr>
+<tr id="p20"><td>20</td><td><a href="P20_Median_of_Two_Sorted_Arrays.html">Median of Two Sorted Arrays</a></td><td>BS partition index</td><td class="diff-h">Hard</td></tr>
+</tbody></table>
+</div>
+
+<div class="footer">Binary Search &middot; On Answers Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body></html>

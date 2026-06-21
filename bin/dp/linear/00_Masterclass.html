@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>DP Linear Masterclass</title>
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.65}
+h1{font-size:1.9rem;color:#0f172a}
+h2{font-size:1.2rem;color:#1e40af;margin-top:24px}
+.lede{background:#eff6ff;border-left:4px solid #2563eb;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.84rem}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.92rem}
+th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left}
+th{background:#f1f5f9}
+.E{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.M{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.H{background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.jargon dt{font-weight:700;color:#1e40af;margin-top:8px}
+</style></head>
+<body>
+<a href="../00_Index.html" style="color:#2563eb">&larr; Back to Topics</a>
+<h1>26.1 DP Linear — Masterclass</h1>
+<div class="lede">Linear DP solves problems on a 1-D structure (array, string, sequence of decisions). State = "best answer using first i elements"; transition = "what choice do I make at position i?" Once you find the recurrence, the implementation is usually just one for-loop.</div>
+
+<div class="box"><h2>Jargon Buster</h2>
+<dl class="jargon">
+<dt>Optimal substructure</dt><dd>Best answer at <code>i</code> built from best answers at smaller indices. Required for DP to work.</dd>
+<dt>Overlapping subproblems</dt><dd>Same subproblem solved many times in naïve recursion. Memoise it.</dd>
+<dt>Top-down (memo)</dt><dd>Recursion + cache. Easy to write; sometimes deeper than stack allows.</dd>
+<dt>Bottom-up (table)</dt><dd>Fill <code>dp[]</code> from base case upward. Usually iterative; avoids recursion limits.</dd>
+<dt>Rolling array</dt><dd>If <code>dp[i]</code> only needs <code>dp[i-1]</code> and <code>dp[i-2]</code>, store just two scalars. O(1) space.</dd>
+<dt>Kadane</dt><dd>Linear DP for max-subarray: <code>cur = max(x, cur + x)</code>.</dd>
+</dl></div>
+
+<div class="box"><h2>Java — Generic 1-D Template</h2>
+<pre>int n = nums.length;
+int[] dp = new int[n + 1];
+dp[0] = BASE;                          // base case
+for (int i = 1; i &lt;= n; i++) {
+    dp[i] = combine(dp[i-1], dp[i-2], ..., nums[i-1]);
+}
+return dp[n];</pre></div>
+
+<div class="box"><h2>Java — Rolling Array Template</h2>
+<pre>int prev2 = base0, prev1 = base1;
+for (int i = 2; i &lt;= n; i++) {
+    int cur = combine(prev1, prev2, nums[i-1]);
+    prev2 = prev1; prev1 = cur;
+}
+return prev1;</pre></div>
+
+<div class="box"><h2>Problem Index</h2>
+<table>
+<tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th><th>Guide</th></tr>
+<tr><td>P01</td><td>Fibonacci Number</td><td>Recurrence</td><td><span class="E">Easy</span></td><td><a href="P01_Fibonacci_Number.html">open</a></td></tr>
+<tr><td>P02</td><td>Climbing Stairs</td><td>Recurrence</td><td><span class="E">Easy</span></td><td><a href="P02_Climbing_Stairs.html">open</a></td></tr>
+<tr><td>P03</td><td>Min Cost Climbing Stairs</td><td>1-D DP</td><td><span class="E">Easy</span></td><td><a href="P03_Min_Cost_Climbing_Stairs.html">open</a></td></tr>
+<tr><td>P04</td><td>House Robber</td><td>take/skip DP</td><td><span class="M">Medium</span></td><td><a href="P04_House_Robber.html">open</a></td></tr>
+<tr><td>P05</td><td>House Robber II</td><td>Circular twist</td><td><span class="M">Medium</span></td><td><a href="P05_House_Robber_II.html">open</a></td></tr>
+<tr><td>P06</td><td>Maximum Subarray</td><td>Kadane</td><td><span class="M">Medium</span></td><td><a href="P06_Maximum_Subarray.html">open</a></td></tr>
+<tr><td>P07</td><td>Maximum Product Subarray</td><td>Track min&amp;max</td><td><span class="M">Medium</span></td><td><a href="P07_Maximum_Product_Subarray.html">open</a></td></tr>
+<tr><td>P08</td><td>Longest Increasing Subsequence</td><td>LIS</td><td><span class="M">Medium</span></td><td><a href="P08_Longest_Increasing_Subsequence.html">open</a></td></tr>
+<tr><td>P09</td><td>Word Break</td><td>String 1-D DP</td><td><span class="M">Medium</span></td><td><a href="P09_Word_Break.html">open</a></td></tr>
+<tr><td>P10</td><td>Decode Ways</td><td>1-D count DP</td><td><span class="M">Medium</span></td><td><a href="P10_Decode_Ways.html">open</a></td></tr>
+<tr><td>P11</td><td>Jump Game</td><td>Greedy reach</td><td><span class="M">Medium</span></td><td><a href="P11_Jump_Game.html">open</a></td></tr>
+<tr><td>P12</td><td>Jump Game II</td><td>BFS-style levels</td><td><span class="M">Medium</span></td><td><a href="P12_Jump_Game_II.html">open</a></td></tr>
+<tr><td>P13</td><td>Best Time Stock I</td><td>Track min</td><td><span class="E">Easy</span></td><td><a href="P13_Best_Time_Stock_I.html">open</a></td></tr>
+<tr><td>P14</td><td>Best Time Stock w/ Cooldown</td><td>3-state DP</td><td><span class="M">Medium</span></td><td><a href="P14_Best_Time_Stock_With_Cooldown.html">open</a></td></tr>
+<tr><td>P15</td><td>Longest Palindromic Subsequence</td><td>2-D interval DP</td><td><span class="M">Medium</span></td><td><a href="P15_Longest_Palindromic_Subsequence.html">open</a></td></tr>
+<tr><td>P16</td><td>Delete and Earn</td><td>Bucket + Robber</td><td><span class="M">Medium</span></td><td><a href="P16_Delete_and_Earn.html">open</a></td></tr>
+<tr><td>P17</td><td>Partition Equal Subset Sum</td><td>Subset-sum DP</td><td><span class="M">Medium</span></td><td><a href="P17_Partition_Equal_Subset_Sum.html">open</a></td></tr>
+<tr><td>P18</td><td>Max Sum Non-Adjacent</td><td>take/skip</td><td><span class="M">Medium</span></td><td><a href="P18_Maximum_Sum_of_Non_Adjacent.html">open</a></td></tr>
+<tr><td>P19</td><td>Longest Arithmetic Subseq</td><td>(end, diff) DP</td><td><span class="M">Medium</span></td><td><a href="P19_Longest_Arithmetic_Subseq.html">open</a></td></tr>
+<tr><td>P20</td><td>Paint Fence</td><td>same/diff DP</td><td><span class="E">Easy</span></td><td><a href="P20_Paint_Fence.html">open</a></td></tr>
+</table></div>
+</body></html>

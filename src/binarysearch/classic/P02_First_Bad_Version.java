@@ -1,5 +1,7 @@
 package binarysearch.classic;
 
+import util.Test;
+
 /**
  * First Bad Version
  * Topic    : Binary Search
@@ -24,7 +26,10 @@ public class P02_First_Bad_Version {
 
     public static void main(String[] args) {
         P02_First_Bad_Version sol = new P02_First_Bad_Version();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1", sol.firstBadVersion(5), 4);
+
+        Test.summary();
     }
 }

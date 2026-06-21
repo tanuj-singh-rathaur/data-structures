@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P20 – Median of Two Sorted Arrays</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.hard{background:#fee2e2;color:#b91c1c}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; On Answers Masterclass</a> &rsaquo; BS partition index</div>
+<h1>P20 &mdash; Median of Two Sorted Arrays</h1>
+<div class="meta"><span class="badge hard">Hard</span> &bull; LC #4 &bull; Pattern: <strong>BS partition i in smaller array</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Two sorted arrays nums1 (size m) and nums2 (size n). Return the median of the combined array in O(log(min(m, n))).</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Partition</dt><dd>Choose i in [0, m] and j = (m + n + 1)/2 − i in [0, n]. Combined left = nums1[0..i) ∪ nums2[0..j).</dd>
+<dt>Valid Partition</dt><dd>max(left1, left2) ≤ min(right1, right2) — left half maxes ≤ right half mins.</dd>
+<dt>Sentinels</dt><dd>−∞ for empty-left, +∞ for empty-right to handle boundary cases.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Don't merge. Split both arrays into "left" and "right" halves with the right element counts so that the median can be read off the four boundary values.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Binary searching the partition index in the smaller array converges in O(log min(m, n)) — far better than the O(m + n) merge.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Make nums1 the smaller. BS i in [0, m]; j = (m + n + 1)/2 − i.</li>
+<li>If L1 &gt; R2: shrink hi. If L2 &gt; R1: increase lo. Else partition valid.</li>
+<li>Odd total ⇒ max(L1, L2). Even ⇒ (max(L1, L2) + min(R1, R2)) / 2.0.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public double findMedianSortedArrays(int[] a, int[] b) {
+    if (a.length &gt; b.length) return findMedianSortedArrays(b, a);
+    int m = a.length, n = b.length, half = (m + n + 1) / 2;
+    int lo = 0, hi = m;
+    while (lo &lt;= hi) {
+        int i = lo + (hi - lo) / 2;
+        int j = half - i;
+        int L1 = i == 0 ? Integer.MIN_VALUE : a[i - 1];
+        int R1 = i == m ? Integer.MAX_VALUE : a[i];
+        int L2 = j == 0 ? Integer.MIN_VALUE : b[j - 1];
+        int R2 = j == n ? Integer.MAX_VALUE : b[j];
+        if (L1 &lt;= R2 &amp;&amp; L2 &lt;= R1) {
+            if (((m + n) &amp; 1) == 1) return Math.max(L1, L2);
+            return (Math.max(L1, L2) + Math.min(R1, R2)) / 2.0;
+        } else if (L1 &gt; R2) hi = i - 1;
+        else                  lo = i + 1;
+    }
+    return 0.0;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(log min(m, n))</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; BS-on-Answers Pattern</h2>
+<div class="pattern-box"><strong>BS the Index, Not the Value:</strong> Some problems search the partition position rather than the answer's numeric value. The structure is identical: monotone predicate, binary squeeze.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Always BS the smaller array — both bounds tighter and avoids out-of-range issues.</div>
+
+<div class="footer">Binary Search · On Answers Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

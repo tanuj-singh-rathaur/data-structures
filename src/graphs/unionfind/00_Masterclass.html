@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Union-Find Masterclass</title>
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.65}
+h1{font-size:1.9rem;color:#0f172a}
+h2{font-size:1.2rem;color:#1e40af;margin-top:24px}
+.lede{background:#eff6ff;border-left:4px solid #2563eb;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.84rem}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.92rem}
+th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left}
+th{background:#f1f5f9}
+.E{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.M{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.H{background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.jargon dt{font-weight:700;color:#1e40af;margin-top:8px}
+</style></head>
+<body>
+<a href="../00_Index.html" style="color:#2563eb">&larr; Back to Topics</a>
+<h1>25.5 Union-Find (DSU) — Masterclass</h1>
+<div class="lede">Union-Find (Disjoint Set Union, DSU) maintains a partition of elements into disjoint sets while supporting two operations: <strong>find(x)</strong> (which set?) and <strong>union(x, y)</strong> (merge sets). With path compression + union-by-rank, both operations run in effectively O(α(n)) — practically constant time.</div>
+
+<div class="box"><h2>Jargon Buster</h2>
+<dl class="jargon">
+<dt>DSU / Union-Find</dt><dd>Same thing — Disjoint Set Union. A forest where each tree represents one set; root is the canonical label.</dd>
+<dt>Path compression</dt><dd>During <code>find</code>, point every visited node directly to the root. Flattens the tree.</dd>
+<dt>Union by rank/size</dt><dd>When merging, hang the shorter tree under the taller one. Keeps heights small.</dd>
+<dt>α(n)</dt><dd>Inverse Ackermann — grows so slowly it's bounded by 5 for any practical n.</dd>
+<dt>Weighted Union-Find</dt><dd>Each node stores a value relative to its parent (e.g., ratio, offset). Maintain that value through path compression.</dd>
+</dl></div>
+
+<div class="box"><h2>Java — Standard DSU</h2>
+<pre>class DSU {
+    int[] parent, rank;
+    int components;
+    DSU(int n) {
+        parent = new int[n]; rank = new int[n]; components = n;
+        for (int i = 0; i &lt; n; i++) parent[i] = i;
+    }
+    int find(int x) {
+        while (parent[x] != x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+        return x;
+    }
+    boolean union(int a, int b) {
+        int ra = find(a), rb = find(b);
+        if (ra == rb) return false;
+        if (rank[ra] &lt; rank[rb]) { int t = ra; ra = rb; rb = t; }
+        parent[rb] = ra;
+        if (rank[ra] == rank[rb]) rank[ra]++;
+        components--;
+        return true;
+    }
+}</pre></div>
+
+<div class="box"><h2>When to reach for DSU</h2>
+<ul>
+<li><strong>Connectivity questions:</strong> "Are these two in the same group?" / "How many groups?"</li>
+<li><strong>Dynamic edge insertions</strong> (offline can also handle deletions via reverse-time tricks)</li>
+<li><strong>MST via Kruskal</strong> — sort edges, union if disjoint</li>
+<li><strong>Grouping by equivalence</strong> (== relations, swap groups, account merging)</li>
+<li><strong>Cycle detection</strong> in undirected graphs (union returns false ⇒ cycle)</li>
+</ul></div>
+
+<div class="box"><h2>Problem Index</h2>
+<table>
+<tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th><th>Guide</th></tr>
+<tr><td>P01</td><td>Number of Provinces</td><td>Connectivity</td><td><span class="M">Medium</span></td><td><a href="P01_Number_of_Provinces.html">open</a></td></tr>
+<tr><td>P02</td><td>Redundant Connection</td><td>Cycle detection</td><td><span class="M">Medium</span></td><td><a href="P02_Redundant_Connection.html">open</a></td></tr>
+<tr><td>P03</td><td>Accounts Merge</td><td>Equivalence by shared key</td><td><span class="M">Medium</span></td><td><a href="P03_Accounts_Merge.html">open</a></td></tr>
+<tr><td>P04</td><td>Number of Islands II</td><td>Online connectivity</td><td><span class="H">Hard</span></td><td><a href="P04_Number_of_Islands_II.html">open</a></td></tr>
+<tr><td>P05</td><td>Most Stones Removed</td><td>Row/col equivalence</td><td><span class="M">Medium</span></td><td><a href="P05_Most_Stones_Removed.html">open</a></td></tr>
+<tr><td>P06</td><td>Satisfiability of Equality</td><td>== then !=</td><td><span class="M">Medium</span></td><td><a href="P06_Satisfiability_of_Equality.html">open</a></td></tr>
+<tr><td>P07</td><td>Evaluate Division</td><td>Weighted DSU</td><td><span class="M">Medium</span></td><td><a href="P07_Evaluate_Division.html">open</a></td></tr>
+<tr><td>P08</td><td>Smallest String With Swaps</td><td>Sort within group</td><td><span class="M">Medium</span></td><td><a href="P08_Smallest_String_With_Swaps.html">open</a></td></tr>
+<tr><td>P09</td><td>Operations to Connect Network</td><td>Components vs. extra edges</td><td><span class="M">Medium</span></td><td><a href="P09_Number_of_Operations_Network.html">open</a></td></tr>
+<tr><td>P10</td><td>Connecting Cities Min Cost</td><td>Kruskal MST</td><td><span class="M">Medium</span></td><td><a href="P10_Connecting_Cities_Min_Cost.html">open</a></td></tr>
+<tr><td>P11</td><td>Min Cost to Connect All Points</td><td>Kruskal MST</td><td><span class="M">Medium</span></td><td><a href="P11_Min_Cost_to_Connect_All_Points.html">open</a></td></tr>
+<tr><td>P12</td><td>Earliest Moment Friends</td><td>Sort + union</td><td><span class="M">Medium</span></td><td><a href="P12_Earliest_Moment_When_Friends.html">open</a></td></tr>
+<tr><td>P13</td><td>Regions Cut by Slashes</td><td>4-triangle DSU</td><td><span class="M">Medium</span></td><td><a href="P13_Regions_Cut_by_Slashes.html">open</a></td></tr>
+<tr><td>P14</td><td>Couples Holding Hands</td><td>Couple-pair DSU</td><td><span class="H">Hard</span></td><td><a href="P14_Couples_Holding_Hands.html">open</a></td></tr>
+<tr><td>P15</td><td>Bricks Falling When Hit</td><td>Reverse-time DSU</td><td><span class="H">Hard</span></td><td><a href="P15_Bricks_Falling_When_Hit.html">open</a></td></tr>
+<tr><td>P16</td><td>Swim Offline (DSU)</td><td>Sort cells; union</td><td><span class="H">Hard</span></td><td><a href="P16_Swim_With_Time_Offline.html">open</a></td></tr>
+<tr><td>P17</td><td>Lex-Smallest Equivalent String</td><td>Root = smallest char</td><td><span class="M">Medium</span></td><td><a href="P17_Lexicographically_Smallest_Equivalent.html">open</a></td></tr>
+<tr><td>P18</td><td>Remove Max Edges</td><td>Two DSUs</td><td><span class="H">Hard</span></td><td><a href="P18_Remove_Max_Number_of_Edges.html">open</a></td></tr>
+<tr><td>P19</td><td>Process Restricted Friends</td><td>DSU + checks</td><td><span class="H">Hard</span></td><td><a href="P19_Process_Restricted_Friends.html">open</a></td></tr>
+<tr><td>P20</td><td>Min Spanning Tree (Kruskal)</td><td>Classic MST</td><td><span class="M">Medium</span></td><td><a href="P20_Min_Spanning_Tree_Kruskal.html">open</a></td></tr>
+</table></div>
+</body></html>

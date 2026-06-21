@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P16 – Russian Doll Envelopes</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.hard{background:#fee2e2;color:#b91c1c}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; LB/UB Masterclass</a> &rsaquo; Sort + LIS</div>
+<h1>P16 &mdash; Russian Doll Envelopes</h1>
+<div class="meta"><span class="badge hard">Hard</span> &bull; LC #354 &bull; Pattern: <strong>Sort with Tie-Break, then LIS on Heights</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Each envelope has a width and a height. One fits inside another only if both dimensions are strictly smaller. Return the longest nested chain.</p>
+<p><strong>Example:</strong> <code>[[5,4],[6,4],[6,7],[2,3]]</code> → <code>3</code></p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Tie-break sort</dt><dd>Sort by width ascending; for equal widths, sort heights <em>descending</em>. This prevents same-width envelopes from forming a fake chain.</dd>
+<dt>LIS on heights</dt><dd>After sorting, run patience-sort LIS on the heights array. That's the answer.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Sort by width. For ties on width, put the bigger height first (so they can't stack). Now run LIS on heights &mdash; same-width pairs are naturally excluded.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>The descending tie-break is the crux — it prevents same-width envelopes from being counted as a chain when running 1D LIS.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Sort: width asc; ties → height desc.</li>
+<li>Run LIS on heights using patience sort.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int maxEnvelopes(int[][] env) {
+    java.util.Arrays.sort(env, (a, b) -&gt; a[0] != b[0] ? a[0] - b[0] : b[1] - a[1]);
+    int[] tails = new int[env.length];
+    int size = 0;
+    for (int[] e : env) {
+        int x = e[1], L = 0, R = size;
+        while (L &lt; R) {
+            int mid = L + (R - L) / 2;
+            if (tails[mid] &lt; x) L = mid + 1;
+            else                R = mid;
+        }
+        tails[L] = x;
+        if (L == size) size++;
+    }
+    return size;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n log n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(n)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; LB/UB Pattern</h2>
+<div class="pattern-box"><strong>Sort + LIS:</strong> Reducing a 2D ordering problem to a 1D LIS via a careful sort with descending tie-break.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Always remember the descending tie-break. Without it, equal-width envelopes form an invalid 2D chain.</div>
+
+<div class="footer">Binary Search · Lower / Upper Bound Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

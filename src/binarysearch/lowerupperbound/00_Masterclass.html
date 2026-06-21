@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Binary Search · Lower / Upper Bound Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}.t4{border-left-color:#7c3aed;background:#faf5ff}.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}
+.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}
+.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{body{background:#fff}.page{padding:20px}.section{break-inside:avoid}pre,code{break-inside:avoid}header{break-after:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Binary Search · Lower / Upper Bound &mdash; Complete Masterclass</h1>
+  <div class="meta">Binary Search &rsaquo; Lower / Upper Bound &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Are Lower &amp; Upper Bound? (Layman's Explanation)</h2>
+<p>Imagine a sorted list of phone numbers. A &ldquo;lower bound&rdquo; question asks: <em>where would I insert this number to keep the list sorted?</em> An &ldquo;upper bound&rdquo; question asks: <em>where does the next bigger number begin?</em></p>
+<p>These two boundary searches are the swiss army knife of binary search. They let you count occurrences, find nearest elements, answer "k-th smallest" questions, run patience-sort LIS, and bridge DP transitions &mdash; all in O(log n).</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster (Confusing Terms Explained)</h2>
+<div class="glossary"><dl>
+  <dt>Lower bound (LB)</dt><dd>Smallest index <code>i</code> with <code>arr[i] &ge; target</code>. If everything is smaller, LB = n.</dd>
+  <dt>Upper bound (UB)</dt><dd>Smallest index <code>i</code> with <code>arr[i] &gt; target</code>. If everything is &le;, UB = n.</dd>
+  <dt>Count of equal values</dt><dd><code>UB(t) − LB(t)</code> = number of times <code>t</code> appears in a sorted array. One identity, two boundary calls.</dd>
+  <dt>"First occurrence" / "last occurrence"</dt><dd>First = LB(t); last = UB(t) − 1.</dd>
+  <dt>Binary search on the answer</dt><dd>Sometimes the array is implicit. You binary search a candidate <em>value</em> v and ask "how many things ≤ v?" That count is monotonic in v &rarr; lower / upper bound applies.</dd>
+  <dt>Patience sort</dt><dd>The classic O(n log n) LIS trick: keep a sorted "tails" array. For each new number, lower-bound it in tails &mdash; replace if found, append if not. The length of tails is the LIS length.</dd>
+  <dt>Half-open vs closed</dt><dd>Lower / upper bound is cleanest with half-open: <code>L = 0, R = n</code>, loop while <code>L &lt; R</code>. Answer = L.</dd>
+  <dt>Floor / ceil</dt><dd>Floor = last index with value &le; target = UB − 1. Ceil = first index with value &ge; target = LB.</dd>
+  <dt>Java equivalents</dt><dd><code>Arrays.binarySearch</code> returns <em>insertion point</em> when not found (= LB). Easy substitute for primitive arrays; use <code>Collections.binarySearch</code> for lists. (Both behaviors when present aren't always what you want &mdash; rolling your own LB/UB is safer.)</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Lower / Upper Bound?</h2>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>"First / last occurrence of X in sorted array"</li>
+  <li>"How many values are &le; X / &lt; X / == X"</li>
+  <li>"Closest element to target" → LB + check LB&minus;1</li>
+  <li>"K-th smallest" → binary search the answer value; count ≤ v</li>
+  <li>"Insert into sorted, kept sorted" / "first interval that starts ≥ end"</li>
+  <li>"Longest increasing subsequence" via patience sort</li>
+  <li>"Compatible job for DP transition" / "next event after time t"</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 5 Types of Lower / Upper Bound &mdash; Full Breakdown</h2>
+
+<!-- TYPE 1 — FIRST/LAST OCCURRENCE -->
+<div class="type-card t1">
+<div class="type-title">&#9312; First / Last Occurrence (and Count)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Find where the target's run starts and ends in a sorted array.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Find First and Last Position of Element in Sorted Array"</li>
+  <li>"How many times does X appear?"</li>
+  <li>"First occurrence ≥ target", "last occurrence &lt; target"</li>
+</ul>
+<p><strong>The identities:</strong></p>
+<ul>
+  <li>first(t) = LB(t)</li>
+  <li>last(t) = UB(t) − 1</li>
+  <li>count(t) = UB(t) − LB(t)</li>
+</ul>
+</div>
+
+<strong>Code Template:</strong>
+<pre>int lowerBound(int[] a, int t) {
+    int L = 0, R = a.length;
+    while (L &lt; R) {
+        int mid = L + (R - L) / 2;
+        if (a[mid] &gt;= t) R = mid;
+        else             L = mid + 1;
+    }
+    return L;
+}
+int upperBound(int[] a, int t) {
+    int L = 0, R = a.length;
+    while (L &lt; R) {
+        int mid = L + (R - L) / 2;
+        if (a[mid] &gt; t) R = mid;
+        else            L = mid + 1;
+    }
+    return L;
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 First and Last Position</span>
+</div>
+</div>
+
+<!-- TYPE 2 — NUMERIC LB/UB -->
+<div class="type-card t2">
+<div class="type-title">&#9313; Numeric Lower / Upper Bound (Boundary on Math Predicate)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> The "array" is implicit &mdash; integers 1..N or 1..M. The predicate is mathematical (mid² ≤ x, missing(mid) &lt; k, etc.).</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Sqrt(x)" → largest k with k² ≤ x</li>
+  <li>"Kth Missing Positive" → smallest i where missing(i) ≥ k</li>
+  <li>"Find Duplicate Number" → binary search value v with count(≤ v) ≥ v+1</li>
+</ul>
+</div>
+
+<strong>Code Template (Sqrt(x)):</strong>
+<pre>public int mySqrt(int x) {
+    long L = 0, R = x;
+    while (L &lt; R) {
+        long mid = L + (R - L + 1) / 2;   // upper-mid for "largest k" search
+        if (mid * mid &lt;= x) L = mid;
+        else                R = mid - 1;
+    }
+    return (int) L;
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 Sqrt(x)</span>
+  <span class="prob-tag">P07 Find Duplicate Number</span>
+  <span class="prob-tag">P08 Kth Missing Positive</span>
+</div>
+</div>
+
+<!-- TYPE 3 — BS ON ANSWER (KTH) -->
+<div class="type-card t3">
+<div class="type-title">&#9314; Binary Search on the Answer (K-th Smallest)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> You can't directly access the k-th element, but you can <em>count</em> how many things are ≤ a candidate value. Binary search the candidate; find the smallest value v with count(≤ v) ≥ k.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"K-th smallest in sorted matrix / multiplication table / fraction list / pair distances"</li>
+  <li>"Median of two sorted arrays" (partition-based, advanced variant)</li>
+</ul>
+<p><strong>The pattern:</strong></p>
+<ul>
+  <li>Binary search v in [low_value, high_value]</li>
+  <li>For each v, count entries ≤ v in O(n)</li>
+  <li>Smallest v with count ≥ k is the answer</li>
+</ul>
+</div>
+
+<strong>Code Template (Kth in sorted matrix):</strong>
+<pre>public int kthSmallest(int[][] m, int k) {
+    int n = m.length, lo = m[0][0], hi = m[n-1][n-1];
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        int cnt = 0, j = n - 1;
+        for (int i = 0; i &lt; n; i++) {
+            while (j &gt;= 0 &amp;&amp; m[i][j] &gt; mid) j--;
+            cnt += j + 1;
+        }
+        if (cnt &lt; k) lo = mid + 1;
+        else         hi = mid;
+    }
+    return lo;
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P03 Kth in Sorted Matrix</span>
+  <span class="prob-tag">P06 Median of Two Sorted</span>
+  <span class="prob-tag">P12 Kth Smallest Pair Distance</span>
+  <span class="prob-tag">P13 Kth in Multiplication Table</span>
+  <span class="prob-tag">P14 Kth Smallest Prime Fraction</span>
+</div>
+</div>
+
+<!-- TYPE 4 — PER-QUERY LB -->
+<div class="type-card t4">
+<div class="type-title">&#9315; Per-Query Lower Bound (Lookup Table Pattern)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> You build a sorted lookup table once; each query is answered by a lower / upper bound on it.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"For each X, find the closest Y" / "next event after time t"</li>
+  <li>"Heaters", "Find Right Interval", "Random Pick with Weight" (prefix sums)</li>
+  <li>"Online Election" — precomputed leader per timestamp, q() = upper bound on times</li>
+</ul>
+<p><strong>The pattern:</strong></p>
+<ul>
+  <li>Sort / precompute the lookup once: O(n log n)</li>
+  <li>Each query: O(log n) via LB / UB</li>
+  <li>Total: O((n + q) log n)</li>
+</ul>
+</div>
+
+<strong>Code Template (Heaters):</strong>
+<pre>public int findRadius(int[] houses, int[] heaters) {
+    Arrays.sort(heaters);
+    int radius = 0;
+    for (int h : houses) {
+        int idx = lowerBound(heaters, h);
+        int dRight = idx &lt; heaters.length ? heaters[idx] - h : Integer.MAX_VALUE;
+        int dLeft  = idx &gt; 0              ? h - heaters[idx-1] : Integer.MAX_VALUE;
+        radius = Math.max(radius, Math.min(dLeft, dRight));
+    }
+    return radius;
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P04 Find K Closest</span>
+  <span class="prob-tag">P09 Random Pick with Weight</span>
+  <span class="prob-tag">P10 Heaters</span>
+  <span class="prob-tag">P11 Find Right Interval</span>
+  <span class="prob-tag">P18 Smallest Common in Rows</span>
+  <span class="prob-tag">P19 Online Election</span>
+</div>
+</div>
+
+<!-- TYPE 5 — PATIENCE SORT / DP + LB -->
+<div class="type-card t5">
+<div class="type-title">&#9316; Patience Sort / DP Transition via LB</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Maintain a sorted helper array; insert each new element via lower bound. Powers O(n log n) LIS and many DP problems where the transition depends on "next compatible item."</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Longest Increasing Subsequence" / "Russian Doll Envelopes"</li>
+  <li>"Maximum Profit in Job Scheduling" (DP[i] uses LB on start times)</li>
+  <li>"Count of Smaller Numbers After Self" (BIT or sorted insert + LB)</li>
+  <li>"Maximum Number of Removable Characters" (binary search the maximum prefix length)</li>
+</ul>
+</div>
+
+<strong>Code Template (LIS):</strong>
+<pre>public int lengthOfLIS(int[] nums) {
+    int[] tails = new int[nums.length];
+    int size = 0;
+    for (int x : nums) {
+        int L = 0, R = size;
+        while (L &lt; R) {
+            int mid = L + (R - L) / 2;
+            if (tails[mid] &lt; x) L = mid + 1;
+            else                R = mid;
+        }
+        tails[L] = x;
+        if (L == size) size++;
+    }
+    return size;
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P05 Count Smaller After Self</span>
+  <span class="prob-tag">P15 Longest Increasing Subseq</span>
+  <span class="prob-tag">P16 Russian Doll Envelopes</span>
+  <span class="prob-tag">P17 Max Removable Characters</span>
+  <span class="prob-tag">P20 Max Profit Job Scheduling</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal Lower / Upper Bound Templates</h2>
+<pre>// Lower bound: smallest i with a[i] &gt;= t
+int lowerBound(int[] a, int t) {
+    int L = 0, R = a.length;
+    while (L &lt; R) {
+        int mid = L + (R - L) / 2;
+        if (a[mid] &gt;= t) R = mid;
+        else             L = mid + 1;
+    }
+    return L;
+}
+
+// Upper bound: smallest i with a[i] &gt; t
+int upperBound(int[] a, int t) {
+    int L = 0, R = a.length;
+    while (L &lt; R) {
+        int mid = L + (R - L) / 2;
+        if (a[mid] &gt; t) R = mid;
+        else            L = mid + 1;
+    }
+    return L;
+}
+
+// Identities:
+//   count(t) = UB(t) - LB(t)
+//   first(t) = LB(t)
+//   last(t)  = UB(t) - 1
+//   floor(t) = UB(t) - 1   (largest i with a[i] &lt;= t)
+//   ceil(t)  = LB(t)       (smallest i with a[i] &gt;= t)</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Brute force</div><div class="kv-val">O(n) per query</div></div><div class="kv-item"><div class="kv-label">LB / UB</div><div class="kv-val">O(log n)</div></div><div class="kv-item"><div class="kv-label">Kth on value</div><div class="kv-val">O(n · log(range))</div></div><div class="kv-item"><div class="kv-label">Patience sort LIS</div><div class="kv-val">O(n log n)</div></div></div>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_Find_First_and_Last_Position_of_Element_in_Sorted_Array.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_Find_First_and_Last_Position_of_Element_in_Sorted_Array.html" style="color:#2563eb;text-decoration:none">First and Last Position</a></td><td style="padding:7px;text-align:center">34</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">First / Last Occurrence</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_Sqrt_x.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_Sqrt_x.html" style="color:#2563eb;text-decoration:none">Sqrt(x)</a></td><td style="padding:7px;text-align:center">69</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Numeric LB/UB</td></tr>
+<tr><td style="padding:7px"><a href="P03_Kth_Smallest_Element_in_Sorted_Matrix.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_Kth_Smallest_Element_in_Sorted_Matrix.html" style="color:#2563eb;text-decoration:none">Kth in Sorted Matrix</a></td><td style="padding:7px;text-align:center">378</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">BS on Answer</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_Find_K_Closest_Elements.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_Find_K_Closest_Elements.html" style="color:#2563eb;text-decoration:none">Find K Closest Elements</a></td><td style="padding:7px;text-align:center">658</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Per-Query LB</td></tr>
+<tr><td style="padding:7px"><a href="P05_Count_of_Smaller_Numbers_After_Self.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_Count_of_Smaller_Numbers_After_Self.html" style="color:#2563eb;text-decoration:none">Count Smaller After Self</a></td><td style="padding:7px;text-align:center">315</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Sorted Insert + LB</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_Median_of_Two_Sorted_Arrays.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_Median_of_Two_Sorted_Arrays.html" style="color:#2563eb;text-decoration:none">Median of Two Sorted Arrays</a></td><td style="padding:7px;text-align:center">4</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">BS the Partition</td></tr>
+<tr><td style="padding:7px"><a href="P07_Find_the_Duplicate_Number.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_Find_the_Duplicate_Number.html" style="color:#2563eb;text-decoration:none">Find the Duplicate Number</a></td><td style="padding:7px;text-align:center">287</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">BS on Value Range</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_Kth_Missing_Positive_Number.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_Kth_Missing_Positive_Number.html" style="color:#2563eb;text-decoration:none">Kth Missing Positive</a></td><td style="padding:7px;text-align:center">1539</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Numeric LB on Missing</td></tr>
+<tr><td style="padding:7px"><a href="P09_Random_Pick_with_Weight.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_Random_Pick_with_Weight.html" style="color:#2563eb;text-decoration:none">Random Pick with Weight</a></td><td style="padding:7px;text-align:center">528</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Prefix Sum + UB</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_Heaters.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_Heaters.html" style="color:#2563eb;text-decoration:none">Heaters</a></td><td style="padding:7px;text-align:center">475</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">LB per House</td></tr>
+<tr><td style="padding:7px"><a href="P11_Find_Right_Interval.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_Find_Right_Interval.html" style="color:#2563eb;text-decoration:none">Find Right Interval</a></td><td style="padding:7px;text-align:center">436</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Sort + LB per End</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_Find_K_th_Smallest_Pair_Distance.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_Find_K_th_Smallest_Pair_Distance.html" style="color:#2563eb;text-decoration:none">Kth Smallest Pair Distance</a></td><td style="padding:7px;text-align:center">719</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">BS Answer + 2-Ptr</td></tr>
+<tr><td style="padding:7px"><a href="P13_Kth_Smallest_Number_in_Multiplication_Table.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_Kth_Smallest_Number_in_Multiplication_Table.html" style="color:#2563eb;text-decoration:none">Kth in Multiplication Table</a></td><td style="padding:7px;text-align:center">668</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">BS on Value</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_K_th_Smallest_Prime_Fraction.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_K_th_Smallest_Prime_Fraction.html" style="color:#2563eb;text-decoration:none">Kth Smallest Prime Fraction</a></td><td style="padding:7px;text-align:center">786</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">BS on Fraction</td></tr>
+<tr><td style="padding:7px"><a href="P15_Longest_Increasing_Subsequence.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_Longest_Increasing_Subsequence.html" style="color:#2563eb;text-decoration:none">Longest Increasing Subsequence</a></td><td style="padding:7px;text-align:center">300</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Patience Sort</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_Russian_Doll_Envelopes.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_Russian_Doll_Envelopes.html" style="color:#2563eb;text-decoration:none">Russian Doll Envelopes</a></td><td style="padding:7px;text-align:center">354</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Sort + LIS</td></tr>
+<tr><td style="padding:7px"><a href="P17_Maximum_Number_of_Removable_Characters.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_Maximum_Number_of_Removable_Characters.html" style="color:#2563eb;text-decoration:none">Max Removable Characters</a></td><td style="padding:7px;text-align:center">1898</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">BS Prefix Length</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_Find_Smallest_Common_Element_in_All_Rows.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_Find_Smallest_Common_Element_in_All_Rows.html" style="color:#2563eb;text-decoration:none">Smallest Common in Rows</a></td><td style="padding:7px;text-align:center">1198</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">LB Across Rows</td></tr>
+<tr><td style="padding:7px"><a href="P19_Online_Election.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_Online_Election.html" style="color:#2563eb;text-decoration:none">Online Election</a></td><td style="padding:7px;text-align:center">911</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">UB on Times</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_Maximum_Profit_in_Job_Scheduling.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_Maximum_Profit_in_Job_Scheduling.html" style="color:#2563eb;text-decoration:none">Max Profit Job Scheduling</a></td><td style="padding:7px;text-align:center">1235</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">DP + LB Transition</td></tr>
+</table>
+</div>
+
+<div class="footer">Binary Search · Lower / Upper Bound Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body>
+</html>

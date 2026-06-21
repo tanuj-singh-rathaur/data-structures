@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P18 – Count Pairs From Two Arrays</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.med{background:#fef3c7;color:#92400e}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; 2D Matrix Masterclass</a> &rsaquo; Transform + Sorted LB</div>
+<h1>P18 &mdash; Count Pairs From Two Arrays</h1>
+<div class="meta"><span class="badge med">Medium</span> &bull; LC #2354-ish &bull; Pattern: <strong>Sort + Per-i Lower Bound</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Given arrays nums1, nums2 (same length n), count pairs (i, j) with i &lt; j such that <code>nums1[i] + nums1[j] &gt; nums2[i] + nums2[j]</code>.</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Transform</dt><dd>Let d[k] = nums1[k] − nums2[k]. Condition becomes <code>d[i] + d[j] &gt; 0</code>.</dd>
+<dt>Sort + 2-pointer / LB</dt><dd>Sort d. For each i find smallest j &gt; i with d[i] + d[j] &gt; 0 via lower bound.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Turn two arrays into one by subtracting elementwise, sort it, then use two pointers (or per-i binary search) to count pairs summing positive.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Counting d[i] + d[j] &gt; 0 in a sorted array is a classic 2-pointer / LB pattern.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>d[k] = nums1[k] − nums2[k]; sort d.</li>
+<li>l = 0, r = n − 1. While l &lt; r: if d[l] + d[r] &gt; 0, all elements between l+1..r pair with r ⇒ add (r − l); r--. Else l++.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public long countPairs(int[] nums1, int[] nums2) {
+    int n = nums1.length;
+    long[] d = new long[n];
+    for (int i = 0; i &lt; n; i++) d[i] = nums1[i] - nums2[i];
+    java.util.Arrays.sort(d);
+    long count = 0;
+    int l = 0, r = n - 1;
+    while (l &lt; r) {
+        if (d[l] + d[r] &gt; 0) { count += r - l; r--; }
+        else                   l++;
+    }
+    return count;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n log n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(n)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; 2D Pattern</h2>
+<div class="pattern-box"><strong>Transform + 2-Pointer:</strong> Linear-combination conditions on pairs become 1D sorted-array sum counts.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> A subtraction or addition transform almost always reduces 2-array per-pair inequalities to 1-array classic patterns.</div>
+
+<div class="footer">Binary Search · 2D Matrix Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

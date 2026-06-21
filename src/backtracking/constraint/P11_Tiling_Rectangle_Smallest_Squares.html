@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P11 – Tiling Rectangle</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P11 — Tiling a Rectangle with Fewest Squares</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #1240 • Height profile</div>
+<div class="section"><h2>Pattern</h2><p>Maintain a height profile (one per column). At each step find the leftmost lowest column and try every square size from large to small that fits.</p></div>
+<div class="section"><h2>Java (sketch)</h2><pre>int best;
+public int tilingRectangle(int n, int m) {
+    best = n*m;
+    dfs(new int[m], n, m, 0);
+    return best;
+}
+void dfs(int[] h, int n, int m, int count) {
+    if (count &gt;= best) return;
+    int minH = n; int idx = -1;
+    for (int i=0;i&lt;m;i++) if (h[i] &lt; minH) { minH = h[i]; idx = i; }
+    if (minH == n) { best = Math.min(best, count); return; }
+    int end = idx;
+    while (end &lt; m &amp;&amp; h[end] == minH &amp;&amp; end - idx + 1 + minH &lt;= n) end++;
+    for (int len = end - idx; len &gt;= 1; len--) {
+        int saved = h[idx];
+        for (int k = idx; k &lt; idx + len; k++) h[k] += len;
+        dfs(h, n, m, count + 1);
+        for (int k = idx; k &lt; idx + len; k++) h[k] = saved;
+    }
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Without best-so-far pruning, the search explodes; track it globally.</div></body></html>

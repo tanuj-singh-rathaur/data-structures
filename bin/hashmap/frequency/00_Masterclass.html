@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HashMap Frequency — Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:980px;margin:0 auto;padding:32px 40px}
+h1{font-size:2rem;font-weight:700;margin-bottom:6px}
+h2{font-size:1.2rem;font-weight:600;margin:32px 0 12px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+p{margin-bottom:10px}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#dbeafe;color:#1d4ed8;margin-right:6px}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:22px 26px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}
+.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}
+.section.purple{border-left:4px solid #7c3aed}
+.section.red{border-left:4px solid #dc2626}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:8px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}
+.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.type{padding:14px 18px;border-radius:8px;border:1px solid}
+.t1{background:#eff6ff;border-color:#bfdbfe}
+.t1 h3{color:#1d4ed8}
+.t2{background:#ecfdf5;border-color:#bbf7d0}
+.t2 h3{color:#047857}
+.t3{background:#fffbeb;border-color:#fde68a}
+.t3 h3{color:#b45309}
+.t4{background:#faf5ff;border-color:#ddd6fe}
+.t4 h3{color:#7c3aed}
+.t5{background:#fef2f2;border-color:#fecaca}
+.t5 h3{color:#b91c1c}
+.type h3{font-size:.98rem;font-weight:700;margin-bottom:6px}
+.type p{font-size:.86rem;margin-bottom:6px}
+.type code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px;font-family:Consolas,monospace;font-size:.8rem}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}
+th{background:#f1f5f9;color:#1e293b;font-weight:700;font-size:.78rem;text-transform:uppercase}
+td a{color:#2563eb;text-decoration:none}td a:hover{text-decoration:underline}
+.diff-e{color:#16a34a;font-weight:600}
+.diff-m{color:#d97706;font-weight:600}
+.diff-h{color:#dc2626;font-weight:600}
+.complete{background:#dcfce7 !important}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+<header>
+<div><span class="tag">HashMap</span><span class="tag" style="background:#fef3c7;color:#92400e">Frequency / Counting</span></div>
+<h1>HashMap · Frequency &mdash; Masterclass</h1>
+<p style="color:#64748b">Count, lookup, and remember — the family of problems where a HashMap of counts (or first-seen indices) unlocks an O(n) solution.</p>
+</header>
+
+<div class="section blue">
+<h2>&#128221; What Is Frequency / Counting?</h2>
+<p>A HashMap (or int[26], int[256], or HashSet) stores how often something has been seen — or where it was first seen. That lets you answer questions like "have I seen this complement before?" or "how many subarrays sum to k?" in O(1) per element instead of O(n).</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+<dt>Frequency Map</dt><dd>map&lt;key, count&gt; — how many times each key appeared.</dd>
+<dt>First-Index Map</dt><dd>map&lt;key, firstIndex&gt; — used in longest/earliest subarray problems.</dd>
+<dt>Complement Lookup</dt><dd>For each new element x, check if target − x is already in the map (e.g. Two Sum).</dd>
+<dt>Prefix-Sum Map</dt><dd>map&lt;runningSum, count or index&gt; — turns subarray sum questions into O(n) lookups.</dd>
+<dt>Bucket Sort by Frequency</dt><dd>buckets[freq] = list of items with that count; emit high → low for Top-K in O(n).</dd>
+<dt>Signature Key</dt><dd>Canonical fingerprint (sorted string, count tuple) — groups items that share an equivalence (e.g. anagrams).</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127919; When to use Frequency / HashMap</h2>
+<ul style="margin-left:24px">
+<li>Problem asks for a count, a duplicate, or a "first/last" position.</li>
+<li>You want to convert nested O(n²) lookups into O(n) via memoised state.</li>
+<li>Subarray / substring problems with a sum or count condition.</li>
+<li>Categorising items by an equivalence relation (anagrams, isomorphic).</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>&#127981; The 5 Sub-Patterns</h2>
+<div class="types">
+<div class="type t1"><h3>1. Frequency Map (count)</h3>
+<p>How often does each value appear?</p>
+<p><code>map.merge(x, 1, Integer::sum)</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Majority Element, Top K, Sort Chars, Ransom Note, Valid Anagram, Intersection II</em></p></div>
+
+<div class="type t2"><h3>2. Complement Lookup (index map)</h3>
+<p>Have I seen target − x before?</p>
+<p><code>if (map.containsKey(t - x)) ...</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Two Sum, First Unique Character</em></p></div>
+
+<div class="type t3"><h3>3. Prefix-Sum Frequency Map</h3>
+<p>Count subarrays summing to k via running sums.</p>
+<p><code>count += map.get(prefix − k)</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Subarray Sum = K, Subarray Div by K, Nice Subarrays, Continuous Subarray Sum, Contiguous Array</em></p></div>
+
+<div class="type t4"><h3>4. Signature-Key Grouping</h3>
+<p>Canonical key groups equivalents.</p>
+<p><code>key = sorted(s) or count tuple</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Group Anagrams, Find All Anagrams (window), Isomorphic, Word Pattern</em></p></div>
+
+<div class="type t5"><h3>5. Set-based Existence / Cycle</h3>
+<p>Track "seen" items for membership or cycle detection.</p>
+<p><code>set.add(x); if (set.contains(y)) ...</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Longest Consecutive Sequence, Happy Number, Find All Duplicates</em></p></div>
+</div>
+</div>
+
+<div class="section purple">
+<h2>&#9881;&#65039; Universal Templates</h2>
+<p><strong>Frequency Map:</strong></p>
+<pre>Map&lt;K, Integer&gt; freq = new HashMap&lt;&gt;();
+for (K k : items) freq.merge(k, 1, Integer::sum);</pre>
+<p><strong>Complement Lookup:</strong></p>
+<pre>Map&lt;Integer, Integer&gt; idx = new HashMap&lt;&gt;();
+for (int i = 0; i &lt; n; i++) {
+    if (idx.containsKey(target - nums[i])) return new int[]{idx.get(target - nums[i]), i};
+    idx.put(nums[i], i);
+}</pre>
+<p><strong>Prefix-Sum Subarray Count:</strong></p>
+<pre>Map&lt;Long, Integer&gt; cnt = new HashMap&lt;&gt;();
+cnt.put(0L, 1);                       // empty prefix
+long sum = 0;
+int answer = 0;
+for (int x : nums) {
+    sum += x;
+    answer += cnt.getOrDefault(sum - k, 0);
+    cnt.merge(sum, 1, Integer::sum);
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity Profile</h2>
+<table><thead><tr><th>Operation</th><th>Cost</th></tr></thead><tbody>
+<tr><td>HashMap put / get</td><td>O(1) amortised</td></tr>
+<tr><td>Scan + 1 map op per element</td><td>O(n) total</td></tr>
+<tr><td>Memory for map</td><td>O(distinct keys)</td></tr>
+</tbody></table>
+</div>
+
+<div class="section">
+<h2>&#128218; Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th></tr></thead><tbody>
+<tr id="p01"><td>1</td><td><a href="P01_Two_Sum.html">Two Sum</a></td><td>Complement lookup</td><td class="diff-e">Easy</td></tr>
+<tr id="p02"><td>2</td><td><a href="P02_Majority_Element.html">Majority Element</a></td><td>Frequency map / Boyer–Moore</td><td class="diff-e">Easy</td></tr>
+<tr id="p03"><td>3</td><td><a href="P03_Top_K_Frequent_Elements.html">Top K Frequent Elements</a></td><td>Freq + Bucket Sort</td><td class="diff-m">Medium</td></tr>
+<tr id="p04"><td>4</td><td><a href="P04_Sort_Characters_By_Frequency.html">Sort Characters By Frequency</a></td><td>Freq + Bucket Sort</td><td class="diff-m">Medium</td></tr>
+<tr id="p05"><td>5</td><td><a href="P05_Group_Anagrams.html">Group Anagrams</a></td><td>Signature key</td><td class="diff-m">Medium</td></tr>
+<tr id="p06"><td>6</td><td><a href="P06_Valid_Anagram.html">Valid Anagram</a></td><td>Freq map compare</td><td class="diff-e">Easy</td></tr>
+<tr id="p07"><td>7</td><td><a href="P07_First_Unique_Character.html">First Unique Character</a></td><td>Freq + first-scan</td><td class="diff-e">Easy</td></tr>
+<tr id="p08"><td>8</td><td><a href="P08_Subarray_Sum_Equals_K.html">Subarray Sum Equals K</a></td><td>Prefix-sum freq map</td><td class="diff-m">Medium</td></tr>
+<tr id="p09"><td>9</td><td><a href="P09_Contiguous_Array.html">Contiguous Array</a></td><td>Prefix-sum first-index</td><td class="diff-m">Medium</td></tr>
+<tr id="p10"><td>10</td><td><a href="P10_Longest_Consecutive_Sequence.html">Longest Consecutive Sequence</a></td><td>Set-based walk</td><td class="diff-m">Medium</td></tr>
+<tr id="p11"><td>11</td><td><a href="P11_Find_All_Anagrams_in_a_String.html">Find All Anagrams in a String</a></td><td>Sliding window + freq</td><td class="diff-m">Medium</td></tr>
+<tr id="p12"><td>12</td><td><a href="P12_Ransom_Note.html">Ransom Note</a></td><td>Multiset subset</td><td class="diff-e">Easy</td></tr>
+<tr id="p13"><td>13</td><td><a href="P13_Intersection_of_Two_Arrays_II.html">Intersection of Two Arrays II</a></td><td>Multiset intersect</td><td class="diff-e">Easy</td></tr>
+<tr id="p14"><td>14</td><td><a href="P14_Happy_Number.html">Happy Number</a></td><td>Cycle via seen set</td><td class="diff-e">Easy</td></tr>
+<tr id="p15"><td>15</td><td><a href="P15_Isomorphic_Strings.html">Isomorphic Strings</a></td><td>Two-way mapping</td><td class="diff-e">Easy</td></tr>
+<tr id="p16"><td>16</td><td><a href="P16_Word_Pattern.html">Word Pattern</a></td><td>Two-way mapping</td><td class="diff-e">Easy</td></tr>
+<tr id="p17"><td>17</td><td><a href="P17_Find_All_Duplicates_in_an_Array.html">Find All Duplicates</a></td><td>Freq / negation</td><td class="diff-m">Medium</td></tr>
+<tr id="p18"><td>18</td><td><a href="P18_Continuous_Subarray_Sum.html">Continuous Subarray Sum</a></td><td>Prefix mod-k first-index</td><td class="diff-m">Medium</td></tr>
+<tr id="p19"><td>19</td><td><a href="P19_Subarray_Sums_Divisible_by_K.html">Subarray Sums Divisible by K</a></td><td>Prefix mod-k freq</td><td class="diff-m">Medium</td></tr>
+<tr id="p20"><td>20</td><td><a href="P20_Count_Number_of_Nice_Subarrays.html">Count Nice Subarrays</a></td><td>Odd-prefix freq</td><td class="diff-m">Medium</td></tr>
+</tbody></table>
+</div>
+
+<div class="footer">HashMap &middot; Frequency Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body></html>

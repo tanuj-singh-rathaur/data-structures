@@ -1,18 +1,20 @@
 package binarysearch.onanswers;
 
+import util.Test;
+
 /**
  * Nth Root of a Number
  * Topic    : Binary Search
  * Pattern  : Binary Search on Answers
  * Difficulty: Medium
- * LeetCode : https://leetcode.com/problems/
+ * LeetCode : Variant of https://leetcode.com/problems/sqrtx/
  * ─────────────────────────────────────────────
  *
  * PROBLEM:
- *   Read on LeetCode: https://leetcode.com/problems/
+ *   Given m, n find integer x such that x^n = m (or floor of nth root).
  *
  * PATTERN HINT:
- *   [Binary Search on Answers — think how this pattern applies here]
+ *   [BS x in [1, m]; predicate: x^n <= m. Use pow that breaks early to avoid overflow.]
  *
  * ─────────────────────────────────────────────
  * YOUR ATTEMPT BELOW
@@ -24,7 +26,11 @@ public class P04_Nth_Root_of_a_Number {
 
     public static void main(String[] args) {
         P04_Nth_Root_of_a_Number sol = new P04_Nth_Root_of_a_Number();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.nthRoot(3, 27), 3);
+
+        Test.summary();
     }
 }

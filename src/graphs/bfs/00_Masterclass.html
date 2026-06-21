@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Graphs · BFS — Masterclass</title>
+<style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.9rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.tag{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:14px}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 18px}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:6px}.glossary dd{margin-left:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:24px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div><span class="tag">Graphs</span><span class="tag" style="background:#fef3c7;color:#92400e">BFS</span></div>
+<h1>Graphs · BFS — Masterclass</h1>
+<p style="color:#64748b">Queue-based traversal of graphs (or implicit state spaces) that finds shortest paths in unweighted edges. Multi-source BFS unlocks "nearest X" problems.</p>
+
+<div class="section"><h2>Jargon</h2><div class="glossary"><dl>
+<dt>Multi-source BFS</dt><dd>Seed the queue with ALL "starting" cells, not just one. Useful for "distance to nearest X" problems.</dd>
+<dt>State Space</dt><dd>Nodes can be more than coordinates — board configurations (sliding puzzle), digit strings (open lock), (row, col, k-remaining) tuples.</dd>
+<dt>Layer-by-layer</dt><dd>Process by current queue size; increment depth between layers.</dd>
+<dt>0-1 BFS</dt><dd>Deque-based BFS when edges are weighted 0 or 1; cheaper than Dijkstra.</dd>
+</dl></div></div>
+
+<div class="section"><h2>Template</h2>
+<pre>Queue&lt;int[]&gt; q = new ArrayDeque&lt;&gt;();
+q.offer(new int[]{sr, sc});
+visited[sr][sc] = true;
+int dist = 0;
+while (!q.isEmpty()) {
+    int sz = q.size();
+    for (int i = 0; i &lt; sz; i++) {
+        int[] c = q.poll();
+        if (isTarget(c)) return dist;
+        for (int[] n : neighbours(c))
+            if (valid(n) &amp;&amp; !visited[n[0]][n[1]]) {
+                visited[n[0]][n[1]] = true;
+                q.offer(n);
+            }
+    }
+    dist++;
+}
+return -1;</pre></div>
+
+<div class="section"><h2>Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Number_of_Islands.html">Number of Islands</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_Rotting_Oranges.html">Rotting Oranges</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>3</td><td><a href="P03_Word_Ladder.html">Word Ladder</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>4</td><td><a href="P04_Open_the_Lock.html">Open the Lock</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>5</td><td><a href="P05_Shortest_Path_in_Binary_Matrix.html">Shortest Path Binary Matrix</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>6</td><td><a href="P06_01_Matrix.html">01 Matrix</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>7</td><td><a href="P07_As_Far_From_Land.html">As Far from Land</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>8</td><td><a href="P08_Snakes_and_Ladders.html">Snakes and Ladders</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>9</td><td><a href="P09_Bus_Routes.html">Bus Routes</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>10</td><td><a href="P10_Shortest_Path_with_Obstacles.html">Shortest Path Obstacles</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>11</td><td><a href="P11_Sliding_Puzzle.html">Sliding Puzzle</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>12</td><td><a href="P12_Minimum_Knight_Moves.html">Minimum Knight Moves</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>13</td><td><a href="P13_Jump_Game_III.html">Jump Game III</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>14</td><td><a href="P14_Shortest_Bridge.html">Shortest Bridge</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>15</td><td><a href="P15_Map_of_Highest_Peak.html">Map of Highest Peak</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>16</td><td><a href="P16_Minimum_Operations_to_Convert_Number.html">Convert Number Ops</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>17</td><td><a href="P17_Walls_and_Gates.html">Walls and Gates</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>18</td><td><a href="P18_Word_Ladder_II.html">Word Ladder II</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>19</td><td><a href="P19_Cut_Off_Trees_for_Golf.html">Cut Off Trees Golf</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>20</td><td><a href="P20_Escape_the_Spreading_Fire.html">Escape Spreading Fire</a></td><td class="diff-h">Hard</td></tr>
+</tbody></table></div>
+
+<div class="footer">Graphs · BFS Masterclass — DSA Practice Series</div>
+<script src="../../util/progress.js" defer></script></body></html>

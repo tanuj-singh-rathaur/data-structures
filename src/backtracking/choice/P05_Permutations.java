@@ -1,9 +1,11 @@
 package backtracking.choice;
 
+import util.Test;
+
 /**
- * P05_Permutations
+ * Permutations
  * Topic    : Backtracking
- * Pattern  : Choice-Based Backtracking
+ * Pattern  : Choice-Based (Used-Set Mask, All Orderings)
  * Difficulty: Medium
  * LeetCode : https://leetcode.com/problems/permutations/
  * ─────────────────────────────────────────────
@@ -12,7 +14,7 @@ package backtracking.choice;
  *   Read on LeetCode: https://leetcode.com/problems/permutations/
  *
  * PATTERN HINT:
- *   [Choice-Based Backtracking — think how this pattern applies here]
+ *   [Track a 'used[]' array; for each position pick any unused number; recurse; unpick]
  *
  * ─────────────────────────────────────────────
  * YOUR ATTEMPT BELOW
@@ -24,7 +26,11 @@ public class P05_Permutations {
 
     public static void main(String[] args) {
         P05_Permutations sol = new P05_Permutations();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.permute(new int[]{1,2,3}).size(), 6);
+
+        Test.summary();
     }
 }

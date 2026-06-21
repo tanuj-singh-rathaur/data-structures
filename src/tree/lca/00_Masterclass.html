@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Tree · LCA — Masterclass</title>
+<style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.9rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.tag{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:14px}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 18px}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:6px}.glossary dd{margin-left:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:24px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div><span class="tag">Tree</span><span class="tag" style="background:#fef3c7;color:#92400e">LCA</span></div>
+<h1>Tree · LCA — Masterclass</h1>
+<p style="color:#64748b">Lowest Common Ancestor problems: find the deepest node ancestral to two (or more) targets. Used in path queries, distance computations, and tree algorithms.</p>
+
+<div class="section"><h2>Jargon</h2><div class="glossary"><dl>
+<dt>LCA</dt><dd>Lowest Common Ancestor — deepest node in the tree that has both p and q in its subtree.</dd>
+<dt>Path Query</dt><dd>Distance, sum, or property along the unique path between two nodes.</dd>
+<dt>Binary Lifting</dt><dd>Sparse table: up[u][k] = 2^k-th ancestor of u. Preprocess O(n log n), query O(log n).</dd>
+<dt>Euler Tour + RMQ</dt><dd>O(n log n) preprocessing, O(1) per query via range-min on depth.</dd>
+</dl></div></div>
+
+<div class="section"><h2>Template (post-order LCA)</h2>
+<pre>TreeNode lca(TreeNode r, TreeNode p, TreeNode q) {
+    if (r == null || r == p || r == q) return r;
+    TreeNode L = lca(r.left, p, q);
+    TreeNode R = lca(r.right, p, q);
+    if (L != null &amp;&amp; R != null) return r;
+    return L != null ? L : R;
+}</pre></div>
+
+<div class="section"><h2>Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Lowest_Common_Ancestor_of_a_Binary_Tree.html">LCA of Binary Tree</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_Lowest_Common_Ancestor_of_Deepest_Leaves.html">LCA of Deepest Leaves</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>3</td><td><a href="P03_Step_By_Step_Directions_From_a_Binary_Tree_Node_to_Another.html">Step-by-Step Directions</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>4</td><td><a href="P04_LCA_of_BST.html">LCA of BST</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>5</td><td><a href="P05_LCA_with_Parent_Pointer.html">LCA III (with parent)</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>6</td><td><a href="P06_LCA_of_Multiple_Nodes.html">LCA IV (k nodes)</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>7</td><td><a href="P07_Distance_Between_Two_Nodes.html">Distance Between Nodes</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>8</td><td><a href="P08_Smallest_Subtree_With_Deepest_Nodes.html">Smallest Subtree Deepest</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>9</td><td><a href="P09_LCA_Missing_Nodes_Tolerant.html">LCA II (may not exist)</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>10</td><td><a href="P10_Binary_Lifting_Tree.html">Binary Lifting LCA</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>11</td><td><a href="P11_Kth_Ancestor_of_a_Tree_Node.html">Kth Ancestor</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>12</td><td><a href="P12_Tree_Diameter.html">Tree Diameter (generic)</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>13</td><td><a href="P13_Path_to_Target_Node.html">Path to Target</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>14</td><td><a href="P14_All_Nodes_Distance_K.html">All Nodes Distance K</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>15</td><td><a href="P15_Cycle_in_Graph_via_Union_Find.html">Redundant Connection (UF)</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>16</td><td><a href="P16_Maximum_Sum_BST_in_Tree.html">Max Sum BST in Tree</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>17</td><td><a href="P17_Number_of_Nodes_in_Subtree_With_Same_Label.html">Subtree Same Label</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>18</td><td><a href="P18_Closest_Node_to_Path.html">Closest Node to Path</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>19</td><td><a href="P19_Sum_of_Distances_in_Tree.html">Sum of Distances in Tree</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>20</td><td><a href="P20_Count_Subtrees_with_Max_Distance.html">Count Subtrees Max Dist</a></td><td class="diff-h">Hard</td></tr>
+</tbody></table></div>
+
+<div class="footer">Tree · LCA Masterclass — DSA Practice Series</div>
+<script src="../../util/progress.js" defer></script></body></html>

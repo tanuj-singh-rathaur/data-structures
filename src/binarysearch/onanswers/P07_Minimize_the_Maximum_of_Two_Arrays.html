@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P07 – Minimize the Maximum of Two Arrays</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.med{background:#fef3c7;color:#92400e}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; On Answers Masterclass</a> &rsaquo; BS + IE</div>
+<h1>P07 &mdash; Minimize the Maximum of Two Arrays</h1>
+<div class="meta"><span class="badge med">Medium</span> &bull; LC #2513 &bull; Pattern: <strong>BS x · Inclusion-Exclusion</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Build arr1 (no multiples of divisor1) and arr2 (no multiples of divisor2) of given sizes uniqueCnt1, uniqueCnt2. Numbers used must be unique across arrays. Minimize the max number used.</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Inclusion-Exclusion</dt><dd>Count integers in [1, x] usable by each array using LCM. Slots = ⌊x⌋ minus multiples of own divisor, then partition remaining by which divisor blocks them.</dd>
+<dt>LCM</dt><dd>lcm(a,b) = a·b/gcd(a,b). Numbers divisible by both ⇒ blocked everywhere.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Guess a max x. Check if you can fit both quotas using IE accounting. Binary search smallest feasible x.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Decompose [1, x] into 4 zones using divisibility:</p>
+<ul style="margin-left:24px"><li>Only by d1 — usable by arr2.</li><li>Only by d2 — usable by arr1.</li><li>By neither — usable by either.</li><li>By both — usable by neither.</li></ul></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>BS x in [1, 1e10].</li>
+<li>For mid: compute available slots and check feasibility against uniqueCnt1 + uniqueCnt2.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int minimizeSet(int d1, int d2, int c1, int c2) {
+    long lcm = lcm(d1, d2);
+    long lo = 1, hi = (long)(c1 + c2) * 4L;
+    while (lo &lt; hi) {
+        long m = lo + (hi - lo) / 2;
+        long onlyD2 = m / d1 - m / lcm;       // multiples of d1 only — for arr2
+        long onlyD1 = m / d2 - m / lcm;       // multiples of d2 only — for arr1
+        long either = m - m / d1 - m / d2 + m / lcm;
+        long needA1 = Math.max(0, c1 - onlyD1);
+        long needA2 = Math.max(0, c2 - onlyD2);
+        if (either &gt;= needA1 + needA2) hi = m;
+        else                            lo = m + 1;
+    }
+    return (int) lo;
+}
+private long lcm(long a, long b) { return a / gcd(a, b) * b; }
+private long gcd(long a, long b) { return b == 0 ? a : gcd(b, a % b); }</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(log range)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; BS-on-Answers Pattern</h2>
+<div class="pattern-box"><strong>BS + Counting:</strong> When feasibility is a counting question (set cardinality, divisibility), pair BS with O(1) counting.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> IE turns "available numbers up to x" into a closed-form O(1) check — no enumeration.</div>
+
+<div class="footer">Binary Search · On Answers Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

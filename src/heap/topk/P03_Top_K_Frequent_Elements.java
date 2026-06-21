@@ -1,29 +1,17 @@
 package heap.topk;
 
+import util.Test;
+
 /**
  * Top K Frequent Elements
- * Pattern : Top-K Elements
+ * Topic    : Heap / Top-K
+ * Pattern  : Min-heap of size k by frequency (or bucket sort)
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/top-k-frequent-elements/
- * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/top-k-frequent-elements/]
- *
- * PATTERN HINT:
- *   [Top-K Elements — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * LeetCode : https://leetcode.com/problems/top-k-frequent-elements/
  */
 public class P03_Top_K_Frequent_Elements {
-
-    // TODO: define method signature after reading the problem
-
     public static void main(String[] args) {
         P03_Top_K_Frequent_Elements sol = new P03_Top_K_Frequent_Elements();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.summary();
     }
 }

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P20 – Number of Atoms</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:24px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;background:#fee2e2;color:#b91c1c}.meta{color:#64748b;font-size:.88rem;margin-bottom:20px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:16px;border-left:4px solid #2563eb}pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-top:14px}.insight strong{color:#1d4ed8}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div class="page">
+<a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Decision Masterclass</a>
+<h1>P20 — Number of Atoms</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #726 • Recursive parser</div>
+<div class="section"><h2>Problem</h2><p>Parse a chemical formula (with nested groups) and return atom counts in canonical form.</p></div>
+<div class="section"><h2>Pattern</h2><p>Recursive descent: decide if next token is '(', ')', a digit, or a letter. Groups recurse and multiply by trailing number.</p></div>
+<div class="section"><h2>Java</h2><pre>private int i;
+private String f;
+public String countOfAtoms(String formula) {
+    i = 0; f = formula;
+    Map&lt;String, Integer&gt; m = parse();
+    StringBuilder sb = new StringBuilder();
+    for (var e : new TreeMap&lt;&gt;(m).entrySet()) {
+        sb.append(e.getKey());
+        if (e.getValue() &gt; 1) sb.append(e.getValue());
+    }
+    return sb.toString();
+}
+Map&lt;String, Integer&gt; parse() {
+    Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+    while (i &lt; f.length() &amp;&amp; f.charAt(i) != ')') {
+        if (f.charAt(i) == '(') {
+            i++;
+            Map&lt;String, Integer&gt; sub = parse();
+            i++;  // skip ')'
+            int mult = readNum();
+            for (var e : sub.entrySet()) map.merge(e.getKey(), e.getValue() * mult, Integer::sum);
+        } else {
+            String name = readName();
+            int cnt = readNum();
+            map.merge(name, cnt, Integer::sum);
+        }
+    }
+    return map;
+}
+String readName() {
+    int s = i++;
+    while (i &lt; f.length() &amp;&amp; Character.isLowerCase(f.charAt(i))) i++;
+    return f.substring(s, i);
+}
+int readNum() {
+    if (i &gt;= f.length() || !Character.isDigit(f.charAt(i))) return 1;
+    int s = i;
+    while (i &lt; f.length() &amp;&amp; Character.isDigit(f.charAt(i))) i++;
+    return Integer.parseInt(f.substring(s, i));
+}</pre></div>
+<div class="section"><h2>Complexity</h2><p>O(n²) for repeated merges; can be O(n) with stack-based parsing.</p></div>
+<div class="insight"><strong>Insight:</strong> Recursive descent shows up wherever the grammar is balanced parens.</div>
+<div class="footer">Backtracking · Decision Masterclass</div></div></body></html>

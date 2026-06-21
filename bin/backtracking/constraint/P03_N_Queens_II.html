@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P03 – N-Queens II</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P03 — N-Queens II</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #52 • Count only</div>
+<div class="section"><h2>Pattern</h2><p>Same as N-Queens but only count valid placements. Bitmask version is faster (no HashSet overhead).</p></div>
+<div class="section"><h2>Java (bitmask)</h2><pre>private int count;
+public int totalNQueens(int n) {
+    count = 0; dfs(n, 0, 0, 0, 0);
+    return count;
+}
+void dfs(int n, int r, int c, int d, int a) {
+    if (r==n) { count++; return; }
+    int avail = ((1&lt;&lt;n)-1) &amp; ~(c | d | a);
+    while (avail!=0) {
+        int pick = avail &amp; -avail;
+        dfs(n, r+1, c|pick, (d|pick)&lt;&lt;1, (a|pick)&gt;&gt;1);
+        avail &amp;= avail-1;
+    }
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Shift diag masks by ±1 between rows; iterate set bits via x &amp; -x.</div></body></html>

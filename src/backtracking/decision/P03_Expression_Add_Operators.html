@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P03 – Expression Add Operators</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:24px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;background:#fee2e2;color:#b91c1c}.meta{color:#64748b;font-size:.88rem;margin-bottom:20px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:16px;border-left:4px solid #2563eb}pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-top:14px}.insight strong{color:#1d4ed8}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div class="page">
+<a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Decision Masterclass</a>
+<h1>P03 — Expression Add Operators</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #282 • Insert +, -, × between digits</div>
+<div class="section"><h2>Problem</h2><p>Insert + - × (no parens) into a digit string so the expression equals target. Return all such expressions.</p></div>
+<div class="section"><h2>Pattern</h2><p>At each position pick the next operand's LENGTH (1, 2, …; no leading zeros), then pick an operator. Track running total and "previous" operand to handle multiplication precedence.</p></div>
+<div class="section"><h2>Java</h2><pre>void dfs(String n, int i, long total, long prev, String expr, long target, List&lt;String&gt; res) {
+    if (i == n.length()) { if (total == target) res.add(expr); return; }
+    for (int j = i+1; j &lt;= n.length(); j++) {
+        if (j-i &gt; 1 &amp;&amp; n.charAt(i) == '0') break;
+        long cur = Long.parseLong(n.substring(i, j));
+        if (i == 0) dfs(n, j, cur, cur, "" + cur, target, res);
+        else {
+            dfs(n, j, total + cur, cur, expr + "+" + cur, target, res);
+            dfs(n, j, total - cur, -cur, expr + "-" + cur, target, res);
+            dfs(n, j, total - prev + prev * cur, prev * cur, expr + "*" + cur, target, res);
+        }
+    }
+}</pre></div>
+<div class="section"><h2>Complexity</h2><p>O(4ⁿ) bounded by 3 operators × n positions.</p></div>
+<div class="insight"><strong>Insight:</strong> Track "prev" to undo it when multiplying — that's how × overrides the previous + or - precedence.</div>
+<div class="footer">Backtracking · Decision Masterclass</div></div></body></html>

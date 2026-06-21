@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P20 – Beautiful Partitions</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P20 — Number of Beautiful Partitions</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #2478 • DP with split constraints</div>
+<div class="section"><h2>Pattern</h2><p>Each piece must start with a prime digit, end with non-prime, length ≥ minLength. dp[i][k] = ways to partition s[i..] into k more pieces.</p></div>
+<div class="section"><h2>Java</h2><pre>private final int MOD = 1_000_000_007;
+private int n, minL;
+private String s;
+private Integer[][] memo;
+public int beautifulPartitions(String s, int k, int minLength) {
+    this.s = s; this.n = s.length(); this.minL = minLength;
+    if (!isPrime(s.charAt(0)) || isPrime(s.charAt(n-1))) return 0;
+    memo = new Integer[n + 1][k + 1];
+    return dfs(0, k);
+}
+int dfs(int i, int k) {
+    if (k == 0) return i == n ? 1 : 0;
+    if (n - i &lt; k * minL) return 0;
+    if (memo[i][k] != null) return memo[i][k];
+    long res = 0;
+    for (int j = i + minL; j &lt;= n - (k - 1) * minL; j++) {
+        if (j &lt; n &amp;&amp; isPrime(s.charAt(j))) {
+            if (!isPrime(s.charAt(j-1))) res = (res + dfs(j, k-1)) % MOD;
+        } else if (j == n &amp;&amp; !isPrime(s.charAt(n-1)) &amp;&amp; k == 1) res = (res + 1) % MOD;
+    }
+    return memo[i][k] = (int) res;
+}
+boolean isPrime(char c) { return c=='2'||c=='3'||c=='5'||c=='7'; }</pre></div>
+<div class="section insight"><strong>Insight:</strong> Boundary "prev is non-prime, current is prime" defines the only legal split point.</div></body></html>

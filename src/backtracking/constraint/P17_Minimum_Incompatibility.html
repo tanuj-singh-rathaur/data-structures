@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P17 – Min Incompatibility</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P17 — Minimum Incompatibility</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #1681 • Subset DP over bitmask</div>
+<div class="section"><h2>Pattern</h2><p>For each subset of size n/k with distinct elements, precompute (max − min). Bitmask DP: dp[mask] = min total incompatibility to fill the subsets indicated by mask.</p></div>
+<div class="section"><h2>Java (sketch)</h2><pre>int n = nums.length, sz = n/k;
+int[] cost = new int[1&lt;&lt;n];
+Arrays.fill(cost, -1);
+for (int m = 0; m &lt; (1&lt;&lt;n); m++) {
+    if (Integer.bitCount(m) != sz) continue;
+    boolean dup = false; int min=20, max=-1; Set&lt;Integer&gt; s = new HashSet&lt;&gt;();
+    for (int i=0;i&lt;n;i++) if ((m&gt;&gt;i &amp; 1)==1) {
+        if (!s.add(nums[i])) { dup=true; break; }
+        min = Math.min(min, nums[i]); max = Math.max(max, nums[i]);
+    }
+    if (!dup) cost[m] = max - min;
+}
+int[] dp = new int[1&lt;&lt;n];
+Arrays.fill(dp, Integer.MAX_VALUE);
+dp[0] = 0;
+for (int m = 0; m &lt; (1&lt;&lt;n); m++) {
+    if (dp[m] == Integer.MAX_VALUE) continue;
+    int rem = ((1&lt;&lt;n) - 1) &amp; ~m;
+    for (int sub = rem; sub &gt; 0; sub = (sub-1) &amp; rem)
+        if (cost[sub] != -1) dp[m|sub] = Math.min(dp[m|sub], dp[m] + cost[sub]);
+}
+return dp[(1&lt;&lt;n)-1];</pre></div>
+<div class="section insight"><strong>Insight:</strong> Precomputing per-subset cost avoids re-walking the subset inside the DP loop.</div></body></html>

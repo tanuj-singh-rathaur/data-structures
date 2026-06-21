@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Heap · Top-K — Masterclass</title>
+<style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.9rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.tag{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:14px}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 18px}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:6px}.glossary dd{margin-left:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:24px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div><span class="tag">Heap</span><span class="tag" style="background:#fef3c7;color:#92400e">Top-K</span></div>
+<h1>Heap · Top-K — Masterclass</h1>
+<p style="color:#64748b">PriorityQueue tricks: maintaining the top-k items, merging k streams, two-heap medians, lazy removal — all rest on the heap's O(log n) push/pop.</p>
+
+<div class="section"><h2>Jargon</h2><div class="glossary"><dl>
+<dt>Min-heap of size k</dt><dd>For "k LARGEST": keep the k largest seen by evicting min when full. Peek = kth largest.</dd>
+<dt>Max-heap of size k</dt><dd>For "k SMALLEST": symmetric — peek = kth smallest.</dd>
+<dt>Two-Heap Median</dt><dd>Max-heap (low half) + min-heap (high half), balanced by size.</dd>
+<dt>Lazy Removal</dt><dd>Skip stale top entries (already removed by index) lazily on each pop.</dd>
+<dt>Custom Comparator</dt><dd>(count desc, lex asc) etc. — Heap by composite key.</dd>
+</dl></div></div>
+
+<div class="section"><h2>Templates</h2>
+<pre>// Top-K largest
+PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;();
+for (int x : a) { pq.offer(x); if (pq.size() &gt; k) pq.poll(); }
+return pq.peek();
+// Two-heap median
+PriorityQueue&lt;Integer&gt; lo = new PriorityQueue&lt;&gt;(Comparator.reverseOrder());
+PriorityQueue&lt;Integer&gt; hi = new PriorityQueue&lt;&gt;();</pre></div>
+
+<div class="section"><h2>Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Kth_Largest_Element_in_an_Array.html">Kth Largest Element</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_K_Closest_Points_to_Origin.html">K Closest Points</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>3</td><td><a href="P03_Top_K_Frequent_Elements.html">Top K Frequent</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>4</td><td><a href="P04_Find_K_Pairs_with_Smallest_Sums.html">K Pairs Smallest Sums</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>5</td><td><a href="P05_Find_Median_from_Data_Stream.html">Find Median Stream</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>6</td><td><a href="P06_K_Frequent_Words.html">Top K Frequent Words</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>7</td><td><a href="P07_Sort_Characters_by_Frequency.html">Sort Chars by Frequency</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>8</td><td><a href="P08_Kth_Largest_Element_in_a_Stream.html">Kth Largest in Stream</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>9</td><td><a href="P09_Sliding_Window_Maximum.html">Sliding Window Maximum</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>10</td><td><a href="P10_Sliding_Window_Median.html">Sliding Window Median</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>11</td><td><a href="P11_Merge_K_Sorted_Lists.html">Merge K Sorted Lists</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>12</td><td><a href="P12_Smallest_Range_Covering_K_Lists.html">Smallest Range K Lists</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>13</td><td><a href="P13_Reorganize_String.html">Reorganize String</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>14</td><td><a href="P14_Task_Scheduler.html">Task Scheduler</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>15</td><td><a href="P15_IPO.html">IPO</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>16</td><td><a href="P16_Reduce_Array_Size_to_Half.html">Reduce Array to Half</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>17</td><td><a href="P17_Furthest_Building_You_Can_Reach.html">Furthest Building</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>18</td><td><a href="P18_Minimize_Deviation_in_Array.html">Minimize Deviation</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>19</td><td><a href="P19_Trapping_Rain_Water_II.html">Trapping Rain Water II</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>20</td><td><a href="P20_Last_Stone_Weight.html">Last Stone Weight</a></td><td class="diff-e">Easy</td></tr>
+</tbody></table></div>
+
+<div class="footer">Heap · Top-K Masterclass — DSA Practice Series</div>
+<script src="../../util/progress.js" defer></script></body></html>

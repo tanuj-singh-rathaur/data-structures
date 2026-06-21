@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P18 – Magic Square</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P18 — Magic Square</h1>
+<div class="meta"><span class="badge">Medium</span> • Classic puzzle</div>
+<div class="section"><h2>Pattern</h2><p>Fill an n×n grid with 1..n² such that all rows, cols, both diagonals sum to n(n²+1)/2. Used[] tracks placed numbers; check completed row/col/diag sums on the fly.</p></div>
+<div class="section"><h2>Java (3×3 sketch)</h2><pre>int n = 3, target = 15;
+boolean[] used = new boolean[10];
+int[][] g = new int[n][n];
+boolean solve(int idx) {
+    if (idx == n*n) return verify(g, target);
+    int r = idx/n, c = idx%n;
+    for (int v = 1; v &lt;= n*n; v++) {
+        if (used[v]) continue;
+        g[r][c] = v; used[v] = true;
+        if (partialOk(g, r, c, target) &amp;&amp; solve(idx+1)) return true;
+        used[v] = false;
+    }
+    return false;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Check row sum only when row is full; same for cols/diagonals. Early pruning when a partial row exceeds target.</div></body></html>

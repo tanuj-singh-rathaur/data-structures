@@ -1,29 +1,36 @@
 package hashmap.frequency;
 
+import util.Test;
+
 /**
  * Sort Characters By Frequency
- * Pattern : Frequency Map / Counting
+ * Topic    : HashMap
+ * Pattern  : Frequency Map + Bucket Sort
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/sort-characters-by-frequency/
+ * LeetCode : https://leetcode.com/problems/sort-characters-by-frequency/
  * ─────────────────────────────────────────────
  *
  * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/sort-characters-by-frequency/]
+ *   Read on LeetCode: https://leetcode.com/problems/sort-characters-by-frequency/
  *
  * PATTERN HINT:
- *   [Frequency Map / Counting — think about how this pattern applies here]
+ *   [Count chars; bucket sort: buckets[freq] holds chars with that frequency; emit high→low]
  *
  * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
+ * YOUR ATTEMPT BELOW
  * ─────────────────────────────────────────────
  */
 public class P04_Sort_Characters_By_Frequency {
 
-    // TODO: define method signature after reading the problem
+    // TODO: define your method signature after reading the problem
 
     public static void main(String[] args) {
         P04_Sort_Characters_By_Frequency sol = new P04_Sort_Characters_By_Frequency();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.frequencySort("tree"), "eert");
+
+        Test.summary();
     }
 }

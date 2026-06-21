@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P12 – Closed Islands</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P12 — Number of Closed Islands</h1>
+<div class="meta"><span class="badge">Medium</span> • LC #1254 • Island that doesn't touch the border</div>
+<div class="section"><h2>Pattern</h2><p>Pre-sink any '0' land connected to the border (treat as ocean). Then count remaining island components.</p></div>
+<div class="section"><h2>Java</h2><pre>public int closedIsland(int[][] g) {
+    int m=g.length, n=g[0].length;
+    for (int r=0;r&lt;m;r++) { sink(g,r,0); sink(g,r,n-1); }
+    for (int c=0;c&lt;n;c++) { sink(g,0,c); sink(g,m-1,c); }
+    int count = 0;
+    for (int r=1;r&lt;m-1;r++) for (int c=1;c&lt;n-1;c++) if (g[r][c]==0) { count++; sink(g, r, c); }
+    return count;
+}
+void sink(int[][] g, int r, int c) {
+    if (r&lt;0||c&lt;0||r&gt;=g.length||c&gt;=g[0].length||g[r][c]!=0) return;
+    g[r][c]=1;
+    sink(g,r+1,c); sink(g,r-1,c); sink(g,r,c+1); sink(g,r,c-1);
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Border preprocessing turns "is closed" into "exists at all" — a much simpler post-condition.</div></body></html>

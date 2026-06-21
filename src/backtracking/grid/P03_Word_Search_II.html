@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P03 – Word Search II</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P03 — Word Search II</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #212 • Trie + grid DFS</div>
+<div class="section"><h2>Pattern</h2><p>Build a trie of all words. DFS each cell; at each step advance via the trie. When a node marks a word, collect it. Trie prunes paths whose prefix isn't a word prefix.</p></div>
+<div class="section"><h2>Java</h2><pre>class Node { Node[] kids = new Node[26]; String word; }
+public List&lt;String&gt; findWords(char[][] b, String[] words) {
+    Node root = new Node();
+    for (String w : words) {
+        Node n = root;
+        for (char c : w.toCharArray()) { if (n.kids[c-'a']==null) n.kids[c-'a'] = new Node(); n = n.kids[c-'a']; }
+        n.word = w;
+    }
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    for (int r=0;r&lt;b.length;r++) for (int c=0;c&lt;b[0].length;c++) dfs(b, r, c, root, res);
+    return res;
+}
+void dfs(char[][] b, int r, int c, Node n, List&lt;String&gt; res) {
+    char ch = b[r][c];
+    if (ch=='#' || n.kids[ch-'a']==null) return;
+    Node nx = n.kids[ch-'a'];
+    if (nx.word != null) { res.add(nx.word); nx.word = null; }
+    b[r][c] = '#';
+    if (r&gt;0) dfs(b, r-1, c, nx, res);
+    if (r&lt;b.length-1) dfs(b, r+1, c, nx, res);
+    if (c&gt;0) dfs(b, r, c-1, nx, res);
+    if (c&lt;b[0].length-1) dfs(b, r, c+1, nx, res);
+    b[r][c] = ch;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Clearing word once recorded prevents duplicates without a HashSet.</div></body></html>

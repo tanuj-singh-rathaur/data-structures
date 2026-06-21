@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Shortest Path Masterclass</title>
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.65}
+h1{font-size:1.9rem;color:#0f172a}
+h2{font-size:1.2rem;color:#1e40af;margin-top:24px}
+.lede{background:#eff6ff;border-left:4px solid #2563eb;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.84rem}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.92rem}
+th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left}
+th{background:#f1f5f9}
+.E{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.M{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.H{background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.jargon dt{font-weight:700;color:#1e40af;margin-top:8px}
+</style></head>
+<body>
+<a href="../00_Index.html" style="color:#2563eb">&larr; Back to Topics</a>
+<h1>25.4 Shortest Path — Masterclass</h1>
+<div class="lede">Shortest-path problems answer: "what is the minimum total weight to get from A to B?" The algorithm you reach for depends on edge weights and the question shape: unit weights → BFS; non-negative → Dijkstra; negative allowed → Bellman-Ford; all-pairs → Floyd-Warshall; 0/1 weights → 0-1 BFS (deque).</div>
+
+<div class="box"><h2>Jargon Buster</h2>
+<dl class="jargon">
+<dt>Relaxation</dt><dd>If <code>dist[u] + w(u,v) &lt; dist[v]</code>, update <code>dist[v]</code>. Heart of every SP algorithm.</dd>
+<dt>Greedy invariant (Dijkstra)</dt><dd>Once you pop a node with smallest tentative distance, that distance is final — provided all weights are non-negative.</dd>
+<dt>Negative cycle</dt><dd>A cycle whose edges sum to a negative value. Makes shortest path undefined; Bellman-Ford detects it on the V-th relaxation pass.</dd>
+<dt>0-1 BFS</dt><dd>BFS with a deque: push-front for weight-0 edges, push-back for weight-1 edges. Runs in O(V+E).</dd>
+<dt>Minimax path</dt><dd>"Minimise the maximum edge weight on the path" — Dijkstra still works with <code>max</code> instead of <code>+</code>.</dd>
+</dl></div>
+
+<div class="box"><h2>Java — Dijkstra Template</h2>
+<pre>int[] dist = new int[n]; Arrays.fill(dist, Integer.MAX_VALUE);
+dist[src] = 0;
+PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((a,b)-&gt;a[1]-b[1]);
+pq.offer(new int[]{src, 0});
+while (!pq.isEmpty()) {
+    int[] cur = pq.poll(); int u = cur[0], d = cur[1];
+    if (d &gt; dist[u]) continue;            // stale entry
+    for (int[] e : adj.get(u)) {           // e = {v, w}
+        int nd = d + e[1];
+        if (nd &lt; dist[e[0]]) { dist[e[0]] = nd; pq.offer(new int[]{e[0], nd}); }
+    }
+}</pre></div>
+
+<div class="box"><h2>Java — Bellman-Ford Template</h2>
+<pre>int[] dist = new int[n]; Arrays.fill(dist, Integer.MAX_VALUE); dist[src] = 0;
+for (int i = 0; i &lt; n - 1; i++)
+    for (int[] e : edges)                  // e = {u, v, w}
+        if (dist[e[0]] != Integer.MAX_VALUE &amp;&amp; dist[e[0]] + e[2] &lt; dist[e[1]])
+            dist[e[1]] = dist[e[0]] + e[2];
+// One more pass; if any update occurs ⇒ negative cycle exists.</pre></div>
+
+<div class="box"><h2>Java — Floyd-Warshall Template</h2>
+<pre>int[][] d = new int[n][n];                 // init: 0 on diag, w on edges, INF else
+for (int k = 0; k &lt; n; k++)
+  for (int i = 0; i &lt; n; i++)
+    for (int j = 0; j &lt; n; j++)
+        if (d[i][k] + d[k][j] &lt; d[i][j]) d[i][j] = d[i][k] + d[k][j];</pre></div>
+
+<div class="box"><h2>Problem Index</h2>
+<table>
+<tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th><th>Guide</th></tr>
+<tr><td>P01</td><td>Network Delay Time</td><td>Dijkstra</td><td><span class="M">Medium</span></td><td><a href="P01_Network_Delay_Time.html">open</a></td></tr>
+<tr><td>P02</td><td>Cheapest Flights Within K Stops</td><td>Bellman-Ford</td><td><span class="M">Medium</span></td><td><a href="P02_Cheapest_Flights_Within_K_Stops.html">open</a></td></tr>
+<tr><td>P03</td><td>Path with Minimum Effort</td><td>Dijkstra-minimax</td><td><span class="M">Medium</span></td><td><a href="P03_Path_with_Minimum_Effort.html">open</a></td></tr>
+<tr><td>P04</td><td>Swim in Rising Water</td><td>Dijkstra-minimax</td><td><span class="H">Hard</span></td><td><a href="P04_Swim_in_Rising_Water.html">open</a></td></tr>
+<tr><td>P05</td><td>Path with Maximum Probability</td><td>Dijkstra-max</td><td><span class="M">Medium</span></td><td><a href="P05_Path_with_Maximum_Probability.html">open</a></td></tr>
+<tr><td>P06</td><td>Find the City With Fewest Reachable</td><td>Floyd-Warshall</td><td><span class="M">Medium</span></td><td><a href="P06_Find_the_City_with_Fewest_Reachable.html">open</a></td></tr>
+<tr><td>P07</td><td>Min Cost Valid Path Grid</td><td>0-1 BFS</td><td><span class="H">Hard</span></td><td><a href="P07_Min_Cost_Valid_Path_Grid.html">open</a></td></tr>
+<tr><td>P08</td><td>Shortest Path Binary Matrix</td><td>BFS</td><td><span class="M">Medium</span></td><td><a href="P08_Shortest_Path_Binary_Matrix.html">open</a></td></tr>
+<tr><td>P09</td><td>Shortest Path Visiting All Nodes</td><td>BFS + bitmask</td><td><span class="H">Hard</span></td><td><a href="P09_Shortest_Path_Visiting_All_Nodes.html">open</a></td></tr>
+<tr><td>P10</td><td>K Highest Ranked Items</td><td>BFS + sort</td><td><span class="M">Medium</span></td><td><a href="P10_K_Highest_Ranked_Items.html">open</a></td></tr>
+<tr><td>P11</td><td>Shortest Path Grid with Obstacles</td><td>BFS + state</td><td><span class="H">Hard</span></td><td><a href="P11_Shortest_Path_Grid_with_Obstacles.html">open</a></td></tr>
+<tr><td>P12</td><td>Number of Ways to Arrive Destination</td><td>Dijkstra + count</td><td><span class="M">Medium</span></td><td><a href="P12_Number_of_Ways_to_Arrive_Destination.html">open</a></td></tr>
+<tr><td>P13</td><td>Reachable Nodes Subdivided Graph</td><td>Dijkstra</td><td><span class="H">Hard</span></td><td><a href="P13_Reachable_Nodes_Subdivided_Graph.html">open</a></td></tr>
+<tr><td>P14</td><td>Min Score Path Between Cities</td><td>BFS / Union-Find</td><td><span class="M">Medium</span></td><td><a href="P14_Minimum_Score_Path_Between_Cities.html">open</a></td></tr>
+<tr><td>P15</td><td>Bellman-Ford Algorithm</td><td>BF</td><td><span class="M">Medium</span></td><td><a href="P15_Bellman_Ford_Algorithm.html">open</a></td></tr>
+<tr><td>P16</td><td>Floyd-Warshall All Pairs</td><td>FW</td><td><span class="M">Medium</span></td><td><a href="P16_Floyd_Warshall_All_Pairs.html">open</a></td></tr>
+<tr><td>P17</td><td>Second Minimum Time to Reach</td><td>Modified BFS</td><td><span class="H">Hard</span></td><td><a href="P17_Second_Minimum_Time_to_Reach.html">open</a></td></tr>
+<tr><td>P18</td><td>Min Weighted Subgraph Required Path</td><td>3 Dijkstras</td><td><span class="H">Hard</span></td><td><a href="P18_Min_Weighted_Subgraph_Required_Path.html">open</a></td></tr>
+<tr><td>P19</td><td>Maximum Path Quality of Graph</td><td>Bounded DFS</td><td><span class="H">Hard</span></td><td><a href="P19_Maximum_Path_Quality_of_Graph.html">open</a></td></tr>
+<tr><td>P20</td><td>K Shortest Paths</td><td>K-Dijkstra</td><td><span class="H">Hard</span></td><td><a href="P20_Find_K_Shortest_Paths.html">open</a></td></tr>
+</table></div>
+</body></html>

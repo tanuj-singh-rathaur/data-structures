@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P15 – Cherry Pickup</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P15 — Cherry Pickup</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #741 • Two simultaneous walks</div>
+<div class="section"><h2>Pattern</h2><p>Round-trip = two walks both going only D/R, same step k. State = (k, r1, r2); c1 = k-r1, c2 = k-r2. Memoise. If r1==r2, count cell once.</p></div>
+<div class="section"><h2>Java</h2><pre>public int cherryPickup(int[][] g) {
+    int n = g.length;
+    Integer[][][] memo = new Integer[n][n][n];
+    return Math.max(0, dfs(g, 0, 0, 0, memo, n));
+}
+int dfs(int[][] g, int k, int r1, int r2, Integer[][][] m, int n) {
+    int c1 = k - r1, c2 = k - r2;
+    if (r1&gt;=n||r2&gt;=n||c1&gt;=n||c2&gt;=n||g[r1][c1]==-1||g[r2][c2]==-1) return Integer.MIN_VALUE;
+    if (r1==n-1 &amp;&amp; c1==n-1) return g[r1][c1];
+    if (m[k][r1][r2] != null) return m[k][r1][r2];
+    int val = g[r1][c1] + (r1==r2 ? 0 : g[r2][c2]);
+    int best = Math.max(Math.max(dfs(g,k+1,r1,r2,m,n), dfs(g,k+1,r1+1,r2,m,n)), Math.max(dfs(g,k+1,r1,r2+1,m,n), dfs(g,k+1,r1+1,r2+1,m,n)));
+    return m[k][r1][r2] = best == Integer.MIN_VALUE ? best : val + best;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Two simultaneous walks ≥ round-trip because both can independently choose the best path.</div></body></html>

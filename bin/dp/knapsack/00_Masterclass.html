@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>DP Knapsack Masterclass</title>
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.65}
+h1{font-size:1.9rem;color:#0f172a}
+h2{font-size:1.2rem;color:#1e40af;margin-top:24px}
+.lede{background:#eff6ff;border-left:4px solid #2563eb;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.84rem}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.92rem}
+th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left}
+th{background:#f1f5f9}
+.E{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.M{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.H{background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.jargon dt{font-weight:700;color:#1e40af;margin-top:8px}
+</style></head>
+<body>
+<a href="../00_Index.html" style="color:#2563eb">&larr; Back to Topics</a>
+<h1>26.4 DP Knapsack — Masterclass</h1>
+<div class="lede">Knapsack DP handles "pick a subset of items under a capacity constraint to optimise something." Two flavours dominate: <strong>0/1</strong> (each item used at most once — iterate capacity descending) and <strong>unbounded</strong> (each item reusable — iterate capacity ascending). Most counting / subset-sum / target-sum problems reduce to one of these two shapes.</div>
+
+<div class="box"><h2>Jargon Buster</h2>
+<dl class="jargon">
+<dt>0/1 Knapsack</dt><dd>Item-at-most-once. To prevent reuse in 1-D DP, iterate capacity DESCENDING.</dd>
+<dt>Unbounded Knapsack</dt><dd>Reusable items. Iterate capacity ASCENDING so a new pick can stack on prior picks.</dd>
+<dt>Bounded by 2 resources</dt><dd>Capacity is a tuple (e.g., m zeros and n ones); state becomes <code>dp[m][n]</code>.</dd>
+<dt>Subset-sum trick</dt><dd>"Target Sum" / "Last Stone Weight II" / "Equal Subset" all reduce to: "is there a subset summing to T?"</dd>
+<dt>Loop order = combinations vs permutations</dt><dd>Items-outer, amount-inner ⇒ combinations. Amount-outer, items-inner ⇒ permutations.</dd>
+</dl></div>
+
+<div class="box"><h2>Java — 0/1 Knapsack Template</h2>
+<pre>int[] dp = new int[W + 1];
+for (int i = 0; i &lt; n; i++) {
+    for (int w = W; w &gt;= weight[i]; w--) {   // descending
+        dp[w] = Math.max(dp[w], dp[w - weight[i]] + value[i]);
+    }
+}
+return dp[W];</pre></div>
+
+<div class="box"><h2>Java — Unbounded Template (Coin Change II)</h2>
+<pre>int[] dp = new int[amount + 1];
+dp[0] = 1;
+for (int c : coins)
+    for (int a = c; a &lt;= amount; a++)        // ascending
+        dp[a] += dp[a - c];
+return dp[amount];</pre></div>
+
+<div class="box"><h2>Problem Index</h2>
+<table>
+<tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th><th>Guide</th></tr>
+<tr><td>P01</td><td>0/1 Knapsack</td><td>0/1 template</td><td><span class="M">Medium</span></td><td><a href="P01_01_Knapsack.html">open</a></td></tr>
+<tr><td>P02</td><td>Unbounded Knapsack</td><td>Unbounded template</td><td><span class="M">Medium</span></td><td><a href="P02_Unbounded_Knapsack.html">open</a></td></tr>
+<tr><td>P03</td><td>Coin Change (min)</td><td>Unbounded min</td><td><span class="M">Medium</span></td><td><a href="P03_Coin_Change.html">open</a></td></tr>
+<tr><td>P04</td><td>Coin Change II (count)</td><td>Unbounded count</td><td><span class="M">Medium</span></td><td><a href="P04_Coin_Change_II.html">open</a></td></tr>
+<tr><td>P05</td><td>Combination Sum IV</td><td>Permutation count</td><td><span class="M">Medium</span></td><td><a href="P05_Combination_Sum_IV.html">open</a></td></tr>
+<tr><td>P06</td><td>Target Sum</td><td>Subset-sum reduction</td><td><span class="M">Medium</span></td><td><a href="P06_Target_Sum.html">open</a></td></tr>
+<tr><td>P07</td><td>Last Stone Weight II</td><td>Subset-sum closest</td><td><span class="M">Medium</span></td><td><a href="P07_Last_Stone_Weight_II.html">open</a></td></tr>
+<tr><td>P08</td><td>Ones and Zeroes</td><td>2-D knapsack</td><td><span class="M">Medium</span></td><td><a href="P08_Ones_and_Zeroes.html">open</a></td></tr>
+<tr><td>P09</td><td>Perfect Squares</td><td>Unbounded min</td><td><span class="M">Medium</span></td><td><a href="P09_Perfect_Squares.html">open</a></td></tr>
+<tr><td>P10</td><td>Partition K Equal Subsets</td><td>Bitmask DP</td><td><span class="M">Medium</span></td><td><a href="P10_Partition_to_K_Equal_Subsets.html">open</a></td></tr>
+<tr><td>P11</td><td>Number of Dice Rolls Target</td><td>Bounded count</td><td><span class="M">Medium</span></td><td><a href="P11_Number_of_Dice_Rolls_Target.html">open</a></td></tr>
+<tr><td>P12</td><td>Profitable Schemes</td><td>2-resource bounded</td><td><span class="H">Hard</span></td><td><a href="P12_Profitable_Schemes.html">open</a></td></tr>
+<tr><td>P13</td><td>Tallest Billboard</td><td>Diff-state DP</td><td><span class="H">Hard</span></td><td><a href="P13_Tallest_Billboard.html">open</a></td></tr>
+<tr><td>P14</td><td>Toss Strange Coins</td><td>Probability DP</td><td><span class="M">Medium</span></td><td><a href="P14_Toss_Strange_Coins.html">open</a></td></tr>
+<tr><td>P15</td><td>Form Largest Integer</td><td>Unbounded string max</td><td><span class="H">Hard</span></td><td><a href="P15_Form_Largest_Integer.html">open</a></td></tr>
+<tr><td>P16</td><td>Best Sightseeing Pair</td><td>Best-so-far DP</td><td><span class="M">Medium</span></td><td><a href="P16_Best_Sightseeing_Pair.html">open</a></td></tr>
+<tr><td>P17</td><td>Subset Sum</td><td>Boolean 0/1</td><td><span class="M">Medium</span></td><td><a href="P17_Subset_Sum.html">open</a></td></tr>
+<tr><td>P18</td><td>Rod Cutting</td><td>Unbounded value</td><td><span class="M">Medium</span></td><td><a href="P18_Rod_Cutting.html">open</a></td></tr>
+<tr><td>P19</td><td>Min Refueling Stops</td><td>dp[stops] = max dist</td><td><span class="H">Hard</span></td><td><a href="P19_Min_Refueling_Stops.html">open</a></td></tr>
+<tr><td>P20</td><td>Largest Sum Divisible by K</td><td>Remainder DP</td><td><span class="M">Medium</span></td><td><a href="P20_Largest_Sum_Divisible_K.html">open</a></td></tr>
+</table></div>
+</body></html>

@@ -1,72 +1,88 @@
 package arrays.twopointer;
 
+import java.util.Arrays;
+
 import util.Test;
 
 /**
-
+ * 
  * Problem 11: 3Sum Closest
-
+ * 
  * LeetCode #16 | Difficulty: Medium
-
+ * 
  * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
  *
-
+ * 
+ * 
  * PROBLEM:
-
- *   Given an integer array nums and an integer target, find three integers
-
- *   whose sum is closest to target. Return that sum.
-
- *   Exactly one answer is guaranteed.
-
+ * 
+ * Given an integer array nums and an integer target, find three integers
+ * 
+ * whose sum is closest to target. Return that sum.
+ * 
+ * Exactly one answer is guaranteed.
  *
-
+ * 
+ * 
  * Example:
-
- *   Input:  nums=[-1,2,1,-4], target=1
-
- *   Output: 2  (sum of -1+2+1 = 2, which is closest to 1)
-
+ * 
+ * Input: nums=[-1,2,1,-4], target=1
+ * 
+ * Output: 2 (sum of -1+2+1 = 2, which is closest to 1)
  *
-
+ * 
+ * 
  * PATTERN HINT:
-
- *   This is 3Sum (P02) with one change: instead of checking sum==0,
-
- *   you track the closest sum seen so far.
-
- *   - Fix i (outer loop), run two-pointer on the rest.
-
- *   - Update your "closest" variable when |sum - target| is smaller.
-
- *   - Move pointers the same way: sum < target â†’ left++, sum > target â†’ right--.
-
- *   - If sum == target exactly, you can return immediately.
-
+ * 
+ * This is 3Sum (P02) with one change: instead of checking sum==0,
+ * 
+ * you track the closest sum seen so far.
+ * 
+ * - Fix i (outer loop), run two-pointer on the rest.
+ * 
+ * - Update your "closest" variable when |sum - target| is smaller.
+ * 
+ * - Move pointers the same way: sum < target â†’ left++, sum > target â†’
+ * right--.
+ * 
+ * - If sum == target exactly, you can return immediately.
  *
-
+ * 
+ * 
  * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
+ * 
  * YOUR ATTEMPT BELOW
-
+ * 
  * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
+ * 
  */
 
 public class P11_ThreeSumClosest {
 
-
-
     public int threeSumClosest(int[] nums, int target) {
 
         // TODO: write your solution here
+        Arrays.sort(nums);
+        int closest = nums[0] + nums[1] + nums[2];
+        for (int i = 0; i < nums.length - 2; i++) {
+            int left = i + 1, right = nums.length - 1;
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                if (Math.abs(sum - target) < Math.abs(closest - target))
+                    closest = sum;
+                if (sum < target)
+                    left++;
+                else if (sum > target)
+                    right--;
+                else
+                    return sum;
+            }
 
-        return 0;
+        }
+
+        return closest;
 
     }
-
-
 
     public static void main(String[] args) {
 
@@ -80,4 +96,3 @@ public class P11_ThreeSumClosest {
     }
 
 }
-

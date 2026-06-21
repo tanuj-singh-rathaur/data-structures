@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P13 – Sudoku Solver</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.hard{background:#fee2e2;color:#b91c1c}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Choice Masterclass</a> &rsaquo; Constraint masks</div>
+<h1>P13 &mdash; Sudoku Solver</h1>
+<div class="meta"><span class="badge hard">Hard</span> &bull; LC #37 &bull; Pattern: <strong>Cell-by-Cell Try 1..9 + Row/Col/Box Bitmasks</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Fill a 9×9 Sudoku grid so every row, column, and 3×3 box contains digits 1-9 exactly once.</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Box Index</dt><dd>(r / 3) · 3 + (c / 3) — maps each cell to one of the 9 boxes.</dd>
+<dt>Bitmask</dt><dd>rowMask[r] bit d is set iff digit d already exists in row r. Same for col and box.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Find the next empty cell. Try each digit 1-9 that doesn't collide with row/col/box. Set it, recurse. If unsolvable, undo and try the next.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Bitmasks keep "available digits" check O(1). Smarter solvers pick the cell with fewest options first (MRV heuristic).</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>Initialise row/col/box masks from given digits.</li>
+<li>solve(): find next empty cell; for each available digit set it, recurse; on failure unset.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>private int[] rows = new int[9], cols = new int[9], boxes = new int[9];
+public void solveSudoku(char[][] b) {
+    for (int r = 0; r &lt; 9; r++) for (int c = 0; c &lt; 9; c++)
+        if (b[r][c] != '.') flip(r, c, b[r][c] - '0');
+    solve(b, 0, 0);
+}
+private boolean solve(char[][] b, int r, int c) {
+    if (r == 9) return true;
+    int nr = c == 8 ? r + 1 : r, nc = c == 8 ? 0 : c + 1;
+    if (b[r][c] != '.') return solve(b, nr, nc);
+    int used = rows[r] | cols[c] | boxes[(r / 3) * 3 + c / 3];
+    for (int d = 1; d &lt;= 9; d++) {
+        if ((used &amp; (1 &lt;&lt; d)) != 0) continue;
+        b[r][c] = (char) ('0' + d); flip(r, c, d);
+        if (solve(b, nr, nc)) return true;
+        b[r][c] = '.'; flip(r, c, d);
+    }
+    return false;
+}
+private void flip(int r, int c, int d) {
+    int bit = 1 &lt;&lt; d;
+    rows[r] ^= bit; cols[c] ^= bit; boxes[(r / 3) * 3 + c / 3] ^= bit;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(9^k) k = empties, heavy pruning</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(81)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Choice Pattern</h2>
+<div class="pattern-box"><strong>Mask-Based Constraint Search:</strong> Bitmasks for "what's used" turn O(9) lookups into O(1) bit ops.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Use bit 1..9 (not 0..8) so digits map naturally to their bit positions.</div>
+
+<div class="footer">Backtracking · Choice Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

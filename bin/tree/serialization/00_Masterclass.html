@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Tree · Serialization — Masterclass</title>
+<style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.9rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.tag{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:14px}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 18px}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:6px}.glossary dd{margin-left:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:24px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div><span class="tag">Tree</span><span class="tag" style="background:#fef3c7;color:#92400e">Serialization</span></div>
+<h1>Tree · Serialization & Construction — Masterclass</h1>
+<p style="color:#64748b">Encoding and decoding trees, plus building trees from different representations (preorder + inorder, sorted arrays, parsed strings).</p>
+
+<div class="section"><h2>Jargon</h2><div class="glossary"><dl>
+<dt>Pre-order Serialize</dt><dd>"root left right" walk with null markers; uniquely identifies any tree.</dd>
+<dt>Subtree Signature</dt><dd>Canonical string per subtree; lets you bucket duplicates in a HashMap.</dd>
+<dt>BST Bounds</dt><dd>(min, max) interval narrowing as you descend — only constraint needed to validate or build a BST.</dd>
+<dt>Threading</dt><dd>Reusing pointers (e.g., right) to chain nodes in a non-standard order.</dd>
+</dl></div></div>
+
+<div class="section"><h2>Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Serialize_and_Deserialize_Binary_Tree.html">Serialize / Deserialize</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>2</td><td><a href="P02_Construct_Binary_Tree_from_Preorder_and_Inorder_Traversal.html">Build Pre + In</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>3</td><td><a href="P03_Construct_Binary_Tree_from_Inorder_and_Postorder_Traversal.html">Build In + Post</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>4</td><td><a href="P04_Flatten_Binary_Tree_to_Linked_List.html">Flatten to List</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>5</td><td><a href="P05_Convert_Sorted_Array_to_Binary_Search_Tree.html">Sorted Array → BST</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>6</td><td><a href="P06_Verify_Preorder_Serialization.html">Verify Preorder Serial</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>7</td><td><a href="P07_Find_Duplicate_Subtrees.html">Find Duplicate Subtrees</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>8</td><td><a href="P08_Serialize_and_Deserialize_BST.html">Serialize/Deserialize BST</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>9</td><td><a href="P09_Encode_N_ary_to_Binary.html">Encode N-ary to Binary</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>10</td><td><a href="P10_Construct_Tree_from_String.html">Tree from "4(2(3)(1))"</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>11</td><td><a href="P11_Construct_BST_from_Preorder.html">BST from Preorder</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>12</td><td><a href="P12_Convert_Sorted_List_to_BST.html">Sorted List → BST</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>13</td><td><a href="P13_Recover_Tree_from_Preorder.html">Recover from "1-2--3"</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>14</td><td><a href="P14_All_Possible_Full_Binary_Trees.html">All Possible Full BTs</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>15</td><td><a href="P15_Trim_BST.html">Trim BST</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>16</td><td><a href="P16_Convert_BST_to_Greater_Tree.html">BST to Greater Tree</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>17</td><td><a href="P17_Binary_Tree_Cameras.html">Binary Tree Cameras</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>18</td><td><a href="P18_Inorder_Successor_in_BST.html">Inorder Successor</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>19</td><td><a href="P19_Insert_into_BST.html">Insert into BST</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>20</td><td><a href="P20_Delete_Node_in_BST.html">Delete Node in BST</a></td><td class="diff-m">Medium</td></tr>
+</tbody></table></div>
+
+<div class="footer">Tree · Serialization Masterclass — DSA Practice Series</div>
+<script src="../../util/progress.js" defer></script></body></html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P02 – N-Queens</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P02 — N-Queens</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #51 • Row + 3 conflict sets</div>
+<div class="section"><h2>Pattern</h2><p>Place one queen per row. Track columns, diagonals (r−c), anti-diagonals (r+c) in HashSets (or int bitmasks). O(1) conflict check.</p></div>
+<div class="section"><h2>Java</h2><pre>void dfs(int r, int n, int[] q, Set&lt;Integer&gt; c, Set&lt;Integer&gt; d, Set&lt;Integer&gt; a, List&lt;List&lt;String&gt;&gt; res) {
+    if (r==n) { res.add(build(q,n)); return; }
+    for (int x=0; x&lt;n; x++) {
+        if (c.contains(x)||d.contains(r-x)||a.contains(r+x)) continue;
+        q[r]=x; c.add(x); d.add(r-x); a.add(r+x);
+        dfs(r+1,n,q,c,d,a,res);
+        c.remove(x); d.remove(r-x); a.remove(r+x);
+    }
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> r−c is unique per ↘ diagonal; r+c per ↙ — that's the conflict-set encoding.</div></body></html>

@@ -1,5 +1,7 @@
 package binarysearch.lowerupperbound;
 
+import util.Test;
+
 /**
  * Sqrt(x)
  * Topic    : Binary Search
@@ -24,7 +26,10 @@ public class P02_Sqrt_x {
 
     public static void main(String[] args) {
         P02_Sqrt_x sol = new P02_Sqrt_x();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1", sol.mySqrt(8), 2);
+
+        Test.summary();
     }
 }

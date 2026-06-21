@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P16 – Restore Array</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P16 — Restore the Array</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #1416 • Split with bound k</div>
+<div class="section"><h2>Pattern</h2><p>dp[i] = ways to split s[i..]. For each i, try lengths 1..floor(log10(k))+1 such that s[i..i+len] ≤ k and no leading zero. Sum dp[i+len].</p></div>
+<div class="section"><h2>Java</h2><pre>private int[] memo;
+private final int MOD = 1_000_000_007;
+public int numberOfArrays(String s, int k) {
+    memo = new int[s.length() + 1];
+    Arrays.fill(memo, -1);
+    return dfs(s, 0, k);
+}
+int dfs(String s, int i, int k) {
+    if (i == s.length()) return 1;
+    if (s.charAt(i) == '0') return 0;
+    if (memo[i] != -1) return memo[i];
+    long total = 0, num = 0;
+    for (int j = i; j &lt; s.length(); j++) {
+        num = num * 10 + (s.charAt(j) - '0');
+        if (num &gt; k) break;
+        total = (total + dfs(s, j + 1, k)) % MOD;
+    }
+    return memo[i] = (int) total;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Memoising over the start index turns 2ⁿ paths into O(n · log k).</div></body></html>

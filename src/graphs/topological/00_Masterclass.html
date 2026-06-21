@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Graphs · Topological — Masterclass</title>
+<style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.9rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.tag{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:14px}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 18px}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:6px}.glossary dd{margin-left:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:24px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div><span class="tag">Graphs</span><span class="tag" style="background:#fef3c7;color:#92400e">Topological</span></div>
+<h1>Graphs · Topological Sort — Masterclass</h1>
+<p style="color:#64748b">Linear ordering of nodes in a DAG such that every edge u→v has u before v. Two algorithms: Kahn (BFS, indegree-driven) and DFS-postorder.</p>
+
+<div class="section"><h2>Templates</h2>
+<pre>// Kahn's algorithm (BFS)
+int[] indeg = new int[n];
+for (int u = 0; u &lt; n; u++) for (int v : adj.get(u)) indeg[v]++;
+Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;();
+for (int i = 0; i &lt; n; i++) if (indeg[i] == 0) q.offer(i);
+List&lt;Integer&gt; order = new ArrayList&lt;&gt;();
+while (!q.isEmpty()) {
+    int u = q.poll(); order.add(u);
+    for (int v : adj.get(u)) if (--indeg[v] == 0) q.offer(v);
+}
+// order.size() &lt; n ⇒ cycle exists
+
+// DFS-based
+void dfs(int u) {
+    state[u] = 1;
+    for (int v : adj.get(u)) if (state[v] == 0) dfs(v);
+    state[u] = 2; stack.push(u);
+}
+// Final order = reverse(stack)</pre></div>
+
+<div class="section"><h2>Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Topological_Sort_DFS.html">Topo Sort via DFS</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_Topological_Sort_Kahn.html">Topo Sort via Kahn</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>3</td><td><a href="P03_Course_Schedule_II.html">Course Schedule II</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>4</td><td><a href="P04_Alien_Dictionary.html">Alien Dictionary</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>5</td><td><a href="P05_Minimum_Height_Trees.html">Minimum Height Trees</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>6</td><td><a href="P06_Sequence_Reconstruction.html">Sequence Reconstruction</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>7</td><td><a href="P07_Parallel_Courses.html">Parallel Courses</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>8</td><td><a href="P08_Sort_Items_by_Groups.html">Sort Items by Groups</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>9</td><td><a href="P09_Course_Schedule_IV.html">Course Schedule IV</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>10</td><td><a href="P10_Largest_Color_Value_in_Directed_Graph.html">Largest Color Value</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>11</td><td><a href="P11_All_Ancestors_of_a_Node.html">All Ancestors of a Node</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>12</td><td><a href="P12_Build_Order.html">Build Order</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>13</td><td><a href="P13_Loud_and_Rich.html">Loud and Rich</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>14</td><td><a href="P14_Find_All_Recipes.html">Find All Recipes</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>15</td><td><a href="P15_Lex_Smallest_Topo_Order.html">Lex Smallest Topo</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>16</td><td><a href="P16_Verify_Topological_Order.html">Verify Topo Order</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>17</td><td><a href="P17_Schedule_Tasks_with_Dependencies.html">Schedule Tasks + Durations</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>18</td><td><a href="P18_Count_Topo_Orderings.html">Count Topo Orderings</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>19</td><td><a href="P19_Restore_Array_from_Adjacent_Pairs.html">Restore Array Adj Pairs</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>20</td><td><a href="P20_Strange_Printer_II.html">Strange Printer II</a></td><td class="diff-h">Hard</td></tr>
+</tbody></table></div>
+
+<div class="footer">Graphs · Topological Masterclass — DSA Practice Series</div>
+<script src="../../util/progress.js" defer></script></body></html>

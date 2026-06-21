@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P19 – Closest Subseq Sum</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P19 — Closest Subsequence Sum</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #1755 • Meet-in-the-middle</div>
+<div class="section"><h2>Pattern</h2><p>n up to 40 ⇒ 2⁴⁰ too big. Split into halves, enumerate all 2ⁿ/² subset sums for each. Sort second half; for each sum from first, binary-search the closest complement.</p></div>
+<div class="section"><h2>Java</h2><pre>public int minAbsDifference(int[] nums, int goal) {
+    int n = nums.length, h = n / 2;
+    int[] L = subsetSums(nums, 0, h);
+    int[] R = subsetSums(nums, h, n);
+    Arrays.sort(R);
+    int best = Integer.MAX_VALUE;
+    for (int x : L) {
+        int need = goal - x;
+        int idx = lowerBound(R, need);
+        if (idx &lt; R.length) best = Math.min(best, Math.abs(R[idx] - need));
+        if (idx &gt; 0) best = Math.min(best, Math.abs(R[idx-1] - need));
+    }
+    return best;
+}
+int[] subsetSums(int[] a, int from, int to) {
+    int len = to - from;
+    int[] sums = new int[1 &lt;&lt; len];
+    for (int m = 0; m &lt; (1&lt;&lt;len); m++)
+        for (int i=0;i&lt;len;i++) if ((m&gt;&gt;i &amp; 1)==1) sums[m] += a[from+i];
+    return sums;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Meet-in-the-middle reduces 2⁴⁰ to 2 × 2²⁰ + sort.</div></body></html>

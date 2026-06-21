@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P11 – Kth Ancestor</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.6rem}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:12px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:12px 18px;margin-bottom:10px}h2{margin:0 0 4px;color:#1e40af;font-size:1rem}pre{background:#0f172a;color:#e2e8f0;padding:10px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; LCA Masterclass</a>
+<h1>P11 — Kth Ancestor of a Tree Node</h1><div class="meta"><span class="badge">Hard</span> • LC #1483</div>
+<div class="section"><h2>Java</h2><pre>// Precompute up[v][k] = 2^k-th ancestor.
+// getKthAncestor: walk bits of k; if set, jump via up[v][k].
+int getKthAncestor(int node, int k) {
+    for (int j = 0; j &lt; LOG; j++) if (((k &gt;&gt; j) &amp; 1) == 1) { node = up[node][j]; if (node == -1) return -1; }
+    return node;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Just the "lift" step of binary-lifting LCA — no need to compare two nodes.</div></body></html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P03 – Find Peak Element</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.medium{background:#fef9c3;color:#a16207}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; 2D Matrix Masterclass</a> &rsaquo; 1D Peak (Anchor)</div>
+<h1>P03 &mdash; Find Peak Element</h1>
+<div class="meta"><span class="badge medium">Medium</span> &bull; LC #162 &bull; Pattern: <strong>BS Anchor for 2D Variant</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Array; element is a peak if strictly greater than both neighbors. Find any peak index in O(log n).</p>
+<p><strong>Example:</strong> <code>[1, 2, 3, 1]</code> → <code>2</code></p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Peak in any array</dt><dd>Edges count as having −∞ neighbors. So a strictly increasing then decreasing array always has at least one peak.</dd>
+<dt>Why this is in the 2D folder</dt><dd>This 1D problem is the foundation for the 2D "Find a Peak Element II" (P05), which binary searches one column and uses 1D peak logic on it.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Compare mid to mid+1. Slope up → peak to the right. Slope down → peak at mid or to the left.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Not the whole array but the slope is monotone enough &mdash; binary search the rising side.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>L = 0, R = n − 1.</li>
+<li>While L &lt; R: mid; if nums[mid] &lt; nums[mid+1]: L = mid + 1. Else R = mid.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int findPeakElement(int[] nums) {
+    int L = 0, R = nums.length - 1;
+    while (L &lt; R) {
+        int mid = L + (R - L) / 2;
+        if (nums[mid] &lt; nums[mid + 1]) L = mid + 1;
+        else                            R = mid;
+    }
+    return L;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(log n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; 2D Pattern</h2>
+<div class="pattern-box"><strong>1D Peak Anchor:</strong> The base case for 2D peak. Once you can find a peak in a 1D slice (a column), the 2D version reduces to binary searching the column with the maximum.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Binary search doesn't require global sortedness — only a local "slope is rising" predicate. That's what makes this O(log n) on an arbitrary array.</div>
+
+<div class="footer">Binary Search · 2D Matrix Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

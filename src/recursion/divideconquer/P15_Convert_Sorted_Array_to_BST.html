@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P15 – Convert Sorted Array to BST</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.easy{background:#dcfce7;color:#166534}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; D&amp;C Masterclass</a> &rsaquo; Middle as root</div>
+<h1>P15 &mdash; Convert Sorted Array to BST</h1>
+<div class="meta"><span class="badge easy">Easy</span> &bull; LC #108 &bull; Pattern: <strong>Middle Element Becomes Root</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Given a sorted array, build a height-balanced BST.</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Height-Balanced</dt><dd>Heights of left and right subtrees of every node differ by at most 1.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Pick the middle as root; recurse on left half for left subtree and right half for right subtree. By construction, each subtree's size differs by at most 1 ⇒ balanced.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Sorted order + middle-as-root gives both BST property and balance for free.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>build(lo, hi): if lo &gt; hi ⇒ null.</li>
+<li>mid = (lo + hi) / 2; root = nums[mid]; recurse on each half.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public TreeNode sortedArrayToBST(int[] nums) {
+    return build(nums, 0, nums.length - 1);
+}
+private TreeNode build(int[] a, int lo, int hi) {
+    if (lo &gt; hi) return null;
+    int mid = lo + (hi - lo) / 2;
+    TreeNode root = new TreeNode(a[mid]);
+    root.left  = build(a, lo, mid - 1);
+    root.right = build(a, mid + 1, hi);
+    return root;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(log n) stack</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; D&amp;C Pattern</h2>
+<div class="pattern-box"><strong>Middle-as-Root:</strong> The cleanest example of D&amp;C constructing a structure rather than computing a value.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Any sorted source can produce a balanced BST in O(n); this idea also works for sorted linked lists with slow/fast pointers.</div>
+
+<div class="footer">Recursion · D&amp;C Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

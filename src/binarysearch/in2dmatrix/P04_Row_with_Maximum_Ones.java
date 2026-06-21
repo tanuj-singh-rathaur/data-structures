@@ -1,5 +1,7 @@
 package binarysearch.in2dmatrix;
 
+import util.Test;
+
 /**
  * Row with Maximum Ones
  * Topic    : Binary Search
@@ -24,7 +26,11 @@ public class P04_Row_with_Maximum_Ones {
 
     public static void main(String[] args) {
         P04_Row_with_Maximum_Ones sol = new P04_Row_with_Maximum_Ones();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.rowAndMaximumOnes(new int[][]{{0,1},{1,0}}), new int[]{0, 1});
+
+        Test.summary();
     }
 }

@@ -1,5 +1,7 @@
 package binarysearch.classic;
 
+import util.Test;
+
 /**
  * Search in Rotated Sorted Array
  * Topic    : Binary Search
@@ -24,7 +26,10 @@ public class P04_Search_in_Rotated_Sorted_Array {
 
     public static void main(String[] args) {
         P04_Search_in_Rotated_Sorted_Array sol = new P04_Search_in_Rotated_Sorted_Array();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1", sol.search(new int[]{4,5,6,7,0,1,2}, 0), 4);
+
+        Test.summary();
     }
 }

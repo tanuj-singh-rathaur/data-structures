@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>DP Intervals Masterclass</title>
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.65}
+h1{font-size:1.9rem;color:#0f172a}
+h2{font-size:1.2rem;color:#1e40af;margin-top:24px}
+.lede{background:#eff6ff;border-left:4px solid #2563eb;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.84rem}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.92rem}
+th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left}
+th{background:#f1f5f9}
+.E{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.M{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.H{background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.jargon dt{font-weight:700;color:#1e40af;margin-top:8px}
+</style></head>
+<body>
+<a href="../00_Index.html" style="color:#2563eb">&larr; Back to Topics</a>
+<h1>26.3 DP Intervals — Masterclass</h1>
+<div class="lede">Interval DP solves problems on contiguous ranges <code>[i..j]</code>. State = best answer on a sub-interval; transition splits at some pivot k (a "first move," a "last move," or a "merge point"). The defining loop is <strong>iterate by length</strong>, then by start, then by split — short intervals are computed first because long intervals depend on them.</div>
+
+<div class="box"><h2>Jargon Buster</h2>
+<dl class="jargon">
+<dt>Split DP</dt><dd>Pick a pivot k in (i..j) that divides the interval into two sub-intervals.</dd>
+<dt>Length-first iteration</dt><dd>Fill <code>dp</code> for length 1, then 2, then 3 ... so when you compute <code>dp[i][j]</code> all sub-intervals are ready.</dd>
+<dt>"Last move" framing</dt><dd>Instead of "what's the first move", ask "what's the LAST move you make on this interval?" — often gives a cleaner recurrence (Burst Balloons).</dd>
+<dt>Minimax DP</dt><dd>Two players alternate. <code>dp[i][j]</code> = best score difference assuming the current player picks optimally; the next state flips sign.</dd>
+</dl></div>
+
+<div class="box"><h2>Java — Generic Interval Template</h2>
+<pre>int n = arr.length;
+int[][] dp = new int[n][n];           // dp[i][j] over [i..j]
+for (int len = 2; len &lt;= n; len++) {
+    for (int i = 0; i + len - 1 &lt; n; i++) {
+        int j = i + len - 1;
+        dp[i][j] = INIT;
+        for (int k = i; k &lt; j; k++) {
+            int cand = dp[i][k] + dp[k+1][j] + cost(i, k, j);
+            dp[i][j] = Math.min(dp[i][j], cand);   // or max
+        }
+    }
+}
+return dp[0][n-1];</pre></div>
+
+<div class="box"><h2>Java — "Last Move" Template (Burst Balloons)</h2>
+<pre>// dp[i][j] = best result if (i..j) is the SET of remaining items;
+// pivot k is the LAST item processed:
+for (int len = 1; len &lt;= n; len++)
+    for (int i = 1; i + len - 1 &lt;= n; i++) {
+        int j = i + len - 1;
+        for (int k = i; k &lt;= j; k++)
+            dp[i][j] = Math.max(dp[i][j],
+                       dp[i][k-1] + a[i-1]*a[k]*a[j+1] + dp[k+1][j]);
+    }</pre></div>
+
+<div class="box"><h2>Problem Index</h2>
+<table>
+<tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th><th>Guide</th></tr>
+<tr><td>P01</td><td>Matrix Chain Multiplication</td><td>Split DP</td><td><span class="M">Medium</span></td><td><a href="P01_Matrix_Chain_Multiplication.html">open</a></td></tr>
+<tr><td>P02</td><td>Burst Balloons</td><td>Last-move DP</td><td><span class="H">Hard</span></td><td><a href="P02_Burst_Balloons.html">open</a></td></tr>
+<tr><td>P03</td><td>Stone Game</td><td>Minimax DP</td><td><span class="M">Medium</span></td><td><a href="P03_Stone_Game.html">open</a></td></tr>
+<tr><td>P04</td><td>Predict the Winner</td><td>Minimax DP</td><td><span class="M">Medium</span></td><td><a href="P04_Predict_the_Winner.html">open</a></td></tr>
+<tr><td>P05</td><td>Min Score Triangulation</td><td>Split DP</td><td><span class="M">Medium</span></td><td><a href="P05_Min_Score_Triangulation.html">open</a></td></tr>
+<tr><td>P06</td><td>Palindrome Partition II</td><td>Pal-table + cut DP</td><td><span class="H">Hard</span></td><td><a href="P06_Palindrome_Partition_II.html">open</a></td></tr>
+<tr><td>P07</td><td>Longest Palindromic Substring</td><td>isPal DP</td><td><span class="M">Medium</span></td><td><a href="P07_Longest_Palindromic_Substring.html">open</a></td></tr>
+<tr><td>P08</td><td>Remove Boxes</td><td>3-state interval DP</td><td><span class="H">Hard</span></td><td><a href="P08_Remove_Boxes.html">open</a></td></tr>
+<tr><td>P09</td><td>Strange Printer</td><td>Interval DP</td><td><span class="H">Hard</span></td><td><a href="P09_Strange_Printer.html">open</a></td></tr>
+<tr><td>P10</td><td>Optimal BST</td><td>Split DP</td><td><span class="H">Hard</span></td><td><a href="P10_Optimal_BST.html">open</a></td></tr>
+<tr><td>P11</td><td>Min Cost to Cut a Stick</td><td>Cut-index DP</td><td><span class="H">Hard</span></td><td><a href="P11_Min_Cost_Cut_Stick.html">open</a></td></tr>
+<tr><td>P12</td><td>Guess Number Higher/Lower II</td><td>Minimax DP</td><td><span class="M">Medium</span></td><td><a href="P12_Guess_Number_Higher_Lower_II.html">open</a></td></tr>
+<tr><td>P13</td><td>Scramble String</td><td>Memo (i,j,len)</td><td><span class="H">Hard</span></td><td><a href="P13_Scramble_String.html">open</a></td></tr>
+<tr><td>P14</td><td>Min Insertions Palindrome</td><td>n - LPS</td><td><span class="H">Hard</span></td><td><a href="P14_Min_Insertions_To_Palindrome.html">open</a></td></tr>
+<tr><td>P15</td><td>Boolean Parenthesization</td><td>Count true/false DP</td><td><span class="H">Hard</span></td><td><a href="P15_Boolean_Parenthesization.html">open</a></td></tr>
+<tr><td>P16</td><td>Stone Game VII</td><td>Minimax DP</td><td><span class="M">Medium</span></td><td><a href="P16_Stone_Game_VII.html">open</a></td></tr>
+<tr><td>P17</td><td>Egg Drop</td><td>k×n DP</td><td><span class="H">Hard</span></td><td><a href="P17_Egg_Drop_Interval.html">open</a></td></tr>
+<tr><td>P18</td><td>Min Cost Merge Stones</td><td>3-D interval DP</td><td><span class="H">Hard</span></td><td><a href="P18_Min_Cost_Merge_Stones.html">open</a></td></tr>
+<tr><td>P19</td><td>Print Optimal Parens</td><td>MCM + trace</td><td><span class="M">Medium</span></td><td><a href="P19_Print_Optimal_Parens.html">open</a></td></tr>
+<tr><td>P20</td><td>Allocate Mailboxes</td><td>Partition DP</td><td><span class="H">Hard</span></td><td><a href="P20_Allocate_Mailboxes.html">open</a></td></tr>
+</table></div>
+</body></html>

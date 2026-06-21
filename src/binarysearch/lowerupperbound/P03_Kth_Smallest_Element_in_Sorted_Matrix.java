@@ -1,5 +1,7 @@
 package binarysearch.lowerupperbound;
 
+import util.Test;
+
 /**
  * Kth Smallest Element in Sorted Matrix
  * Topic    : Binary Search
@@ -24,7 +26,11 @@ public class P03_Kth_Smallest_Element_in_Sorted_Matrix {
 
     public static void main(String[] args) {
         P03_Kth_Smallest_Element_in_Sorted_Matrix sol = new P03_Kth_Smallest_Element_in_Sorted_Matrix();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.kthSmallest(new int[][]{{1,5,9},{10,11,13},{12,13,15}}, 8), 13);
+
+        Test.summary();
     }
 }

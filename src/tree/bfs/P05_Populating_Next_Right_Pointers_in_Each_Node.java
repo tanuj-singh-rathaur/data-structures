@@ -1,30 +1,17 @@
 package tree.bfs;
 
+import util.Test;
+
 /**
  * Populating Next Right Pointers in Each Node
- * Topic    : Tree
- * Pattern  : BFS Level-Order
+ * Topic    : Tree BFS
+ * Pattern  : BFS connecting siblings (or constant-space with established 'next')
  * Difficulty: Medium
  * LeetCode : https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
- * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   Read on LeetCode: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
- *
- * PATTERN HINT:
- *   [BFS Level-Order — think how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
  */
 public class P05_Populating_Next_Right_Pointers_in_Each_Node {
-
-    // TODO: define your method signature after reading the problem
-
     public static void main(String[] args) {
         P05_Populating_Next_Right_Pointers_in_Each_Node sol = new P05_Populating_Next_Right_Pointers_in_Each_Node();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+        Test.summary();
     }
 }

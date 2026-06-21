@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-Content \"c:\\\\Projects\\\\DSA\\\\DSA_project\\\\README.md\")",
+      "Bash(mkdir -p \"c:\\\\Projects\\\\DSA\\\\DSA_project\\\\docs\\\\twopoter\" 2>/dev/null; echo \"done\")",
+      "Bash(python generate_guides.py)",
+      "Bash(Select-String -Path \"C:\\\\Projects\\\\DSA\\\\DSA_project\\\\src\\\\arrays\\\\twopointer\\\\P01_TwoSumII.html\" -Pattern \"class=\"\"walk\"\"\")",
+      "Bash(Select-Object -First 3)",
+      "WebFetch(domain:www.risingbrain.org)",
+      "Bash(dir C:\\\\Projects\\\\DSA\\\\DSA_project /B)",
+      "Bash(python fix_java_files.py)",
+      "Bash(python find_duplicates.py)",
+      "Bash(python strip_bom.py)",
+      "Bash(python dedupe_package.py)",
+      "Bash(mkdir -p C:/Projects/DSA/.vscode)",
+      "Bash(python add_problem_links.py)",
+      "Bash(awk '{print $1}')",
+      "Bash(awk '{print $2}')",
+      "Bash(awk -F/ '{print $1\"/\"$2\"/\"$3}')",
+      "Bash(mkdir -p C:/Projects/DSA/DSA_project/.claude)",
+      "Bash(cp C:/Projects/DSA/.claude/settings.local.json C:/Projects/DSA/DSA_project/.claude/settings.local.json)"
+    ],
+    "additionalDirectories": [
+      "c:\\Projects\\DSA\\DSA_project\\docs",
+      "C:\\Projects\\DSA"
+    ]
+  }
+}

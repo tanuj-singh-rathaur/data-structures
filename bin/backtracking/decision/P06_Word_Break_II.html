@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P06 – Word Break II</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:24px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;background:#fee2e2;color:#b91c1c}.meta{color:#64748b;font-size:.88rem;margin-bottom:20px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:16px;border-left:4px solid #2563eb}pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-top:14px}.insight strong{color:#1d4ed8}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div class="page">
+<a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Decision Masterclass</a>
+<h1>P06 — Word Break II</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #140 • Split prefix + memo</div>
+<div class="section"><h2>Problem</h2><p>Return all sentences obtained by adding spaces in s such that each word is in wordDict.</p></div>
+<div class="section"><h2>Pattern</h2><p>Recursive split with start index. For each start, try every dictionary word prefix; recurse on suffix. Memoise by start index — multiple parent paths can hit the same suffix.</p></div>
+<div class="section"><h2>Java</h2><pre>Map&lt;Integer, List&lt;String&gt;&gt; memo = new HashMap&lt;&gt;();
+public List&lt;String&gt; wordBreak(String s, List&lt;String&gt; dict) {
+    return dfs(s, 0, new HashSet&lt;&gt;(dict));
+}
+List&lt;String&gt; dfs(String s, int i, Set&lt;String&gt; dict) {
+    if (memo.containsKey(i)) return memo.get(i);
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    if (i == s.length()) { res.add(""); return res; }
+    for (int j = i + 1; j &lt;= s.length(); j++) {
+        String w = s.substring(i, j);
+        if (!dict.contains(w)) continue;
+        for (String rest : dfs(s, j, dict))
+            res.add(w + (rest.isEmpty() ? "" : " " + rest));
+    }
+    memo.put(i, res);
+    return res;
+}</pre></div>
+<div class="section"><h2>Complexity</h2><p>O(n³ + 2ⁿ) bounded by output size.</p></div>
+<div class="insight"><strong>Insight:</strong> Memo is over INDEX, not paths — different parents reuse the same suffix decomposition.</div>
+<div class="footer">Backtracking · Decision Masterclass</div></div></body></html>

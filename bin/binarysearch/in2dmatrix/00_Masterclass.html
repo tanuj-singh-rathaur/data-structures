@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Binary Search · 2D Matrix Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:860px;margin:0 auto;padding:32px 40px}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+h3{font-size:.95rem;font-weight:600;color:#475569;margin:18px 0 6px}
+p{margin-bottom:10px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.5px}
+.easy{background:#dcfce7;color:#15803d}.medium{background:#fef9c3;color:#a16207}.hard{background:#fee2e2;color:#b91c1c}
+.meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.section.red{border-left:4px solid #dc2626}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.type-card{border-radius:10px;padding:22px 24px;margin:22px 0;border:1px solid #e2e8f0;border-left:6px solid #2563eb}
+.t1{border-left-color:#2563eb;background:#f0f7ff}.t2{border-left-color:#16a34a;background:#f0fdf4}
+.t3{border-left-color:#d97706;background:#fffbeb}.t4{border-left-color:#7c3aed;background:#faf5ff}.t5{border-left-color:#dc2626;background:#fff5f5}
+.type-title{font-size:1.05rem;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.07)}
+.t1 .type-title{color:#1d4ed8}.t2 .type-title{color:#15803d}.t3 .type-title{color:#b45309}.t4 .type-title{color:#6d28d9}.t5 .type-title{color:#b91c1c}
+.rule-box{background:rgba(255,255,255,.7);border-radius:8px;padding:12px 16px;margin:10px 0}
+.rule-box ul,.rule-box ol{padding-left:20px;margin:4px 0}.rule-box li{margin-bottom:5px}
+.kv{display:flex;gap:16px;flex-wrap:wrap}
+.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}
+.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-top:8px}
+.insight strong{color:#1d4ed8}
+.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}
+.pattern-box strong{color:#6d28d9}
+.steps ol{padding-left:22px}.steps li{margin-bottom:8px}
+.prob-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.prob-tag{border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600}
+.t1 .prob-tag{background:#dbeafe;color:#1d4ed8}.t2 .prob-tag{background:#dcfce7;color:#15803d}
+.t3 .prob-tag{background:#fef3c7;color:#b45309}.t4 .prob-tag{background:#ede9fe;color:#6d28d9}
+.t5 .prob-tag{background:#fee2e2;color:#b91c1c}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+@media print{body{background:#fff}.page{padding:20px}.section{break-inside:avoid}pre,code{break-inside:avoid}header{break-after:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Binary Search · 2D Matrix &mdash; Complete Masterclass</h1>
+  <div class="meta">Binary Search &rsaquo; 2D Matrix &nbsp;&bull;&nbsp; 20 Problems Covered</div>
+</header>
+
+<div class="section blue">
+<h2>&#128161; What Is Binary Search on 2D? (Layman's Explanation)</h2>
+<p>A matrix is just a 2D array, but you don't always have to scan every cell. If the matrix has any kind of <em>order</em> (rows sorted, columns sorted, both sorted, monotone diagonal, etc.) you can usually find or count things in O(log n + log m), O(m + n), or O((m + n) log V).</p>
+<p>Five reliable techniques carry almost every grid-search problem: <strong>flatten</strong> the matrix into one sorted run, walk the <strong>staircase</strong>, binary search the <strong>answer value</strong>, binary search a <strong>boundary</strong> (row, column, or day), and combine BS with <strong>BFS/DFS/Union-Find</strong> for path-on-grid problems.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster (Confusing Terms Explained)</h2>
+<div class="glossary"><dl>
+  <dt>Row-sorted matrix</dt><dd>Each row is sorted ascending; rows are independent. Each row is its own sorted array.</dd>
+  <dt>Row + Column sorted</dt><dd>Each row is ascending AND each column is ascending. The classic "Search a 2D Matrix II" structure.</dd>
+  <dt>Strictly sorted (treat-as-1D)</dt><dd>If the matrix has the property "last value of row i &lt; first value of row i+1," the whole matrix flattens into a single sorted sequence. Standard binary search applies on index <code>r * cols + c</code>.</dd>
+  <dt>Staircase walk</dt><dd>Start at top-right (or bottom-left). At each cell, the comparison tells you to step left or down (or right/up). Each step rules out an entire row or column.</dd>
+  <dt>BS on the answer</dt><dd>You search a <em>value</em>, not an index. For each candidate v, you count cells satisfying the predicate; smallest v with count ≥ k is the answer.</dd>
+  <dt>BS on a day / level / threshold</dt><dd>For "grid evolves over time" problems (Last Day to Cross, Swim in Rising Water, Path with Min Effort), binary search the time/threshold and check reachability with BFS / DFS / Union-Find.</dd>
+  <dt>2D prefix sums</dt><dd>P[r][c] = sum of all cells in [0..r−1] × [0..c−1]. Allows O(1) submatrix sums. Pairs cleanly with BS on size (P10).</dd>
+  <dt>Row compression</dt><dd>Fix two row indices r1, r2; collapse each column to its sum across rows r1..r2. Reduces 2D problems to 1D (P09).</dd>
+  <dt>Diagonal monotonicity</dt><dd>Some problems' interesting quantity changes monotonically along diagonals (find peak II, smallest rectangle of black pixels).</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#128270; When Should You Use Binary Search on 2D?</h2>
+<ul style="padding-left:22px;margin:10px 0">
+  <li>"Find / does X exist in a sorted matrix" → flatten or staircase</li>
+  <li>"Count negatives in sorted matrix" / "leftmost 1 per row" → staircase</li>
+  <li>"k-th smallest / smallest with property" in a sorted matrix → BS on the answer</li>
+  <li>"Max submatrix sum ≤ K" → row compression + BS on prefix</li>
+  <li>"Path on grid with min/max edge weight" → BS the threshold + reachability check</li>
+  <li>"Maximum side of square sum ≤ T" → 2D prefix + BS on side length</li>
+</ul>
+</div>
+
+<div class="section orange">
+<h2>&#128200; The 5 Types of 2D Binary Search &mdash; Full Breakdown</h2>
+
+<!-- TYPE 1 — FLATTEN -->
+<div class="type-card t1">
+<div class="type-title">&#9312; Flatten to 1D Binary Search</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> The matrix is strictly sorted (row by row, last of row i &lt; first of row i+1). Pretend it's one big sorted array of length m·n. Standard BS on index k, with <code>row = k / n, col = k % n</code>.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Search a 2D Matrix" (LC 74): the explicit "rows concatenate" guarantee</li>
+  <li>You're told both: rows sorted AND first-of-next-row &gt; last-of-this-row</li>
+</ul>
+<p><strong>The decision rule:</strong></p>
+<ul>
+  <li>L = 0, R = m·n − 1</li>
+  <li>mid → (mid / n, mid % n) → compare to target</li>
+</ul>
+</div>
+
+<strong>Code Template:</strong>
+<pre>public boolean searchMatrix(int[][] m, int target) {
+    int rows = m.length, cols = m[0].length;
+    int L = 0, R = rows * cols - 1;
+    while (L &lt;= R) {
+        int mid = L + (R - L) / 2;
+        int v = m[mid / cols][mid % cols];
+        if      (v == target) return true;
+        else if (v &lt; target)  L = mid + 1;
+        else                  R = mid - 1;
+    }
+    return false;
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P01 Search a 2D Matrix</span>
+</div>
+</div>
+
+<!-- TYPE 2 — STAIRCASE WALK -->
+<div class="type-card t2">
+<div class="type-title">&#9313; Staircase Walk (Row + Column Sorted)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Each row sorted, each column sorted, but no flat order. Start at the top-right (or bottom-left). The cell value vs target tells you which whole row/column to discard.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Sorted both ways" matrix (LC 240)</li>
+  <li>"Count negatives in sorted matrix"</li>
+  <li>"Leftmost column with a 1" (binary matrix; rows sorted)</li>
+</ul>
+<p><strong>The decision rule (top-right start):</strong></p>
+<ul>
+  <li>If <code>m[r][c] == target</code>: found</li>
+  <li>If <code>m[r][c] &gt; target</code>: <code>c--</code> (discard column)</li>
+  <li>If <code>m[r][c] &lt; target</code>: <code>r++</code> (discard row)</li>
+</ul>
+</div>
+
+<strong>Code Template (Search 2D II):</strong>
+<pre>public boolean searchMatrix(int[][] m, int target) {
+    int r = 0, c = m[0].length - 1;
+    while (r &lt; m.length &amp;&amp; c &gt;= 0) {
+        if      (m[r][c] == target) return true;
+        else if (m[r][c] &gt; target)  c--;
+        else                        r++;
+    }
+    return false;
+}</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P02 Search 2D Matrix II</span>
+  <span class="prob-tag">P06 Count Negatives</span>
+  <span class="prob-tag">P07 Leftmost Column with 1</span>
+  <span class="prob-tag">P08 Smallest Rectangle Black Pixels</span>
+</div>
+</div>
+
+<!-- TYPE 3 — BS ON ANSWER -->
+<div class="type-card t3">
+<div class="type-title">&#9314; Binary Search the Answer (Value Range)</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> You can't access the k-th smallest directly, but you can <em>count</em> entries ≤ a candidate value efficiently (linear or log). Binary search the value range.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"K-th smallest sum" / "K-th smallest pair" / "K-th smallest in matrix"</li>
+  <li>"Maximum side / area / sum subject to ≤ K" (BS on size or sum)</li>
+</ul>
+<p><strong>The pattern:</strong></p>
+<ul>
+  <li>lo = minPossible, hi = maxPossible</li>
+  <li>For each mid, count(≤ mid) via problem-specific routine</li>
+  <li>Adjust lo/hi to find boundary; answer = lo at the end</li>
+</ul>
+</div>
+
+<strong>Code Template (BS value with count helper):</strong>
+<pre>int lo = minVal, hi = maxVal;
+while (lo &lt; hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (count(mid) &lt; k) lo = mid + 1;
+    else                hi = mid;
+}
+return lo;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P09 Max Sum Rectangle ≤ K</span>
+  <span class="prob-tag">P10 Max Side Square ≤ T</span>
+  <span class="prob-tag">P13 Kth Smallest Row-Sum</span>
+  <span class="prob-tag">P15 K Pairs Smallest Sums</span>
+</div>
+</div>
+
+<!-- TYPE 4 — BS A THRESHOLD + REACHABILITY -->
+<div class="type-card t4">
+<div class="type-title">&#9315; Binary Search Threshold + Grid Reachability</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> The grid evolves with a parameter (water level, day, max effort). Binary search the threshold; for each candidate run a BFS / DFS / Union-Find to check if (start) can reach (end).</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Last day you can still cross" / "Swim in Rising Water"</li>
+  <li>"Path with minimum effort" / "Path with maximum minimum value"</li>
+</ul>
+<p><strong>The pattern:</strong></p>
+<ul>
+  <li>Binary search t in [low, high]</li>
+  <li>Check connectivity using only cells satisfying t</li>
+  <li>O((m·n) · log(range))</li>
+</ul>
+</div>
+
+<strong>Code Template (sketch):</strong>
+<pre>int lo = ..., hi = ...;
+while (lo &lt; hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (canCross(grid, mid)) hi = mid;
+    else                     lo = mid + 1;
+}
+return lo;</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P11 Path Max Min Value</span>
+  <span class="prob-tag">P12 Path Minimum Effort</span>
+  <span class="prob-tag">P14 Last Day Cross</span>
+  <span class="prob-tag">P17 Swim in Rising Water</span>
+</div>
+</div>
+
+<!-- TYPE 5 — TRANSFORM + LB -->
+<div class="type-card t5">
+<div class="type-title">&#9316; Transform to 1D + Sorted Lower Bound</div>
+<div class="rule-box">
+<p><strong>What it is:</strong> Define a derived quantity (e.g. <code>d[i] = nums1[i] − nums2[i]</code>); sort or maintain it; answer queries by binary search on the sorted helper.</p>
+<p><strong>Recognize it when:</strong></p>
+<ul>
+  <li>"Number of pairs satisfying inequality" / "Count pairs in two arrays"</li>
+  <li>"Most beautiful item for each query" — sort by price, prefix-max beauty, LB per query</li>
+  <li>"Minimum absolute sum difference" — sort nums1, LB nums2[i] to find best replacement</li>
+  <li>"Find peak in 2D matrix" — binary search the column</li>
+</ul>
+</div>
+
+<strong>Code Template (Min Abs Sum Diff):</strong>
+<pre>int[] sorted = nums1.clone();
+java.util.Arrays.sort(sorted);
+long total = 0;
+int bestSave = 0;
+for (int i = 0; i &lt; n; i++) {
+    int d = Math.abs(nums1[i] - nums2[i]);
+    total += d;
+    int idx = lowerBound(sorted, nums2[i]);
+    if (idx &lt; n) bestSave = Math.max(bestSave, d - Math.abs(sorted[idx] - nums2[i]));
+    if (idx &gt; 0) bestSave = Math.max(bestSave, d - Math.abs(sorted[idx - 1] - nums2[i]));
+}
+return (int) ((total - bestSave) % 1_000_000_007);</pre>
+<div class="prob-tags">
+  <span class="prob-tag">P03 Find Peak Element (1D anchor)</span>
+  <span class="prob-tag">P04 Row Maximum Ones</span>
+  <span class="prob-tag">P05 Find Peak Element II</span>
+  <span class="prob-tag">P16 Pairs Satisfying Inequality</span>
+  <span class="prob-tag">P18 Count Pairs in Two Arrays</span>
+  <span class="prob-tag">P19 Most Beautiful per Query</span>
+  <span class="prob-tag">P20 Min Abs Sum Diff</span>
+</div>
+</div>
+
+</div>
+
+<div class="section purple">
+<h2>&#128296; Universal 2D Binary Search Templates</h2>
+<pre>// Flatten (strict sort)
+int L = 0, R = rows * cols - 1;
+while (L &lt;= R) {
+    int mid = L + (R - L) / 2;
+    int v = m[mid / cols][mid % cols];
+    if      (v == target) return true;
+    else if (v &lt; target)  L = mid + 1;
+    else                  R = mid - 1;
+}
+return false;
+
+// Staircase (row + col sorted)
+int r = 0, c = cols - 1;
+while (r &lt; rows &amp;&amp; c &gt;= 0) {
+    if      (m[r][c] == target) return true;
+    else if (m[r][c] &gt; target)  c--;
+    else                        r++;
+}
+return false;
+
+// BS on answer + count helper
+int lo = ..., hi = ...;
+while (lo &lt; hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (count(mid) &lt; k) lo = mid + 1;
+    else                hi = mid;
+}
+return lo;</pre>
+</div>
+
+<div class="section red">
+<h2>&#128337; Time Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Flatten BS</div><div class="kv-val">O(log(m·n))</div></div><div class="kv-item"><div class="kv-label">Staircase</div><div class="kv-val">O(m + n)</div></div><div class="kv-item"><div class="kv-label">BS on answer</div><div class="kv-val">O((m·n) · log V)</div></div><div class="kv-item"><div class="kv-label">BS + BFS</div><div class="kv-val">O((m·n) · log V)</div></div></div>
+</div>
+
+<div class="section blue">
+<h2>&#128203; Problem Index</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr style="background:#f1f5f9"><th style="text-align:left;padding:8px">ID</th><th style="text-align:left;padding:8px">Problem</th><th style="padding:8px">LC#</th><th style="padding:8px">Difficulty</th><th style="text-align:left;padding:8px">Type</th></tr>
+<tr><td style="padding:7px"><a href="P01_Search_a_2D_Matrix.html" style="color:#2563eb;text-decoration:none">P01</a></td><td style="padding:7px"><a href="P01_Search_a_2D_Matrix.html" style="color:#2563eb;text-decoration:none">Search a 2D Matrix</a></td><td style="padding:7px;text-align:center">74</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Flatten BS</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P02_Search_a_2D_Matrix_II.html" style="color:#2563eb;text-decoration:none">P02</a></td><td style="padding:7px"><a href="P02_Search_a_2D_Matrix_II.html" style="color:#2563eb;text-decoration:none">Search a 2D Matrix II</a></td><td style="padding:7px;text-align:center">240</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Staircase</td></tr>
+<tr><td style="padding:7px"><a href="P03_Find_Peak_Element.html" style="color:#2563eb;text-decoration:none">P03</a></td><td style="padding:7px"><a href="P03_Find_Peak_Element.html" style="color:#2563eb;text-decoration:none">Find Peak Element</a></td><td style="padding:7px;text-align:center">162</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">1D Peak (BS Anchor)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P04_Row_with_Maximum_Ones.html" style="color:#2563eb;text-decoration:none">P04</a></td><td style="padding:7px"><a href="P04_Row_with_Maximum_Ones.html" style="color:#2563eb;text-decoration:none">Row with Maximum Ones</a></td><td style="padding:7px;text-align:center">2643</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Per-Row LB</td></tr>
+<tr><td style="padding:7px"><a href="P05_Find_Peak_Element_II.html" style="color:#2563eb;text-decoration:none">P05</a></td><td style="padding:7px"><a href="P05_Find_Peak_Element_II.html" style="color:#2563eb;text-decoration:none">Find Peak Element II</a></td><td style="padding:7px;text-align:center">1901</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">BS on Column</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P06_Count_Negative_Numbers_in_a_Sorted_Matrix.html" style="color:#2563eb;text-decoration:none">P06</a></td><td style="padding:7px"><a href="P06_Count_Negative_Numbers_in_a_Sorted_Matrix.html" style="color:#2563eb;text-decoration:none">Count Negatives in Sorted Matrix</a></td><td style="padding:7px;text-align:center">1351</td><td style="padding:7px;text-align:center"><span class="badge easy">Easy</span></td><td style="padding:7px">Staircase</td></tr>
+<tr><td style="padding:7px"><a href="P07_Leftmost_Column_with_at_Least_a_One.html" style="color:#2563eb;text-decoration:none">P07</a></td><td style="padding:7px"><a href="P07_Leftmost_Column_with_at_Least_a_One.html" style="color:#2563eb;text-decoration:none">Leftmost Column with at Least a One</a></td><td style="padding:7px;text-align:center">1428</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Staircase (Binary)</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P08_Smallest_Rectangle_Enclosing_Black_Pixels.html" style="color:#2563eb;text-decoration:none">P08</a></td><td style="padding:7px"><a href="P08_Smallest_Rectangle_Enclosing_Black_Pixels.html" style="color:#2563eb;text-decoration:none">Smallest Rectangle Black Pixels</a></td><td style="padding:7px;text-align:center">302</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">BS the Bounds</td></tr>
+<tr><td style="padding:7px"><a href="P09_Max_Sum_of_Rectangle_No_Larger_Than_K.html" style="color:#2563eb;text-decoration:none">P09</a></td><td style="padding:7px"><a href="P09_Max_Sum_of_Rectangle_No_Larger_Than_K.html" style="color:#2563eb;text-decoration:none">Max Sum Rectangle ≤ K</a></td><td style="padding:7px;text-align:center">363</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Row Compress + TreeSet</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P10_Max_Side_Length_of_Square_with_Sum_Threshold.html" style="color:#2563eb;text-decoration:none">P10</a></td><td style="padding:7px"><a href="P10_Max_Side_Length_of_Square_with_Sum_Threshold.html" style="color:#2563eb;text-decoration:none">Max Side Square ≤ Threshold</a></td><td style="padding:7px;text-align:center">1292</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">2D Prefix + BS Side</td></tr>
+<tr><td style="padding:7px"><a href="P11_Path_With_Maximum_Minimum_Value.html" style="color:#2563eb;text-decoration:none">P11</a></td><td style="padding:7px"><a href="P11_Path_With_Maximum_Minimum_Value.html" style="color:#2563eb;text-decoration:none">Path With Max Min Value</a></td><td style="padding:7px;text-align:center">1102</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">BS Threshold + BFS</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P12_Path_With_Minimum_Effort.html" style="color:#2563eb;text-decoration:none">P12</a></td><td style="padding:7px"><a href="P12_Path_With_Minimum_Effort.html" style="color:#2563eb;text-decoration:none">Path With Minimum Effort</a></td><td style="padding:7px;text-align:center">1631</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">BS Threshold + BFS</td></tr>
+<tr><td style="padding:7px"><a href="P13_Find_Kth_Smallest_Sum_of_Matrix_With_Sorted_Rows.html" style="color:#2563eb;text-decoration:none">P13</a></td><td style="padding:7px"><a href="P13_Find_Kth_Smallest_Sum_of_Matrix_With_Sorted_Rows.html" style="color:#2563eb;text-decoration:none">Kth Smallest Row-Sum</a></td><td style="padding:7px;text-align:center">1439</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Heap Merge / BS Sum</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P14_Last_Day_Where_You_Can_Still_Cross.html" style="color:#2563eb;text-decoration:none">P14</a></td><td style="padding:7px"><a href="P14_Last_Day_Where_You_Can_Still_Cross.html" style="color:#2563eb;text-decoration:none">Last Day Cross</a></td><td style="padding:7px;text-align:center">1970</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">BS Day + BFS</td></tr>
+<tr><td style="padding:7px"><a href="P15_Find_K_Pairs_with_Smallest_Sums.html" style="color:#2563eb;text-decoration:none">P15</a></td><td style="padding:7px"><a href="P15_Find_K_Pairs_with_Smallest_Sums.html" style="color:#2563eb;text-decoration:none">K Pairs Smallest Sums</a></td><td style="padding:7px;text-align:center">373</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Implicit Sorted Matrix</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P16_Number_of_Pairs_Satisfying_Inequality.html" style="color:#2563eb;text-decoration:none">P16</a></td><td style="padding:7px"><a href="P16_Number_of_Pairs_Satisfying_Inequality.html" style="color:#2563eb;text-decoration:none">Pairs Satisfying Inequality</a></td><td style="padding:7px;text-align:center">2426</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">Transform + LB</td></tr>
+<tr><td style="padding:7px"><a href="P17_Swim_in_Rising_Water.html" style="color:#2563eb;text-decoration:none">P17</a></td><td style="padding:7px"><a href="P17_Swim_in_Rising_Water.html" style="color:#2563eb;text-decoration:none">Swim in Rising Water</a></td><td style="padding:7px;text-align:center">778</td><td style="padding:7px;text-align:center"><span class="badge hard">Hard</span></td><td style="padding:7px">BS Time + BFS</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P18_Count_Pairs_in_Two_Arrays.html" style="color:#2563eb;text-decoration:none">P18</a></td><td style="padding:7px"><a href="P18_Count_Pairs_in_Two_Arrays.html" style="color:#2563eb;text-decoration:none">Count Pairs in Two Arrays</a></td><td style="padding:7px;text-align:center">1885</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Transform + 2-Pointer</td></tr>
+<tr><td style="padding:7px"><a href="P19_Most_Beautiful_Item_for_Each_Query.html" style="color:#2563eb;text-decoration:none">P19</a></td><td style="padding:7px"><a href="P19_Most_Beautiful_Item_for_Each_Query.html" style="color:#2563eb;text-decoration:none">Most Beautiful per Query</a></td><td style="padding:7px;text-align:center">2070</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Sort + LB + Prefix Max</td></tr>
+<tr style="background:#f8fafc"><td style="padding:7px"><a href="P20_Minimum_Absolute_Sum_Difference.html" style="color:#2563eb;text-decoration:none">P20</a></td><td style="padding:7px"><a href="P20_Minimum_Absolute_Sum_Difference.html" style="color:#2563eb;text-decoration:none">Minimum Absolute Sum Difference</a></td><td style="padding:7px;text-align:center">1818</td><td style="padding:7px;text-align:center"><span class="badge medium">Med</span></td><td style="padding:7px">Sort + Per-i LB</td></tr>
+</table>
+</div>
+
+<div class="footer">Binary Search · 2D Matrix Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Backtracking · Constraint — Masterclass</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:980px;margin:0 auto;padding:32px 40px}h1{font-size:2rem;font-weight:700;margin-bottom:6px}h2{font-size:1.2rem;font-weight:600;margin:32px 0 12px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#dbeafe;color:#1d4ed8;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:22px 26px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:8px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.types{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.type{padding:14px 18px;border-radius:8px;border:1px solid}.t1{background:#eff6ff;border-color:#bfdbfe}.t1 h3{color:#1d4ed8}.t2{background:#ecfdf5;border-color:#bbf7d0}.t2 h3{color:#047857}.t3{background:#fffbeb;border-color:#fde68a}.t3 h3{color:#b45309}.t4{background:#faf5ff;border-color:#ddd6fe}.t4 h3{color:#7c3aed}.t5{background:#fef2f2;border-color:#fecaca}.t5 h3{color:#b91c1c}.type h3{font-size:.98rem;font-weight:700;margin-bottom:6px}.type p{font-size:.86rem;margin-bottom:6px}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-weight:700;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}td a:hover{text-decoration:underline}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style></head>
+<body><div class="page">
+<header><div><span class="tag">Backtracking</span><span class="tag" style="background:#fef3c7;color:#92400e">Constraint</span></div>
+<h1>Backtracking · Constraint &mdash; Masterclass</h1>
+<p style="color:#64748b">Hard constraints prune most of the search tree. Track conflict sets, propagate as you go, and abort branches as soon as any constraint fails.</p></header>
+
+<div class="section blue"><h2>&#128221; What Is Constraint-Based Backtracking?</h2>
+<p>A specialised flavour of backtracking where each placement / assignment must respect a hard rule. The data structures (row/col/box bitmasks, color sets, used inventory) are designed for O(1) conflict checks so most of the tree is pruned away.</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Constraint Set</dt><dd>Auxiliary data structure (HashSet, bitmask, count array) tracking which values/positions are taken.</dd>
+<dt>Constraint Propagation</dt><dd>Updating conflict sets each time you make a choice; revert on backtrack.</dd>
+<dt>MRV Heuristic</dt><dd>"Most Restricted Variable" first — pick the cell with fewest legal options to prune fast.</dd>
+<dt>Symmetry Prune</dt><dd>Skip equivalent siblings (empty buckets, equal previous values).</dd>
+<dt>Hard vs Soft Constraint</dt><dd>Hard = must hold; soft = preference. Backtracking handles hard ones; optimisation needs branch-and-bound.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127919; When to use Constraint Backtracking</h2>
+<ul style="margin-left:24px">
+<li>Puzzle solving with rigid rules (Sudoku, N-Queens, Cryptarithmetic).</li>
+<li>Assignment problems where each item must satisfy compatibility.</li>
+<li>Resource-limited placement (matchsticks, hats, words from letters).</li>
+<li>Bitmask state spaces where conflict checks reduce to AND tests.</li>
+</ul></div>
+
+<div class="section"><h2>&#127981; The 5 Sub-Patterns</h2><div class="types">
+<div class="type t1"><h3>1. Place per Row/Column</h3><p>One queen per row; check column + diagonals.</p><p style="color:#475569;font-size:.8rem"><em>N-Queens, N-Queens II</em></p></div>
+<div class="type t2"><h3>2. Grid Fill with Masks</h3><p>Bitmask row/col/box; try digits 1-9.</p><p style="color:#475569;font-size:.8rem"><em>Sudoku Solver, Crossword, Magic Square</em></p></div>
+<div class="type t3"><h3>3. Bucket Assign</h3><p>Place each item into one of k buckets.</p><p style="color:#475569;font-size:.8rem"><em>Partition K Subsets, Min Incompatibility, Hats</em></p></div>
+<div class="type t4"><h3>4. Bitmask Cover State</h3><p>State = bits of "what's already covered".</p><p style="color:#475569;font-size:.8rem"><em>Sufficient Team, Score Words, Valid Words Puzzle, Wear Hats</em></p></div>
+<div class="type t5"><h3>5. Path / Tour with Validity</h3><p>Walk a graph/grid respecting move rules.</p><p style="color:#475569;font-size:.8rem"><em>Knight's Tour, Android Unlock, Closest Subseq Sum, Restore Array, Beautiful Partitions, Tiling Rectangle, M-Coloring, Compatibility, Verbal Arithmetic</em></p></div>
+</div></div>
+
+<div class="section purple"><h2>&#9881;&#65039; Universal Template</h2>
+<pre>boolean dfs(state) {
+    if (complete(state)) return true;
+    for (Choice c : optionsAt(state)) {
+        if (!feasible(state, c)) continue;          // hard constraint
+        apply(state, c);
+        if (dfs(state)) return true;
+        undo(state, c);
+    }
+    return false;
+}</pre></div>
+
+<div class="section"><h2>&#128218; Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Partition_to_K_Equal_Sum_Subsets.html">Partition K Equal Subsets</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_N_Queens.html">N-Queens</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>3</td><td><a href="P03_N_Queens_II.html">N-Queens II</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>4</td><td><a href="P04_Sudoku_Solver.html">Sudoku Solver</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>5</td><td><a href="P05_Verbal_Arithmetic_Puzzle.html">Verbal Arithmetic Puzzle</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>6</td><td><a href="P06_M_Coloring_Problem.html">M-Coloring Problem</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>7</td><td><a href="P07_Knights_Tour.html">Knight's Tour</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>8</td><td><a href="P08_Crossword_Puzzle.html">Crossword Puzzle</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>9</td><td><a href="P09_Smallest_Sufficient_Team.html">Smallest Sufficient Team</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>10</td><td><a href="P10_Maximum_Compatibility_Score_Sum.html">Max Compatibility Score</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>11</td><td><a href="P11_Tiling_Rectangle_Smallest_Squares.html">Tiling Rectangle Squares</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>12</td><td><a href="P12_Number_of_Valid_Words_For_Puzzle.html">Valid Words for Puzzle</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>13</td><td><a href="P13_Maximum_Score_Words.html">Max Score Words</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>14</td><td><a href="P14_Number_of_Ways_to_Wear_Hats.html">Wear Hats</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>15</td><td><a href="P15_Android_Unlock_Patterns.html">Android Unlock Patterns</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>16</td><td><a href="P16_Restore_Array.html">Restore Array</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>17</td><td><a href="P17_Minimum_Incompatibility.html">Min Incompatibility</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>18</td><td><a href="P18_Magic_Square.html">Magic Square</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>19</td><td><a href="P19_Closest_Subsequence_Sum.html">Closest Subseq Sum</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>20</td><td><a href="P20_Number_of_Beautiful_Partitions.html">Beautiful Partitions</a></td><td class="diff-h">Hard</td></tr>
+</tbody></table></div>
+
+<div class="footer">Backtracking &middot; Constraint Masterclass &mdash; DSA Practice Series</div>
+</div><script src="../../util/progress.js" defer></script></body></html>

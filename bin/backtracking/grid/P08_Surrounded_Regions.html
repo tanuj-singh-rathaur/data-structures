@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P08 – Surrounded Regions</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P08 — Surrounded Regions</h1>
+<div class="meta"><span class="badge">Medium</span> • LC #130 • Reverse flood-fill from border</div>
+<div class="section"><h2>Pattern</h2><p>O's connected to the border can't be flipped. Start DFS from every border O, marking them safe ('S'). Final pass: flip remaining O to X, S to O.</p></div>
+<div class="section"><h2>Java</h2><pre>public void solve(char[][] b) {
+    int m=b.length, n=b[0].length;
+    for (int r=0;r&lt;m;r++) { mark(b,r,0); mark(b,r,n-1); }
+    for (int c=0;c&lt;n;c++) { mark(b,0,c); mark(b,m-1,c); }
+    for (int r=0;r&lt;m;r++) for (int c=0;c&lt;n;c++)
+        b[r][c] = b[r][c]=='S' ? 'O' : 'X';
+}
+void mark(char[][] b, int r, int c) {
+    if (r&lt;0||c&lt;0||r&gt;=b.length||c&gt;=b[0].length||b[r][c]!='O') return;
+    b[r][c]='S';
+    mark(b,r+1,c); mark(b,r-1,c); mark(b,r,c+1); mark(b,r,c-1);
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Reversing the problem ("mark what stays") is cleaner than trying to identify surrounded regions directly.</div></body></html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P20 – Spiral Matrix</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P20 — Spiral Matrix</h1>
+<div class="meta"><span class="badge">Medium</span> • LC #54 • Direction cycle with shrinking bounds</div>
+<div class="section"><h2>Pattern</h2><p>Maintain top, bottom, left, right boundaries. Walk right→down→left→up; shrink the just-walked boundary. Stop when boundaries cross.</p></div>
+<div class="section"><h2>Java</h2><pre>public List&lt;Integer&gt; spiralOrder(int[][] m) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    int t=0, b=m.length-1, l=0, r=m[0].length-1;
+    while (t&lt;=b &amp;&amp; l&lt;=r) {
+        for (int c=l;c&lt;=r;c++) res.add(m[t][c]); t++;
+        for (int rr=t;rr&lt;=b;rr++) res.add(m[rr][r]); r--;
+        if (t&lt;=b) for (int c=r;c&gt;=l;c--) res.add(m[b][c]); b--;
+        if (l&lt;=r) for (int rr=b;rr&gt;=t;rr--) res.add(m[rr][l]); l++;
+    }
+    return res;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Two extra "if" guards prevent re-walking the last row/col on degenerate strips.</div></body></html>

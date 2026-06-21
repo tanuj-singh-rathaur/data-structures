@@ -1,29 +1,36 @@
 package hashmap.frequency;
 
+import util.Test;
+
 /**
  * Top K Frequent Elements
- * Pattern : Frequency Map / Counting
+ * Topic    : HashMap
+ * Pattern  : Frequency Map + Bucket Sort / Heap
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/top-k-frequent-elements/
+ * LeetCode : https://leetcode.com/problems/top-k-frequent-elements/
  * ─────────────────────────────────────────────
  *
  * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/top-k-frequent-elements/]
+ *   Read on LeetCode: https://leetcode.com/problems/top-k-frequent-elements/
  *
  * PATTERN HINT:
- *   [Frequency Map / Counting — think about how this pattern applies here]
+ *   [Count frequencies; bucket sort by frequency in O(n); or min-heap of size k for O(n log k)]
  *
  * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
+ * YOUR ATTEMPT BELOW
  * ─────────────────────────────────────────────
  */
 public class P03_Top_K_Frequent_Elements {
 
-    // TODO: define method signature after reading the problem
+    // TODO: define your method signature after reading the problem
 
     public static void main(String[] args) {
         P03_Top_K_Frequent_Elements sol = new P03_Top_K_Frequent_Elements();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.topKFrequent(new int[]{1,1,1,2,2,3}, 2), new int[]{1,2});
+
+        Test.summary();
     }
 }

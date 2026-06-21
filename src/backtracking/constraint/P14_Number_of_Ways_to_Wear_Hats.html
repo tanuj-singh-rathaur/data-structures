@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P14 – Wear Hats</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P14 — Number of Ways to Wear Hats</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #1434 • Iterate over hats, not people</div>
+<div class="section"><h2>Pattern</h2><p>Up to 40 hats but only ≤ 10 people. Flip the iteration: for each hat, decide which person (or none) wears it. State = bitmask of people who already have a hat.</p></div>
+<div class="section"><h2>Java</h2><pre>public int numberWays(List&lt;List&lt;Integer&gt;&gt; hats) {
+    int MOD = 1_000_000_007, n = hats.size();
+    List&lt;List&lt;Integer&gt;&gt; h2p = new ArrayList&lt;&gt;();
+    for (int i=0;i&lt;=40;i++) h2p.add(new ArrayList&lt;&gt;());
+    for (int p=0;p&lt;n;p++) for (int h : hats.get(p)) h2p.get(h).add(p);
+    int[][] dp = new int[41][1 &lt;&lt; n]; dp[0][0] = 1;
+    for (int h=1;h&lt;=40;h++)
+        for (int m=0;m&lt;(1&lt;&lt;n);m++) {
+            dp[h][m] = dp[h-1][m];
+            for (int p : h2p.get(h))
+                if ((m &amp; (1&lt;&lt;p)) != 0)
+                    dp[h][m] = (dp[h][m] + dp[h-1][m ^ (1&lt;&lt;p)]) % MOD;
+        }
+    return dp[40][(1&lt;&lt;n) - 1];
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Flipping the iteration domain (people → hats) shrinks the bitmask state space from 2⁴⁰ to 2¹⁰.</div></body></html>

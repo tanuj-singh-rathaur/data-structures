@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P17 – Stickers to Spell Word</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:24px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;background:#fee2e2;color:#b91c1c}.meta{color:#64748b;font-size:.88rem;margin-bottom:20px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:16px;border-left:4px solid #2563eb}pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-top:14px}.insight strong{color:#1d4ed8}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div class="page">
+<a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Decision Masterclass</a>
+<h1>P17 — Stickers to Spell Word</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #691 • Bitmask state + memo</div>
+<div class="section"><h2>Problem</h2><p>Minimum number of stickers to spell target (or -1).</p></div>
+<div class="section"><h2>Pattern</h2><p>State = bitmask of which target letters are still needed (or covered). Try each sticker; consume its letters; recurse. Memoise by state.</p></div>
+<div class="section"><h2>Java</h2><pre>Map&lt;Integer, Integer&gt; memo = new HashMap&lt;&gt;();
+public int minStickers(String[] stickers, String target) {
+    int n = target.length();
+    int res = dfs(stickers, target, 0, n);
+    return res &gt;= 1 &lt;&lt; 30 ? -1 : res;
+}
+int dfs(String[] st, String tgt, int mask, int n) {
+    if (mask == (1 &lt;&lt; n) - 1) return 0;
+    if (memo.containsKey(mask)) return memo.get(mask);
+    int best = 1 &lt;&lt; 30;
+    for (String s : st) {
+        int next = mask;
+        int[] cnt = new int[26]; for (char c : s.toCharArray()) cnt[c-'a']++;
+        for (int i = 0; i &lt; n; i++) {
+            char c = tgt.charAt(i);
+            if ((mask &amp; (1 &lt;&lt; i)) == 0 &amp;&amp; cnt[c-'a'] &gt; 0) { next |= 1 &lt;&lt; i; cnt[c-'a']--; }
+        }
+        if (next != mask) best = Math.min(best, 1 + dfs(st, tgt, next, n));
+    }
+    memo.put(mask, best);
+    return best;
+}</pre></div>
+<div class="section"><h2>Complexity</h2><p>O(2ⁿ · S · n) — state space × work per state.</p></div>
+<div class="insight"><strong>Insight:</strong> Bitmask over target letters makes memoisation tractable.</div>
+<div class="footer">Backtracking · Decision Masterclass</div></div></body></html>

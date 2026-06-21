@@ -1,5 +1,7 @@
 package binarysearch.lowerupperbound;
 
+import util.Test;
+
 /**
  * Find K Closest Elements
  * Topic    : Binary Search
@@ -24,7 +26,11 @@ public class P04_Find_K_Closest_Elements {
 
     public static void main(String[] args) {
         P04_Find_K_Closest_Elements sol = new P04_Find_K_Closest_Elements();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1", sol.findClosestElements(new int[]{1,2,3,4,5}, 4, 3),
+        //     java.util.Arrays.asList(1, 2, 3, 4));
+
+        Test.summary();
     }
 }

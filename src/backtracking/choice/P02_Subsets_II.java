@@ -1,9 +1,11 @@
 package backtracking.choice;
 
+import util.Test;
+
 /**
  * Subsets II
  * Topic    : Backtracking
- * Pattern  : Choice-Based Backtracking
+ * Pattern  : Choice-Based + Dedup at Same Recursion Level
  * Difficulty: Medium
  * LeetCode : https://leetcode.com/problems/subsets-ii/
  * ─────────────────────────────────────────────
@@ -12,7 +14,7 @@ package backtracking.choice;
  *   Read on LeetCode: https://leetcode.com/problems/subsets-ii/
  *
  * PATTERN HINT:
- *   [Choice-Based Backtracking — think how this pattern applies here]
+ *   [Sort first; at index i: if (i > start && nums[i] == nums[i-1]) continue]
  *
  * ─────────────────────────────────────────────
  * YOUR ATTEMPT BELOW
@@ -24,7 +26,11 @@ public class P02_Subsets_II {
 
     public static void main(String[] args) {
         P02_Subsets_II sol = new P02_Subsets_II();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.subsetsWithDup(new int[]{1,2,2}).size(), 6);
+
+        Test.summary();
     }
 }

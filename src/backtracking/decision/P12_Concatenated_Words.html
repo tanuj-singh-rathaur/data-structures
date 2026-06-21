@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P12 – Concatenated Words</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:24px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700;background:#fee2e2;color:#b91c1c}.meta{color:#64748b;font-size:.88rem;margin-bottom:20px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:16px;border-left:4px solid #2563eb}pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-top:14px}.insight strong{color:#1d4ed8}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div class="page">
+<a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Decision Masterclass</a>
+<h1>P12 — Concatenated Words</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #472 • Split into 2+ dict words</div>
+<div class="section"><h2>Problem</h2><p>Return all words from the input that can be formed by concatenating 2+ other words from the same list.</p></div>
+<div class="section"><h2>Pattern</h2><p>For each candidate word, DP "wordBreak"-style with the dictionary minus itself. Use Word Break I as a subroutine.</p></div>
+<div class="section"><h2>Java</h2><pre>public List&lt;String&gt; findAllConcatenatedWordsInADict(String[] words) {
+    Set&lt;String&gt; set = new HashSet&lt;&gt;(Arrays.asList(words));
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    for (String w : words) {
+        set.remove(w);
+        if (canForm(w, set)) res.add(w);
+        set.add(w);
+    }
+    return res;
+}
+boolean canForm(String w, Set&lt;String&gt; dict) {
+    if (dict.isEmpty()) return false;
+    int n = w.length();
+    boolean[] dp = new boolean[n + 1]; dp[0] = true;
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 0; j &lt; i &amp;&amp; !dp[i]; j++)
+            if (dp[j] &amp;&amp; dict.contains(w.substring(j, i))) dp[i] = true;
+    return dp[n];
+}</pre></div>
+<div class="section"><h2>Complexity</h2><p>O(N · L²).</p></div>
+<div class="insight"><strong>Insight:</strong> Excluding the word being tested forces ≥ 2 pieces (no trivial self-match).</div>
+<div class="footer">Backtracking · Decision Masterclass</div></div></body></html>

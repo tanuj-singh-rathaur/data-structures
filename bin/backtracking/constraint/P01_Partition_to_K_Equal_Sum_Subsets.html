@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P01 – Partition K Equal Sum</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P01 — Partition to K Equal Sum Subsets</h1>
+<div class="meta"><span class="badge">Medium</span> • LC #698 • Bucket assignment</div>
+<div class="section"><h2>Pattern</h2><p>Sum % k == 0 and max ≤ target. Sort descending; assign each number to one of k buckets, skipping equal-and-empty siblings for symmetry pruning.</p></div>
+<div class="section"><h2>Java</h2><pre>boolean dfs(int[] a, int i, int[] b, int t) {
+    if (i &lt; 0) return true;
+    for (int k=0;k&lt;b.length;k++) {
+        if (b[k]+a[i]&gt;t) continue;
+        if (k&gt;0 &amp;&amp; b[k]==b[k-1]) continue;
+        b[k]+=a[i];
+        if (dfs(a,i-1,b,t)) return true;
+        b[k]-=a[i];
+        if (b[k]==0) break;
+    }
+    return false;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> The "empty bucket break" prevents exponential blowup of equivalent permutations.</div></body></html>

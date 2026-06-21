@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P10 – Max Compatibility</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P10 — Maximum Compatibility Score Sum</h1>
+<div class="meta"><span class="badge">Medium</span> • LC #1947 • Assign mentors to students</div>
+<div class="section"><h2>Pattern</h2><p>Precompute score[student][mentor]. Try every permutation of mentor assignments — at most 8! = 40320. Use used[] mask while DFS-ing students.</p></div>
+<div class="section"><h2>Java</h2><pre>int best = 0;
+public int maxCompatibilitySum(int[][] s, int[][] m) {
+    int n = s.length;
+    int[][] sc = new int[n][n];
+    for (int i=0;i&lt;n;i++) for (int j=0;j&lt;n;j++) for (int k=0;k&lt;s[0].length;k++)
+        if (s[i][k]==m[j][k]) sc[i][j]++;
+    dfs(sc, 0, new boolean[n], 0);
+    return best;
+}
+void dfs(int[][] sc, int i, boolean[] used, int sum) {
+    if (i == sc.length) { best = Math.max(best, sum); return; }
+    for (int j = 0; j &lt; sc.length; j++) {
+        if (used[j]) continue;
+        used[j] = true;
+        dfs(sc, i+1, used, sum + sc[i][j]);
+        used[j] = false;
+    }
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Bitmask DP solves this in O(2ⁿ·n) for larger n.</div></body></html>

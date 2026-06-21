@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P10 – Robot Room Cleaner</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P10 — Robot Room Cleaner</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #489 • DFS with relative coordinates</div>
+<div class="section"><h2>Pattern</h2><p>Maintain virtual (row, col, direction). On each call, clean current cell, mark visited. For each of 4 directions: move, recurse, undo by turning 180° + moving + turning 180°.</p></div>
+<div class="section"><h2>Java</h2><pre>int[] dr = {-1,0,1,0}, dc = {0,1,0,-1};
+Set&lt;String&gt; seen = new HashSet&lt;&gt;();
+public void cleanRoom(Robot r) { dfs(r, 0, 0, 0); }
+void dfs(Robot r, int row, int col, int dir) {
+    String key = row + "," + col;
+    if (!seen.add(key)) return;
+    r.clean();
+    for (int i = 0; i &lt; 4; i++) {
+        int nd = (dir + i) % 4;
+        int nr = row + dr[nd], nc = col + dc[nd];
+        if (r.move()) {
+            dfs(r, nr, nc, nd);
+            r.turnRight(); r.turnRight(); r.move(); r.turnRight(); r.turnRight();
+        }
+        r.turnRight();
+    }
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> The robot has no GPS; we track positions ourselves using a HashSet of "r,c" keys.</div></body></html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Backtracking · Choice — Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:980px;margin:0 auto;padding:32px 40px}
+h1{font-size:2rem;font-weight:700;margin-bottom:6px}
+h2{font-size:1.2rem;font-weight:600;margin:32px 0 12px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+p{margin-bottom:10px}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#dbeafe;color:#1d4ed8;margin-right:6px}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:22px 26px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}
+.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}
+.section.purple{border-left:4px solid #7c3aed}
+.section.red{border-left:4px solid #dc2626}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:8px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}
+.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.type{padding:14px 18px;border-radius:8px;border:1px solid}
+.t1{background:#eff6ff;border-color:#bfdbfe}
+.t1 h3{color:#1d4ed8}
+.t2{background:#ecfdf5;border-color:#bbf7d0}
+.t2 h3{color:#047857}
+.t3{background:#fffbeb;border-color:#fde68a}
+.t3 h3{color:#b45309}
+.t4{background:#faf5ff;border-color:#ddd6fe}
+.t4 h3{color:#7c3aed}
+.t5{background:#fef2f2;border-color:#fecaca}
+.t5 h3{color:#b91c1c}
+.type h3{font-size:.98rem;font-weight:700;margin-bottom:6px}
+.type p{font-size:.86rem;margin-bottom:6px}
+.type code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px;font-family:Consolas,monospace;font-size:.8rem}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}
+th{background:#f1f5f9;color:#1e293b;font-weight:700;font-size:.78rem;text-transform:uppercase}
+td a{color:#2563eb;text-decoration:none}td a:hover{text-decoration:underline}
+.diff-e{color:#16a34a;font-weight:600}
+.diff-m{color:#d97706;font-weight:600}
+.diff-h{color:#dc2626;font-weight:600}
+.complete{background:#dcfce7 !important}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+<header>
+<div><span class="tag">Backtracking</span><span class="tag" style="background:#fef3c7;color:#92400e">Choice</span></div>
+<h1>Backtracking · Choice &mdash; Masterclass</h1>
+<p style="color:#64748b">Enumerate all valid arrangements by making a choice, recursing, and then undoing the choice ("backtrack").</p>
+</header>
+
+<div class="section blue">
+<h2>&#128221; What Is Choice-Based Backtracking?</h2>
+<p>At each step you face a finite set of choices. Try one, recurse, then undo it and try the next. The decision tree's leaves are the full solutions. Pruning cuts off entire subtrees once you can prove they won't yield valid results.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+<dt>State</dt><dd>The partial solution built so far (path, used set, sum, etc.). Modified before recursion, undone after.</dd>
+<dt>Choice</dt><dd>One of several options available at the current step. Each choice spawns a recursive branch.</dd>
+<dt>Backtrack</dt><dd>Undo the most recent choice before trying the next ("for-loop body: do/recurse/undo").</dd>
+<dt>Prune</dt><dd>Skip a branch you can prove won't lead to a valid solution (sum too large, used too many, sorted-array dedup).</dd>
+<dt>Dedup-at-Level</dt><dd>Skip duplicate values among siblings at the same depth — typically by sorting + comparing to previous.</dd>
+<dt>Used-Set / Visited</dt><dd>Boolean array tracking which inputs are currently in the path. Essential for permutations.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127919; When to use Choice-Based Backtracking</h2>
+<ul style="margin-left:24px">
+<li>Enumerate ALL valid arrangements (subsets, combinations, permutations, partitions).</li>
+<li>Find ONE arrangement satisfying constraints (N-Queens, Sudoku).</li>
+<li>Count without listing (Beautiful Arrangement, Letter Tile Possibilities) — but DP often wins here.</li>
+<li>Brute search bounded by aggressive pruning.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>&#127981; The 5 Sub-Patterns</h2>
+<div class="types">
+<div class="type t1"><h3>1. Include/Exclude per Element</h3>
+<p>Each element joins the path or doesn't.</p>
+<p><code>dfs(i): path.add; dfs(i+1); path.remove; dfs(i+1)</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Subsets, Subsets II</em></p></div>
+
+<div class="type t2"><h3>2. Pick from Start Index</h3>
+<p>Loop over candidates from a moving start.</p>
+<p><code>for j in [start..n]: pick j, recurse(j or j+1)</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Combinations, Combination Sum I/II/III, Increasing Subsequences</em></p></div>
+
+<div class="type t3"><h3>3. Permutations (Used-Set)</h3>
+<p>Any unused element, in any order.</p>
+<p><code>for j in [0..n]: if !used[j]: used; dfs; unused</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Permutations, Permutations II, Letter Tile Possibilities, Beautiful Arrangement, Next Permutation</em></p></div>
+
+<div class="type t4"><h3>4. Split a String / Range</h3>
+<p>Choose where to cut next.</p>
+<p><code>for end in [start..n]: if valid(start..end): recurse(end+1)</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Palindrome Partitioning, Restore IP Addresses, Letter Combinations, Letter Case Permutation, Generate Parentheses</em></p></div>
+
+<div class="type t5"><h3>5. Constraint Grid Search</h3>
+<p>Place pieces; abort branch if conflict.</p>
+<p><code>Sets/masks for row/col/diag/box</code></p>
+<p style="color:#475569;font-size:.8rem"><em>N-Queens, Sudoku Solver, All Paths Source→Target</em></p></div>
+</div>
+</div>
+
+<div class="section purple">
+<h2>&#9881;&#65039; Universal Templates</h2>
+<p><strong>Include / Exclude:</strong></p>
+<pre>void dfs(int i, List&lt;Integer&gt; path) {
+    if (i == nums.length) { result.add(new ArrayList&lt;&gt;(path)); return; }
+    dfs(i + 1, path);                 // exclude
+    path.add(nums[i]);                // include
+    dfs(i + 1, path);
+    path.remove(path.size() - 1);
+}</pre>
+<p><strong>Pick from Start Index:</strong></p>
+<pre>void dfs(int start, List&lt;Integer&gt; path) {
+    result.add(new ArrayList&lt;&gt;(path));   // every node is a subset
+    for (int j = start; j &lt; nums.length; j++) {
+        if (j &gt; start &amp;&amp; nums[j] == nums[j-1]) continue;  // dedup
+        path.add(nums[j]);
+        dfs(j + 1, path);
+        path.remove(path.size() - 1);
+    }
+}</pre>
+<p><strong>Permutations:</strong></p>
+<pre>void dfs(boolean[] used, List&lt;Integer&gt; path) {
+    if (path.size() == nums.length) { result.add(new ArrayList&lt;&gt;(path)); return; }
+    for (int j = 0; j &lt; nums.length; j++) {
+        if (used[j]) continue;
+        if (j &gt; 0 &amp;&amp; nums[j] == nums[j-1] &amp;&amp; !used[j-1]) continue;  // dedup
+        used[j] = true; path.add(nums[j]);
+        dfs(used, path);
+        used[j] = false; path.remove(path.size() - 1);
+    }
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity Profile</h2>
+<table><thead><tr><th>Problem Type</th><th>Tree Size</th></tr></thead><tbody>
+<tr><td>Subsets / Power Set</td><td>O(2ⁿ · n)</td></tr>
+<tr><td>Permutations</td><td>O(n! · n)</td></tr>
+<tr><td>Combinations C(n, k)</td><td>O(C(n,k) · k)</td></tr>
+<tr><td>N-Queens</td><td>O(n!) with heavy pruning</td></tr>
+</tbody></table>
+</div>
+
+<div class="section">
+<h2>&#128218; Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th></tr></thead><tbody>
+<tr id="p01"><td>1</td><td><a href="P01_Subsets.html">Subsets</a></td><td>Include/Exclude</td><td class="diff-m">Medium</td></tr>
+<tr id="p02"><td>2</td><td><a href="P02_Subsets_II.html">Subsets II</a></td><td>Include/Exclude + Dedup</td><td class="diff-m">Medium</td></tr>
+<tr id="p03"><td>3</td><td><a href="P03_Combination_Sum.html">Combination Sum</a></td><td>Pick from start, reuse</td><td class="diff-m">Medium</td></tr>
+<tr id="p04"><td>4</td><td><a href="P04_Combination_Sum_II.html">Combination Sum II</a></td><td>Pick from start, no reuse + Dedup</td><td class="diff-m">Medium</td></tr>
+<tr id="p05"><td>5</td><td><a href="P05_Permutations.html">Permutations</a></td><td>Used-set</td><td class="diff-m">Medium</td></tr>
+<tr id="p06"><td>6</td><td><a href="P06_Permutations_II.html">Permutations II</a></td><td>Used-set + Dedup</td><td class="diff-m">Medium</td></tr>
+<tr id="p07"><td>7</td><td><a href="P07_Letter_Combinations_of_a_Phone_Number.html">Letter Combinations</a></td><td>Branch per digit</td><td class="diff-m">Medium</td></tr>
+<tr id="p08"><td>8</td><td><a href="P08_Generate_Parentheses.html">Generate Parentheses</a></td><td>Validity pruning</td><td class="diff-m">Medium</td></tr>
+<tr id="p09"><td>9</td><td><a href="P09_Palindrome_Partitioning.html">Palindrome Partitioning</a></td><td>Split string</td><td class="diff-m">Medium</td></tr>
+<tr id="p10"><td>10</td><td><a href="P10_Restore_IP_Addresses.html">Restore IP Addresses</a></td><td>Fixed-segment split</td><td class="diff-m">Medium</td></tr>
+<tr id="p11"><td>11</td><td><a href="P11_Next_Permutation.html">Next Permutation</a></td><td>Permutation successor</td><td class="diff-m">Medium</td></tr>
+<tr id="p12"><td>12</td><td><a href="P12_N_Queens.html">N-Queens</a></td><td>Row + conflict sets</td><td class="diff-h">Hard</td></tr>
+<tr id="p13"><td>13</td><td><a href="P13_Sudoku_Solver.html">Sudoku Solver</a></td><td>Constraint masks</td><td class="diff-h">Hard</td></tr>
+<tr id="p14"><td>14</td><td><a href="P14_Combinations.html">Combinations</a></td><td>Choose k from n</td><td class="diff-m">Medium</td></tr>
+<tr id="p15"><td>15</td><td><a href="P15_Combination_Sum_III.html">Combination Sum III</a></td><td>k distinct ∈ 1..9 sum to n</td><td class="diff-m">Medium</td></tr>
+<tr id="p16"><td>16</td><td><a href="P16_Letter_Case_Permutation.html">Letter Case Permutation</a></td><td>Per-letter case toggle</td><td class="diff-m">Medium</td></tr>
+<tr id="p17"><td>17</td><td><a href="P17_Beautiful_Arrangement.html">Beautiful Arrangement</a></td><td>Permutation + divisibility</td><td class="diff-m">Medium</td></tr>
+<tr id="p18"><td>18</td><td><a href="P18_Letter_Tile_Possibilities.html">Letter Tile Possibilities</a></td><td>Frequency counter</td><td class="diff-m">Medium</td></tr>
+<tr id="p19"><td>19</td><td><a href="P19_Increasing_Subsequences.html">Non-decreasing Subsequences</a></td><td>Set dedup per level</td><td class="diff-m">Medium</td></tr>
+<tr id="p20"><td>20</td><td><a href="P20_All_Paths_from_Source_to_Target.html">All Paths Source → Target</a></td><td>DFS on DAG</td><td class="diff-m">Medium</td></tr>
+</tbody></table>
+</div>
+
+<div class="footer">Backtracking &middot; Choice Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body></html>

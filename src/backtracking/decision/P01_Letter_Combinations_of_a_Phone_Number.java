@@ -1,9 +1,11 @@
 package backtracking.decision;
 
+import util.Test;
+
 /**
  * Letter Combinations of a Phone Number
  * Topic    : Backtracking
- * Pattern  : Decision Tree Sequence Generation
+ * Pattern  : Decision Tree (k-way branch per digit)
  * Difficulty: Medium
  * LeetCode : https://leetcode.com/problems/letter-combinations-of-a-phone-number/
  * ─────────────────────────────────────────────
@@ -12,7 +14,7 @@ package backtracking.decision;
  *   Read on LeetCode: https://leetcode.com/problems/letter-combinations-of-a-phone-number/
  *
  * PATTERN HINT:
- *   [Decision Tree Sequence Generation — think how this pattern applies here]
+ *   [Each digit forces a decision among 3-4 letters; recurse on next index]
  *
  * ─────────────────────────────────────────────
  * YOUR ATTEMPT BELOW
@@ -20,11 +22,8 @@ package backtracking.decision;
  */
 public class P01_Letter_Combinations_of_a_Phone_Number {
 
-    // TODO: define your method signature after reading the problem
-
     public static void main(String[] args) {
         P01_Letter_Combinations_of_a_Phone_Number sol = new P01_Letter_Combinations_of_a_Phone_Number();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+        Test.summary();
     }
 }

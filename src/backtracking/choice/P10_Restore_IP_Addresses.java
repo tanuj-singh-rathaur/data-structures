@@ -1,9 +1,11 @@
 package backtracking.choice;
 
+import util.Test;
+
 /**
  * Restore IP Addresses
  * Topic    : Backtracking
- * Pattern  : Choice-Based Backtracking
+ * Pattern  : Choice-Based (Pick 1-3 Char Octets, Validate)
  * Difficulty: Medium
  * LeetCode : https://leetcode.com/problems/restore-ip-addresses/
  * ─────────────────────────────────────────────
@@ -12,7 +14,7 @@ package backtracking.choice;
  *   Read on LeetCode: https://leetcode.com/problems/restore-ip-addresses/
  *
  * PATTERN HINT:
- *   [Choice-Based Backtracking — think how this pattern applies here]
+ *   [4 segments × 1-3 chars; each octet 0..255; no leading zeros unless "0"]
  *
  * ─────────────────────────────────────────────
  * YOUR ATTEMPT BELOW
@@ -24,7 +26,11 @@ public class P10_Restore_IP_Addresses {
 
     public static void main(String[] args) {
         P10_Restore_IP_Addresses sol = new P10_Restore_IP_Addresses();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.restoreIpAddresses("25525511135").size(), 2);
+
+        Test.summary();
     }
 }

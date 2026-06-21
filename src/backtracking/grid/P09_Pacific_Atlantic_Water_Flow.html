@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P09 – Pacific Atlantic</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P09 — Pacific Atlantic Water Flow</h1>
+<div class="meta"><span class="badge">Medium</span> • LC #417 • Reverse DFS from both oceans</div>
+<div class="section"><h2>Pattern</h2><p>From top/left borders walk to cells whose height ≥ current (reverse uphill from Pacific). Same for bottom/right (Atlantic). Cells in both sets answer.</p></div>
+<div class="section"><h2>Java</h2><pre>public List&lt;List&lt;Integer&gt;&gt; pacificAtlantic(int[][] h) {
+    int m=h.length, n=h[0].length;
+    boolean[][] p = new boolean[m][n], a = new boolean[m][n];
+    for (int r=0;r&lt;m;r++) { dfs(h,r,0,p,Integer.MIN_VALUE); dfs(h,r,n-1,a,Integer.MIN_VALUE); }
+    for (int c=0;c&lt;n;c++) { dfs(h,0,c,p,Integer.MIN_VALUE); dfs(h,m-1,c,a,Integer.MIN_VALUE); }
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    for (int r=0;r&lt;m;r++) for (int c=0;c&lt;n;c++) if (p[r][c]&amp;&amp;a[r][c]) res.add(List.of(r,c));
+    return res;
+}
+void dfs(int[][] h, int r, int c, boolean[][] v, int prev) {
+    if (r&lt;0||c&lt;0||r&gt;=h.length||c&gt;=h[0].length||v[r][c]||h[r][c]&lt;prev) return;
+    v[r][c]=true;
+    dfs(h,r+1,c,v,h[r][c]); dfs(h,r-1,c,v,h[r][c]); dfs(h,r,c+1,v,h[r][c]); dfs(h,r,c-1,v,h[r][c]);
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Reverse-flow lets each ocean's walks visit each cell at most once each.</div></body></html>

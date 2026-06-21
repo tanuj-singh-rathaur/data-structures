@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P05 – Verbal Arithmetic</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P05 — Verbal Arithmetic Puzzle</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #1307 • Bijection char ↔ digit</div>
+<div class="section"><h2>Pattern</h2><p>Process columns from right (units up). Track carry. Each letter binds to a unique digit; first letter of any multi-digit word can't be 0.</p></div>
+<div class="section"><h2>Java (skeleton)</h2><pre>boolean dfs(int col, int row, int carry, Map&lt;Character,Integer&gt; map, boolean[] usedDigit) {
+    if (col == maxLen) return carry == 0;
+    if (row == words.length) {
+        // verify column equation against result word
+        ...
+    }
+    char c = letterAt(words[row], col);
+    if (map.containsKey(c)) return dfs(col, row+1, carry+map.get(c), map, usedDigit);
+    for (int d=0; d&lt;=9; d++) {
+        if (usedDigit[d]) continue;
+        if (d==0 &amp;&amp; isLead(c)) continue;
+        map.put(c,d); usedDigit[d]=true;
+        if (dfs(col,row+1,carry+d,map,usedDigit)) return true;
+        map.remove(c); usedDigit[d]=false;
+    }
+    return false;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Column-major DFS lets you propagate the carry rather than enumerate all bindings up front.</div></body></html>

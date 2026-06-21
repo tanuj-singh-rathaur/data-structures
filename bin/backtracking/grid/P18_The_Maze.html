@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P18 – The Maze</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P18 — The Maze (Ball Slides Until Wall)</h1>
+<div class="meta"><span class="badge">Medium</span> • LC #490 • Slide-to-wall BFS/DFS</div>
+<div class="section"><h2>Pattern</h2><p>From each visited "rest" cell, try each direction; slide until hitting a wall or edge; that landing cell is the next node. Only mark "rest" cells visited, not intermediate.</p></div>
+<div class="section"><h2>Java</h2><pre>public boolean hasPath(int[][] m, int[] start, int[] dest) {
+    boolean[][] vis = new boolean[m.length][m[0].length];
+    return dfs(m, start[0], start[1], dest, vis);
+}
+boolean dfs(int[][] m, int r, int c, int[] dest, boolean[][] vis) {
+    if (vis[r][c]) return false;
+    if (r == dest[0] &amp;&amp; c == dest[1]) return true;
+    vis[r][c] = true;
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    for (int[] d : dirs) {
+        int nr = r, nc = c;
+        while (nr+d[0]&gt;=0 &amp;&amp; nr+d[0]&lt;m.length &amp;&amp; nc+d[1]&gt;=0 &amp;&amp; nc+d[1]&lt;m[0].length &amp;&amp; m[nr+d[0]][nc+d[1]] == 0) {
+            nr += d[0]; nc += d[1];
+        }
+        if (dfs(m, nr, nc, dest, vis)) return true;
+    }
+    return false;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Sliding turns continuous motion into a discrete graph of "stop points."</div></body></html>

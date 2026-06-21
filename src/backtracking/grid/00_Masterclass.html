@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Backtracking · Grid — Masterclass</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:980px;margin:0 auto;padding:32px 40px}h1{font-size:2rem;font-weight:700}h2{font-size:1.2rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#dbeafe;color:#1d4ed8;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:16px}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px}.types{display:grid;grid-template-columns:1fr 1fr;gap:14px}.type{padding:14px 18px;border-radius:8px;border:1px solid}.t1{background:#eff6ff;border-color:#bfdbfe}.t1 h3{color:#1d4ed8}.t2{background:#ecfdf5;border-color:#bbf7d0}.t2 h3{color:#047857}.t3{background:#fffbeb;border-color:#fde68a}.t3 h3{color:#b45309}.t4{background:#faf5ff;border-color:#ddd6fe}.t4 h3{color:#7c3aed}.t5{background:#fef2f2;border-color:#fecaca}.t5 h3{color:#b91c1c}.type h3{font-size:.98rem;font-weight:700;margin-bottom:6px}.type p{font-size:.86rem}pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}td a:hover{text-decoration:underline}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div class="page">
+<div><span class="tag">Backtracking</span><span class="tag" style="background:#fef3c7;color:#92400e">Grid</span></div>
+<h1>Backtracking · Grid &mdash; Masterclass</h1>
+<p style="color:#64748b">DFS through a 2D grid: pick a direction, mark visited, recurse, then unmark. Pruning by boundary, obstacles, and visited-set keeps it tractable.</p>
+
+<div class="section"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>4-Connectivity</dt><dd>Adjacent cells: up, down, left, right. Most grid problems use this.</dd>
+<dt>8-Connectivity</dt><dd>Adjacent including diagonals. Shortest Path in Binary Matrix, Robot Cleaner.</dd>
+<dt>In-Place Visited</dt><dd>Mutate the cell ('#' for char, -1 for int) to mark visited; restore on backtrack — saves an extra array.</dd>
+<dt>Flood Fill</dt><dd>DFS/BFS that marks all reachable cells from a source.</dd>
+<dt>Reverse DFS</dt><dd>Start from the border to mark cells that escape; useful for "surrounded" problems.</dd>
+</dl></div></div>
+
+<div class="section"><h2>&#127981; The 5 Sub-Patterns</h2><div class="types">
+<div class="type t1"><h3>1. Path with Goal</h3><p>Find or count a path matching some pattern.</p><p style="color:#475569;font-size:.8rem"><em>Word Search, Word Search II, Path with Max Gold, Unique Paths III, Rat in a Maze</em></p></div>
+<div class="type t2"><h3>2. Flood Fill / Connected Component</h3><p>Mark all reachable cells.</p><p style="color:#475569;font-size:.8rem"><em>Number of Islands, Max Area, Closed Islands, Distinct Islands, Surrounded Regions, Pacific Atlantic</em></p></div>
+<div class="type t3"><h3>3. Cell-Filler Constraint</h3><p>Fill grid respecting per-cell rules.</p><p style="color:#475569;font-size:.8rem"><em>Sudoku Solver (Grid), Generate Maze</em></p></div>
+<div class="type t4"><h3>4. Memoised Grid DFS</h3><p>Cache cell answers when subproblem-shape is independent.</p><p style="color:#475569;font-size:.8rem"><em>Longest Increasing Path, Cherry Pickup</em></p></div>
+<div class="type t5"><h3>5. Shortest Path / Slide</h3><p>BFS or DFS with custom move rules.</p><p style="color:#475569;font-size:.8rem"><em>Shortest Path Binary Matrix, The Maze, Walls and Gates, Spiral Matrix, Robot Cleaner</em></p></div>
+</div></div>
+
+<div class="section"><h2>&#9881;&#65039; Universal Template</h2>
+<pre>int[] dr = {-1, 1, 0, 0}, dc = {0, 0, -1, 1};
+void dfs(int[][] g, int r, int c, ...) {
+    if (r &lt; 0 || c &lt; 0 || r &gt;= m || c &gt;= n || !valid(g, r, c)) return;
+    int saved = g[r][c]; g[r][c] = VISITED;
+    for (int d = 0; d &lt; 4; d++) dfs(g, r + dr[d], c + dc[d], ...);
+    g[r][c] = saved;
+}</pre></div>
+
+<div class="section"><h2>&#128218; Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Path_with_Maximum_Gold.html">Path with Maximum Gold</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_Sudoku_Solver.html">Sudoku Solver</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>3</td><td><a href="P03_Word_Search_II.html">Word Search II</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>4</td><td><a href="P04_Unique_Paths_III.html">Unique Paths III</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>5</td><td><a href="P05_Word_Search.html">Word Search</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>6</td><td><a href="P06_Number_of_Islands.html">Number of Islands</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>7</td><td><a href="P07_Max_Area_of_Island.html">Max Area of Island</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>8</td><td><a href="P08_Surrounded_Regions.html">Surrounded Regions</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>9</td><td><a href="P09_Pacific_Atlantic_Water_Flow.html">Pacific Atlantic Water Flow</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>10</td><td><a href="P10_Robot_Room_Cleaner.html">Robot Room Cleaner</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>11</td><td><a href="P11_Rat_in_a_Maze.html">Rat in a Maze</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>12</td><td><a href="P12_Number_of_Closed_Islands.html">Number of Closed Islands</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>13</td><td><a href="P13_Longest_Increasing_Path_Matrix.html">Longest Increasing Path</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>14</td><td><a href="P14_Number_of_Distinct_Islands.html">Distinct Islands</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>15</td><td><a href="P15_Cherry_Pickup.html">Cherry Pickup</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>16</td><td><a href="P16_Shortest_Path_in_Binary_Matrix.html">Shortest Path Binary Matrix</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>17</td><td><a href="P17_Generate_Maze.html">Generate Maze (DFS Carve)</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>18</td><td><a href="P18_The_Maze.html">The Maze (Slide)</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>19</td><td><a href="P19_Walls_and_Gates.html">Walls and Gates</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>20</td><td><a href="P20_Spiral_Matrix.html">Spiral Matrix</a></td><td class="diff-m">Medium</td></tr>
+</tbody></table></div>
+
+<div class="footer">Backtracking &middot; Grid Masterclass &mdash; DSA Practice Series</div>
+</div><script src="../../util/progress.js" defer></script></body></html>

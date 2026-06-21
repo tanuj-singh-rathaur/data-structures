@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P11 – Rat in a Maze</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P11 — Rat in a Maze</h1>
+<div class="meta"><span class="badge">Medium</span> • Classic • Path enumeration with D/L/R/U</div>
+<div class="section"><h2>Pattern</h2><p>From (0,0) try moves in lex order (D, L, R, U) so the output paths come out sorted. Record path string; restore on backtrack.</p></div>
+<div class="section"><h2>Java</h2><pre>char[] moves = {'D','L','R','U'};
+int[] dr = {1,0,0,-1}, dc = {0,-1,1,0};
+public List&lt;String&gt; findPath(int[][] m) {
+    int n = m.length;
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    if (m[0][0] == 0 || m[n-1][n-1] == 0) return res;
+    dfs(m, 0, 0, new StringBuilder(), res);
+    return res;
+}
+void dfs(int[][] m, int r, int c, StringBuilder p, List&lt;String&gt; res) {
+    int n = m.length;
+    if (r == n-1 &amp;&amp; c == n-1) { res.add(p.toString()); return; }
+    m[r][c] = 0;
+    for (int k = 0; k &lt; 4; k++) {
+        int nr = r + dr[k], nc = c + dc[k];
+        if (nr&gt;=0 &amp;&amp; nr&lt;n &amp;&amp; nc&gt;=0 &amp;&amp; nc&lt;n &amp;&amp; m[nr][nc] == 1) {
+            p.append(moves[k]); dfs(m, nr, nc, p, res); p.deleteCharAt(p.length()-1);
+        }
+    }
+    m[r][c] = 1;
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Direction order D-L-R-U keeps results lex-sorted without post-sorting.</div></body></html>

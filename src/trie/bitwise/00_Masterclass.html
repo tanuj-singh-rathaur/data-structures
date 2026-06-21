@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Trie · Bitwise — Masterclass</title>
+<style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.9rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.tag{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:14px}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 18px}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:6px}.glossary dd{margin-left:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:24px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div><span class="tag">Trie</span><span class="tag" style="background:#fef3c7;color:#92400e">Bitwise</span></div>
+<h1>Trie · Bitwise & Bit Manipulation — Masterclass</h1>
+<p style="color:#64748b">Binary trie problems (max XOR), bitmask DP, and classic single-pass bit tricks all share the same foundation: think of numbers as bit sequences.</p>
+
+<div class="section"><h2>Binary Trie Template</h2>
+<pre>class BitTrie {
+    static class N { N[] kids = new N[2]; }
+    private N root = new N();
+    void insert(int x) {
+        N n = root;
+        for (int b = 31; b &gt;= 0; b--) {
+            int bit = (x &gt;&gt; b) &amp; 1;
+            if (n.kids[bit] == null) n.kids[bit] = new N();
+            n = n.kids[bit];
+        }
+    }
+    int maxXor(int x) {
+        N n = root; int res = 0;
+        for (int b = 31; b &gt;= 0; b--) {
+            int bit = (x &gt;&gt; b) &amp; 1, want = bit ^ 1;
+            if (n.kids[want] != null) { res |= 1 &lt;&lt; b; n = n.kids[want]; }
+            else n = n.kids[bit];
+        }
+        return res;
+    }
+}</pre></div>
+
+<div class="section"><h2>Common Bit Tricks</h2><div class="glossary"><dl>
+<dt>n &amp; (n - 1)</dt><dd>Clears the lowest set bit. Used in popcount.</dd>
+<dt>n &amp; -n</dt><dd>Isolates the lowest set bit.</dd>
+<dt>n ^ (n - 1)</dt><dd>Sets all bits below and including the lowest set bit.</dd>
+<dt>XOR-with-self = 0</dt><dd>Cancels pairs. Foundation of Single Number / Missing Number.</dd>
+<dt>1 &lt;&lt; k</dt><dd>Set bit k. Used for subset enumeration and bitmask DP.</dd>
+</dl></div></div>
+
+<div class="section"><h2>Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Maximum_XOR_of_Two_Numbers_in_an_Array.html">Max XOR Two Numbers</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_Maximum_XOR_With_an_Element_From_Array.html">Max XOR With Element</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>3</td><td><a href="P03_Count_Pairs_With_XOR_in_a_Range.html">Pairs XOR in Range</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>4</td><td><a href="P04_Subarray_XOR_Equals_K.html">Subarray XOR = K</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>5</td><td><a href="P05_Maximum_XOR_Subarray.html">Max XOR Subarray</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>6</td><td><a href="P06_Bitwise_AND_of_Range.html">Bitwise AND of Range</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>7</td><td><a href="P07_Single_Number.html">Single Number</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>8</td><td><a href="P08_Single_Number_III.html">Single Number III</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>9</td><td><a href="P09_Number_of_1_Bits.html">Number of 1 Bits</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>10</td><td><a href="P10_Reverse_Bits.html">Reverse Bits</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>11</td><td><a href="P11_Counting_Bits.html">Counting Bits</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>12</td><td><a href="P12_Sum_of_Two_Integers.html">Sum of Two Integers</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>13</td><td><a href="P13_Subsets_via_Bitmask.html">Subsets via Bitmask</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>14</td><td><a href="P14_Find_Missing_Number.html">Missing Number</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>15</td><td><a href="P15_Hamming_Distance.html">Hamming Distance</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>16</td><td><a href="P16_Total_Hamming_Distance.html">Total Hamming Distance</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>17</td><td><a href="P17_Power_of_Two.html">Power of Two</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>18</td><td><a href="P18_UTF_8_Validation.html">UTF-8 Validation</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>19</td><td><a href="P19_Beautiful_Arrangement_II_Bitmask.html">Beautiful Arrangement Bitmask</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>20</td><td><a href="P20_Travelling_Salesman_Bitmask.html">TSP Bitmask DP</a></td><td class="diff-h">Hard</td></tr>
+</tbody></table></div>
+
+<div class="footer">Trie · Bitwise Masterclass — DSA Practice Series</div>
+<script src="../../util/progress.js" defer></script></body></html>

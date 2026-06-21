@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P14 – Distinct Islands</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}h2{margin:20px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:16px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:14px 20px;margin-bottom:12px}pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Grid Masterclass</a>
+<h1>P14 — Number of Distinct Islands</h1>
+<div class="meta"><span class="badge">Medium</span> • LC #694 • Canonical shape signature</div>
+<div class="section"><h2>Pattern</h2><p>During DFS, record a "shape string" by encoding the direction taken at each step (D/U/L/R) plus a backtrack marker (B). Same shape ⇒ same string.</p></div>
+<div class="section"><h2>Java</h2><pre>public int numDistinctIslands(int[][] g) {
+    Set&lt;String&gt; shapes = new HashSet&lt;&gt;();
+    for (int r=0;r&lt;g.length;r++) for (int c=0;c&lt;g[0].length;c++) {
+        if (g[r][c] == 1) {
+            StringBuilder s = new StringBuilder();
+            dfs(g, r, c, s, 'O'); // origin
+            shapes.add(s.toString());
+        }
+    }
+    return shapes.size();
+}
+void dfs(int[][] g, int r, int c, StringBuilder s, char dir) {
+    if (r&lt;0||c&lt;0||r&gt;=g.length||c&gt;=g[0].length||g[r][c]!=1) return;
+    s.append(dir); g[r][c] = 0;
+    dfs(g,r+1,c,s,'D'); dfs(g,r-1,c,s,'U'); dfs(g,r,c+1,s,'R'); dfs(g,r,c-1,s,'L');
+    s.append('B');
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Backtrack marker disambiguates shapes that share a prefix.</div></body></html>

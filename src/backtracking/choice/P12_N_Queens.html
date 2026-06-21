@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P12 – N-Queens</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.hard{background:#fee2e2;color:#b91c1c}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; Choice Masterclass</a> &rsaquo; Row + conflict sets</div>
+<h1>P12 &mdash; N-Queens</h1>
+<div class="meta"><span class="badge hard">Hard</span> &bull; LC #51 &bull; Pattern: <strong>Place One Queen Per Row + Column/Diagonal Sets</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Place n queens on an n×n board so no two attack each other. Return all distinct solutions.</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Diagonal Encoding</dt><dd>Cell (r, c) lies on diagonal r − c (top-left to bottom-right) and anti-diagonal r + c (top-right to bottom-left).</dd>
+<dt>Conflict Sets</dt><dd>Three Sets&lt;Integer&gt; for columns, diagonals, and anti-diagonals — O(1) attack check.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Row by row, try each column. Reject if any of the three sets already contains the conflict. Add to sets, recurse, then remove.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Forcing one queen per row removes row conflicts automatically; we only check the three remaining attack lines.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>dfs(row, cols, diag, anti): if row == n ⇒ record placement.</li>
+<li>For c in 0..n−1: if cols/diag/anti contains conflict ⇒ skip; else add, recurse, remove.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public List&lt;List&lt;String&gt;&gt; solveNQueens(int n) {
+    List&lt;List&lt;String&gt;&gt; res = new ArrayList&lt;&gt;();
+    int[] queens = new int[n];
+    dfs(0, n, queens, new HashSet&lt;&gt;(), new HashSet&lt;&gt;(), new HashSet&lt;&gt;(), res);
+    return res;
+}
+private void dfs(int r, int n, int[] q, Set&lt;Integer&gt; cols, Set&lt;Integer&gt; diag, Set&lt;Integer&gt; anti, List&lt;List&lt;String&gt;&gt; res) {
+    if (r == n) { res.add(build(q, n)); return; }
+    for (int c = 0; c &lt; n; c++) {
+        if (cols.contains(c) || diag.contains(r - c) || anti.contains(r + c)) continue;
+        q[r] = c;
+        cols.add(c); diag.add(r - c); anti.add(r + c);
+        dfs(r + 1, n, q, cols, diag, anti, res);
+        cols.remove(c); diag.remove(r - c); anti.remove(r + c);
+    }
+}
+private List&lt;String&gt; build(int[] q, int n) {
+    List&lt;String&gt; b = new ArrayList&lt;&gt;();
+    for (int r = 0; r &lt; n; r++) {
+        char[] row = new char[n];
+        java.util.Arrays.fill(row, '.');
+        row[q[r]] = 'Q';
+        b.add(new String(row));
+    }
+    return b;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n!) heavily pruned</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(n)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; Choice Pattern</h2>
+<div class="pattern-box"><strong>Constraint-Guarded Placement:</strong> Pre-deciding "one per row" + three conflict sets is the canonical N-Queens trick.</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Bitmask versions replace HashSets with int bitmaps — same idea, faster constants.</div>
+
+<div class="footer">Backtracking · Choice Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

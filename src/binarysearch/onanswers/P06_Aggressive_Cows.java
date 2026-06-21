@@ -1,18 +1,20 @@
 package binarysearch.onanswers;
 
+import util.Test;
+
 /**
  * Aggressive Cows
  * Topic    : Binary Search
- * Pattern  : Binary Search on Answers
+ * Pattern  : Binary Search on Answers (MAXIMIZE the MIN)
  * Difficulty: Medium
- * LeetCode : https://leetcode.com/problems/
+ * Source   : SPOJ / classic
  * ─────────────────────────────────────────────
  *
  * PROBLEM:
- *   Read on LeetCode: https://leetcode.com/problems/
+ *   Place k cows in stalls (positions) so the minimum pairwise distance is maximised.
  *
  * PATTERN HINT:
- *   [Binary Search on Answers — think how this pattern applies here]
+ *   [Sort positions; BS distance d in [1, max-min]; predicate: greedy placement fits k cows]
  *
  * ─────────────────────────────────────────────
  * YOUR ATTEMPT BELOW
@@ -24,7 +26,11 @@ public class P06_Aggressive_Cows {
 
     public static void main(String[] args) {
         P06_Aggressive_Cows sol = new P06_Aggressive_Cows();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.aggressiveCows(new int[]{1,2,4,8,9}, 3), 3);
+
+        Test.summary();
     }
 }

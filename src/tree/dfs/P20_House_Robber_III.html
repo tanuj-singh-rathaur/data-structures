@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P20 – House Robber III</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.7rem}.badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:14px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:12px 18px;margin-bottom:10px}h2{margin:0 0 4px;color:#1e40af;font-size:1rem}pre{background:#0f172a;color:#e2e8f0;padding:10px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; DFS Masterclass</a>
+<h1>P20 — House Robber III</h1><div class="meta"><span class="badge">Medium</span> • LC #337</div>
+<div class="section"><h2>Java</h2><pre>public int rob(TreeNode r) { int[] x = dfs(r); return Math.max(x[0], x[1]); }
+int[] dfs(TreeNode n) {
+    if (n==null) return new int[]{0,0};
+    int[] L = dfs(n.left), R = dfs(n.right);
+    int rob = n.val + L[1] + R[1];
+    int skip = Math.max(L[0], L[1]) + Math.max(R[0], R[1]);
+    return new int[]{rob, skip};
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Return {rob-this-node, skip-this-node} pair to keep DP local.</div></body></html>

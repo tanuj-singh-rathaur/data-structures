@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Trie · Basic — Masterclass</title>
+<style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.9rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.tag{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;margin-right:6px}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:14px}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 18px}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:6px}.glossary dd{margin-left:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase}td a{color:#2563eb;text-decoration:none}.diff-e{color:#16a34a;font-weight:600}.diff-m{color:#d97706;font-weight:600}.diff-h{color:#dc2626;font-weight:600}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:24px;padding-top:14px;border-top:1px solid #e2e8f0}</style></head>
+<body><div><span class="tag">Trie</span><span class="tag" style="background:#fef3c7;color:#92400e">Basic</span></div>
+<h1>Trie · Basic — Masterclass</h1>
+<p style="color:#64748b">A trie is a 26-ary tree (for lowercase letters) where each path from root to node spells a prefix. Insert, search, and prefix-walk operations are all O(L).</p>
+
+<div class="section"><h2>Template</h2>
+<pre>class TrieNode {
+    TrieNode[] kids = new TrieNode[26];
+    boolean end;
+}
+void insert(String w) {
+    TrieNode n = root;
+    for (char c : w.toCharArray()) {
+        if (n.kids[c-'a'] == null) n.kids[c-'a'] = new TrieNode();
+        n = n.kids[c-'a'];
+    }
+    n.end = true;
+}
+boolean search(String w) {
+    TrieNode n = walk(w);
+    return n != null &amp;&amp; n.end;
+}
+boolean startsWith(String p) { return walk(p) != null; }</pre></div>
+
+<div class="section"><h2>Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="P01_Implement_Trie__Prefix_Tree.html">Implement Trie</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>2</td><td><a href="P02_Design_Add_and_Search_Words_Data_Structure.html">Add / Search Words</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>3</td><td><a href="P03_Replace_Words.html">Replace Words</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>4</td><td><a href="P04_Search_Suggestions_System.html">Search Suggestions</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>5</td><td><a href="P05_Longest_Word_in_Dictionary.html">Longest Word</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>6</td><td><a href="P06_Map_Sum_Pairs.html">Map Sum Pairs</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>7</td><td><a href="P07_Stream_of_Characters.html">Stream of Characters</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>8</td><td><a href="P08_Index_Pairs_of_a_String.html">Index Pairs</a></td><td class="diff-e">Easy</td></tr>
+<tr><td>9</td><td><a href="P09_Word_Squares.html">Word Squares</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>10</td><td><a href="P10_Word_Search_II.html">Word Search II</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>11</td><td><a href="P11_Camelcase_Matching.html">Camelcase Matching</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>12</td><td><a href="P12_Implement_Magic_Dictionary.html">Magic Dictionary</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>13</td><td><a href="P13_Short_Encoding_of_Words.html">Short Encoding</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>14</td><td><a href="P14_Lexicographical_Numbers.html">Lex Numbers</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>15</td><td><a href="P15_K_th_Smallest_in_Lexicographical_Order.html">K-th Lex Number</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>16</td><td><a href="P16_Top_K_Frequent_Words_Trie.html">Top K Words (Trie)</a></td><td class="diff-m">Medium</td></tr>
+<tr><td>17</td><td><a href="P17_Add_and_Search_Wildcard.html">Wildcard Search</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>18</td><td><a href="P18_Word_Filter.html">Prefix + Suffix Search</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>19</td><td><a href="P19_Auto_Complete_System.html">Autocomplete System</a></td><td class="diff-h">Hard</td></tr>
+<tr><td>20</td><td><a href="P20_Maximum_XOR_With_Prefix.html">Max XOR With Prefix</a></td><td class="diff-m">Medium</td></tr>
+</tbody></table></div>
+
+<div class="footer">Trie · Basic Masterclass — DSA Practice Series</div>
+<script src="../../util/progress.js" defer></script></body></html>

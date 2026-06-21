@@ -1,5 +1,7 @@
 package binarysearch.lowerupperbound;
 
+import util.Test;
+
 /**
  * Find First and Last Position of Element in Sorted Array
  * Topic    : Binary Search
@@ -24,7 +26,10 @@ public class P01_Find_First_and_Last_Position_of_Element_in_Sorted_Array {
 
     public static void main(String[] args) {
         P01_Find_First_and_Last_Position_of_Element_in_Sorted_Array sol = new P01_Find_First_and_Last_Position_of_Element_in_Sorted_Array();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1", sol.searchRange(new int[]{5,7,7,8,8,10}, 8), new int[]{3,4});
+
+        Test.summary();
     }
 }

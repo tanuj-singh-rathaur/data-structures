@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>DP Grid Masterclass</title>
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;max-width:980px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.65}
+h1{font-size:1.9rem;color:#0f172a}
+h2{font-size:1.2rem;color:#1e40af;margin-top:24px}
+.lede{background:#eff6ff;border-left:4px solid #2563eb;padding:14px 18px;border-radius:8px;margin-bottom:18px}
+.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.84rem}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.92rem}
+th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left}
+th{background:#f1f5f9}
+.E{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.M{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.H{background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.jargon dt{font-weight:700;color:#1e40af;margin-top:8px}
+</style></head>
+<body>
+<a href="../00_Index.html" style="color:#2563eb">&larr; Back to Topics</a>
+<h1>26.2 DP Grid — Masterclass</h1>
+<div class="lede">Grid DP is just linear DP in two dimensions. State = "best answer ending at cell (i,j)"; transition usually depends on cell (i-1, j), (i, j-1), or diagonals. Two strings ⇒ <code>dp[i][j]</code> over prefixes (edit distance, LCS). A matrix ⇒ <code>dp[i][j]</code> over the cell itself. Often reducible to a rolling 1-D array for O(min(m,n)) space.</div>
+
+<div class="box"><h2>Jargon Buster</h2>
+<dl class="jargon">
+<dt>Top-left to bottom-right walk</dt><dd>Most grid DP iterates rows then cols; predecessors live above and to the left.</dd>
+<dt>Bottom-right to top-left</dt><dd>For "min health" / "exit grid" problems, you DP backward — successors are below and to the right.</dd>
+<dt>String-prefix DP</dt><dd><code>dp[i][j]</code> = answer for first i chars of s1 vs first j chars of s2. Boundary row/col handle empty-prefix base cases.</dd>
+<dt>Rolling array</dt><dd>When <code>dp[i][*]</code> only needs <code>dp[i-1][*]</code>, reuse a 1-D array; iterate column index carefully (asc/desc).</dd>
+</dl></div>
+
+<div class="box"><h2>Java — Path-Count Template</h2>
+<pre>int[][] dp = new int[m][n];
+for (int i = 0; i &lt; m; i++) dp[i][0] = 1;
+for (int j = 0; j &lt; n; j++) dp[0][j] = 1;
+for (int i = 1; i &lt; m; i++)
+    for (int j = 1; j &lt; n; j++)
+        dp[i][j] = dp[i-1][j] + dp[i][j-1];
+return dp[m-1][n-1];</pre></div>
+
+<div class="box"><h2>Java — Two-String Template (LCS)</h2>
+<pre>int[][] dp = new int[m+1][n+1];
+for (int i = 1; i &lt;= m; i++)
+    for (int j = 1; j &lt;= n; j++)
+        dp[i][j] = s1.charAt(i-1) == s2.charAt(j-1)
+                 ? dp[i-1][j-1] + 1
+                 : Math.max(dp[i-1][j], dp[i][j-1]);
+return dp[m][n];</pre></div>
+
+<div class="box"><h2>Problem Index</h2>
+<table>
+<tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th><th>Guide</th></tr>
+<tr><td>P01</td><td>Unique Paths</td><td>Path count</td><td><span class="M">Medium</span></td><td><a href="P01_Unique_Paths.html">open</a></td></tr>
+<tr><td>P02</td><td>Unique Paths II</td><td>Path count + obstacles</td><td><span class="M">Medium</span></td><td><a href="P02_Unique_Paths_II.html">open</a></td></tr>
+<tr><td>P03</td><td>Minimum Path Sum</td><td>Min-sum DP</td><td><span class="M">Medium</span></td><td><a href="P03_Minimum_Path_Sum.html">open</a></td></tr>
+<tr><td>P04</td><td>Triangle Min Path</td><td>Bottom-up DP</td><td><span class="M">Medium</span></td><td><a href="P04_Triangle_Min_Path.html">open</a></td></tr>
+<tr><td>P05</td><td>Maximal Square</td><td>min(3 neighbours)+1</td><td><span class="M">Medium</span></td><td><a href="P05_Maximal_Square.html">open</a></td></tr>
+<tr><td>P06</td><td>Maximal Rectangle</td><td>Histogram per row</td><td><span class="H">Hard</span></td><td><a href="P06_Maximal_Rectangle.html">open</a></td></tr>
+<tr><td>P07</td><td>Dungeon Game</td><td>Reverse-direction DP</td><td><span class="H">Hard</span></td><td><a href="P07_Dungeon_Game.html">open</a></td></tr>
+<tr><td>P08</td><td>Cherry Pickup</td><td>Two-walker DP</td><td><span class="H">Hard</span></td><td><a href="P08_Cherry_Pickup.html">open</a></td></tr>
+<tr><td>P09</td><td>Cherry Pickup II</td><td>Two-robot DP</td><td><span class="H">Hard</span></td><td><a href="P09_Cherry_Pickup_II.html">open</a></td></tr>
+<tr><td>P10</td><td>Edit Distance</td><td>Levenshtein DP</td><td><span class="M">Medium</span></td><td><a href="P10_Edit_Distance.html">open</a></td></tr>
+<tr><td>P11</td><td>Longest Common Subsequence</td><td>LCS</td><td><span class="M">Medium</span></td><td><a href="P11_Longest_Common_Subsequence.html">open</a></td></tr>
+<tr><td>P12</td><td>Distinct Subsequences</td><td>Count DP</td><td><span class="H">Hard</span></td><td><a href="P12_Distinct_Subsequences.html">open</a></td></tr>
+<tr><td>P13</td><td>Interleaving String</td><td>Boolean DP</td><td><span class="M">Medium</span></td><td><a href="P13_Interleaving_String.html">open</a></td></tr>
+<tr><td>P14</td><td>Wildcard Matching</td><td>? and *</td><td><span class="H">Hard</span></td><td><a href="P14_Wildcard_Matching.html">open</a></td></tr>
+<tr><td>P15</td><td>Regular Expression Matching</td><td>. and x*</td><td><span class="H">Hard</span></td><td><a href="P15_Regular_Expression_Matching.html">open</a></td></tr>
+<tr><td>P16</td><td>Min Falling Path Sum</td><td>3-neighbour DP</td><td><span class="M">Medium</span></td><td><a href="P16_Min_Falling_Path_Sum.html">open</a></td></tr>
+<tr><td>P17</td><td>Count Paths With Obstacle (1-D)</td><td>Rolling DP</td><td><span class="M">Medium</span></td><td><a href="P17_Count_Paths_With_Obstacle.html">open</a></td></tr>
+<tr><td>P18</td><td>Out of Boundary Paths</td><td>3-D DP</td><td><span class="M">Medium</span></td><td><a href="P18_Out_of_Boundary_Paths.html">open</a></td></tr>
+<tr><td>P19</td><td>Knight Probability</td><td>3-D probability DP</td><td><span class="M">Medium</span></td><td><a href="P19_Knight_Probability.html">open</a></td></tr>
+<tr><td>P20</td><td>Number of Paths with Max Score</td><td>Joint score+count DP</td><td><span class="H">Hard</span></td><td><a href="P20_Min_Cost_for_Tickets_Grid.html">open</a></td></tr>
+</table></div>
+</body></html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recursion · Divide & Conquer — Masterclass</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}
+.page{max-width:980px;margin:0 auto;padding:32px 40px}
+h1{font-size:2rem;font-weight:700;margin-bottom:6px}
+h2{font-size:1.2rem;font-weight:600;margin:32px 0 12px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}
+p{margin-bottom:10px}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#dbeafe;color:#1d4ed8;margin-right:6px}
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:22px 26px;margin-bottom:18px}
+.section.blue{border-left:4px solid #2563eb}
+.section.green{border-left:4px solid #16a34a}
+.section.orange{border-left:4px solid #d97706}
+.section.purple{border-left:4px solid #7c3aed}
+.section.red{border-left:4px solid #dc2626}
+.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:8px 0}
+.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}
+.glossary dt:first-child{margin-top:0}
+.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.type{padding:14px 18px;border-radius:8px;border:1px solid}
+.t1{background:#eff6ff;border-color:#bfdbfe}
+.t1 h3{color:#1d4ed8}
+.t2{background:#ecfdf5;border-color:#bbf7d0}
+.t2 h3{color:#047857}
+.t3{background:#fffbeb;border-color:#fde68a}
+.t3 h3{color:#b45309}
+.t4{background:#faf5ff;border-color:#ddd6fe}
+.t4 h3{color:#7c3aed}
+.t5{background:#fef2f2;border-color:#fecaca}
+.t5 h3{color:#b91c1c}
+.type h3{font-size:.98rem;font-weight:700;margin-bottom:6px}
+.type p{font-size:.86rem;margin-bottom:6px}
+.type code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px;font-family:Consolas,monospace;font-size:.8rem}
+pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0}
+th{background:#f1f5f9;color:#1e293b;font-weight:700;font-size:.78rem;text-transform:uppercase}
+td a{color:#2563eb;text-decoration:none}td a:hover{text-decoration:underline}
+.diff-e{color:#16a34a;font-weight:600}
+.diff-m{color:#d97706;font-weight:600}
+.diff-h{color:#dc2626;font-weight:600}
+.complete{background:#dcfce7 !important}
+header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}
+.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}
+</style></head>
+<body><div class="page">
+<header>
+<div><span class="tag">Recursion</span><span class="tag" style="background:#fef3c7;color:#92400e">Divide & Conquer</span></div>
+<h1>Recursion · Divide &amp; Conquer &mdash; Masterclass</h1>
+<p style="color:#64748b">Split a problem into smaller independent subproblems, solve them recursively, then combine.</p>
+</header>
+
+<div class="section blue">
+<h2>&#128221; What Is Divide & Conquer?</h2>
+<p>Three steps: <strong>Divide</strong> (split into smaller subproblems), <strong>Conquer</strong> (solve each recursively), <strong>Combine</strong> (merge results). The recurrence is typically <code>T(n) = a · T(n/b) + f(n)</code> where the Master Theorem governs complexity.</p>
+</div>
+
+<div class="section orange">
+<h2>&#128218; Jargon Buster</h2>
+<div class="glossary"><dl>
+<dt>Base Case</dt><dd>The smallest problem you can solve directly without recursing.</dd>
+<dt>Recurrence Relation</dt><dd>Equation expressing T(n) in terms of T of smaller inputs.</dd>
+<dt>Combine Step</dt><dd>Work done to merge child results — often the dominant cost (e.g., O(n) merge).</dd>
+<dt>Master Theorem</dt><dd>Cookbook for T(n) = a·T(n/b) + f(n). Gives O(n log n), O(n), O(n²), etc.</dd>
+<dt>Quickselect</dt><dd>Divide & conquer variant where you recurse on ONE side only ⇒ expected O(n).</dd>
+<dt>Sentinel Return</dt><dd>Special value (e.g., −1) propagated upward to short-circuit on failure.</dd>
+</dl></div>
+</div>
+
+<div class="section green">
+<h2>&#127919; When to use Divide & Conquer</h2>
+<ul style="margin-left:24px">
+<li>Sorting or selection on large arrays (merge sort, quicksort, quickselect).</li>
+<li>Tree construction or traversal where each node's answer depends on its children.</li>
+<li>Counting cross-pair structures (inversions, reverse pairs) using the merge step.</li>
+<li>Geometry (closest pair, convex hull) where a "strip / cross-mid" combine works.</li>
+<li>Interval DP framed recursively (Burst Balloons, Different Ways to Add Parens).</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>&#127981; The 5 Sub-Patterns</h2>
+<div class="types">
+<div class="type t1"><h3>1. Split-Recurse-Merge (Sort)</h3>
+<p>Half + half + linear combine.</p>
+<p><code>T(n) = 2T(n/2) + O(n)</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Merge Sort, Sort List, Count Inversions, Reverse Pairs</em></p></div>
+
+<div class="type t2"><h3>2. Partition-Recurse (Select)</h3>
+<p>Pivot, recurse on one side.</p>
+<p><code>T(n) = T(n/2) + O(n) avg</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Quick Sort, Kth Largest (Quickselect)</em></p></div>
+
+<div class="type t3"><h3>3. Halve-Exponent / Binary Split</h3>
+<p>Logarithmic recursion depth.</p>
+<p><code>T(n) = T(n/2) + O(1)</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Pow(x, n), Beautiful Array, Convert Sorted Array to BST</em></p></div>
+
+<div class="type t4"><h3>4. Recurse-Both-Subtrees (Tree)</h3>
+<p>Each node combines its children's answers.</p>
+<p><code>f(node) = combine(f(left), f(right))</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Max Depth, Balanced Tree, Construct Tree (Pre/In, In/Post), Majority D&amp;C, Max Subarray, Skyline</em></p></div>
+
+<div class="type t5"><h3>5. Interval Divide (Pick Pivot k)</h3>
+<p>For each split point k, recurse left/right and combine.</p>
+<p><code>O(n³) with memo</code></p>
+<p style="color:#475569;font-size:.8rem"><em>Burst Balloons, Different Ways to Add Parens, Largest Rectangle (D&amp;C), Closest Pair</em></p></div>
+</div>
+</div>
+
+<div class="section purple">
+<h2>&#9881;&#65039; Universal Templates</h2>
+<p><strong>Split-Recurse-Merge:</strong></p>
+<pre>void solve(int[] a, int lo, int hi) {
+    if (lo &gt;= hi) return;             // base
+    int mid = lo + (hi - lo) / 2;
+    solve(a, lo, mid);                // conquer left
+    solve(a, mid + 1, hi);             // conquer right
+    merge(a, lo, mid, hi);             // combine
+}</pre>
+<p><strong>Partition-Recurse (Quickselect):</strong></p>
+<pre>int select(int[] a, int lo, int hi, int k) {
+    if (lo == hi) return a[lo];
+    int p = partition(a, lo, hi);
+    if (p == k) return a[p];
+    return p &lt; k ? select(a, p + 1, hi, k) : select(a, lo, p - 1, k);
+}</pre>
+<p><strong>Tree D&amp;C:</strong></p>
+<pre>int dfs(Node n) {
+    if (n == null) return 0;          // base
+    int L = dfs(n.left), R = dfs(n.right);
+    return combine(n.val, L, R);
+}</pre>
+</div>
+
+<div class="section">
+<h2>&#9203; Complexity Profile (Master Theorem)</h2>
+<table><thead><tr><th>Recurrence</th><th>Result</th><th>Example</th></tr></thead><tbody>
+<tr><td>T(n) = 2T(n/2) + O(n)</td><td>O(n log n)</td><td>Merge Sort</td></tr>
+<tr><td>T(n) = T(n/2) + O(1)</td><td>O(log n)</td><td>Pow(x, n)</td></tr>
+<tr><td>T(n) = T(n/2) + O(n) avg</td><td>O(n) avg / O(n²) worst</td><td>Quickselect</td></tr>
+<tr><td>T(n) = 2T(n−1) + O(1)</td><td>O(2ⁿ)</td><td>naïve subset enumeration</td></tr>
+</tbody></table>
+</div>
+
+<div class="section">
+<h2>&#128218; Problem Index (20)</h2>
+<table><thead><tr><th>#</th><th>Problem</th><th>Pattern</th><th>Difficulty</th></tr></thead><tbody>
+<tr id="p01"><td>1</td><td><a href="P01_Merge_Sort.html">Merge Sort</a></td><td>Split + merge</td><td class="diff-m">Medium</td></tr>
+<tr id="p02"><td>2</td><td><a href="P02_Quick_Sort.html">Quick Sort</a></td><td>Partition + recurse</td><td class="diff-m">Medium</td></tr>
+<tr id="p03"><td>3</td><td><a href="P03_Majority_Element.html">Majority Element (D&amp;C)</a></td><td>Tree D&amp;C with verification</td><td class="diff-e">Easy</td></tr>
+<tr id="p04"><td>4</td><td><a href="P04_Different_Ways_to_Add_Parentheses.html">Different Ways to Add Parens</a></td><td>Interval pivot + memo</td><td class="diff-m">Medium</td></tr>
+<tr id="p05"><td>5</td><td><a href="P05_Maximum_Subarray.html">Maximum Subarray (D&amp;C)</a></td><td>Left/right/cross-mid</td><td class="diff-m">Medium</td></tr>
+<tr id="p06"><td>6</td><td><a href="P06_Pow_x_n.html">Pow(x, n)</a></td><td>Halve exponent</td><td class="diff-m">Medium</td></tr>
+<tr id="p07"><td>7</td><td><a href="P07_Kth_Largest_Element.html">Kth Largest Element</a></td><td>Quickselect</td><td class="diff-m">Medium</td></tr>
+<tr id="p08"><td>8</td><td><a href="P08_Sort_List.html">Sort List</a></td><td>Slow/fast split + merge</td><td class="diff-m">Medium</td></tr>
+<tr id="p09"><td>9</td><td><a href="P09_Reverse_Pairs.html">Reverse Pairs</a></td><td>Merge sort + counting</td><td class="diff-h">Hard</td></tr>
+<tr id="p10"><td>10</td><td><a href="P10_Count_Inversions.html">Count Inversions</a></td><td>Merge sort + counting</td><td class="diff-m">Medium</td></tr>
+<tr id="p11"><td>11</td><td><a href="P11_The_Skyline_Problem.html">The Skyline Problem</a></td><td>Merge skylines</td><td class="diff-h">Hard</td></tr>
+<tr id="p12"><td>12</td><td><a href="P12_Burst_Balloons.html">Burst Balloons</a></td><td>Interval last-burst pivot</td><td class="diff-h">Hard</td></tr>
+<tr id="p13"><td>13</td><td><a href="P13_Construct_Tree_from_Preorder_Inorder.html">Build Tree (Pre + In)</a></td><td>Tree split via inorder</td><td class="diff-m">Medium</td></tr>
+<tr id="p14"><td>14</td><td><a href="P14_Construct_Tree_from_Inorder_Postorder.html">Build Tree (In + Post)</a></td><td>Tree split (mirror)</td><td class="diff-m">Medium</td></tr>
+<tr id="p15"><td>15</td><td><a href="P15_Convert_Sorted_Array_to_BST.html">Sorted Array → BST</a></td><td>Middle as root</td><td class="diff-e">Easy</td></tr>
+<tr id="p16"><td>16</td><td><a href="P16_Maximum_Depth_of_Binary_Tree.html">Max Depth of Tree</a></td><td>Tree D&amp;C base</td><td class="diff-e">Easy</td></tr>
+<tr id="p17"><td>17</td><td><a href="P17_Balanced_Binary_Tree.html">Balanced Binary Tree</a></td><td>Tree D&amp;C + sentinel</td><td class="diff-e">Easy</td></tr>
+<tr id="p18"><td>18</td><td><a href="P18_Beautiful_Array.html">Beautiful Array</a></td><td>Odd/even build-up</td><td class="diff-m">Medium</td></tr>
+<tr id="p19"><td>19</td><td><a href="P19_Closest_Pair_of_Points.html">Closest Pair of Points</a></td><td>Strip around split</td><td class="diff-h">Hard</td></tr>
+<tr id="p20"><td>20</td><td><a href="P20_Largest_Rectangle_in_Histogram.html">Largest Rectangle (D&amp;C)</a></td><td>Recurse at min</td><td class="diff-h">Hard</td></tr>
+</tbody></table>
+</div>
+
+<div class="footer">Recursion &middot; Divide &amp; Conquer Masterclass &mdash; DSA Practice Series</div>
+</div>
+<script src="../../util/progress.js" defer></script>
+</body></html>

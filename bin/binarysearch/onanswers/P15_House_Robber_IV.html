@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P15 – House Robber IV</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#1e293b;font-size:15px;line-height:1.65}.page{max-width:860px;margin:0 auto;padding:32px 40px}h1{font-size:1.8rem;font-weight:700;margin-bottom:4px}h2{font-size:1.1rem;font-weight:600;margin:28px 0 10px;padding-left:10px;border-left:4px solid #2563eb;color:#1e40af}p{margin-bottom:10px}.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.78rem;font-weight:700}.med{background:#fef3c7;color:#92400e}.meta{display:flex;gap:12px;margin-bottom:24px;color:#64748b;font-size:.88rem}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin-bottom:18px}.section.blue{border-left:4px solid #2563eb}.section.green{border-left:4px solid #16a34a}.section.orange{border-left:4px solid #d97706}.section.purple{border-left:4px solid #7c3aed}pre{background:#0f172a;color:#e2e8f0;padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:Consolas,monospace;font-size:.82rem;line-height:1.6;margin:10px 0}.glossary{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin:10px 0}.glossary dt{font-weight:700;color:#1d4ed8;margin-top:8px}.glossary dt:first-child{margin-top:0}.glossary dd{margin-left:14px;margin-bottom:5px;color:#334155}.kv{display:flex;gap:16px;flex-wrap:wrap}.kv-item{background:#f1f5f9;border-radius:6px;padding:8px 14px;flex:1;min-width:160px}.kv-label{font-size:.75rem;color:#64748b;font-weight:600;text-transform:uppercase}.kv-val{font-size:.92rem;font-weight:600;color:#1e293b;margin-top:2px}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px}.insight strong{color:#1d4ed8}.pattern-box{background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:14px 18px}.pattern-box strong{color:#6d28d9}.steps ol{padding-left:22px}.steps li{margin-bottom:8px}header{padding-bottom:20px;border-bottom:2px solid #e2e8f0;margin-bottom:24px}.footer{text-align:center;color:#94a3b8;font-size:.8rem;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0}</style>
+</head><body><div class="page">
+<header><div class="meta"><a href="00_Masterclass.html" style="color:#2563eb;text-decoration:none">&larr; On Answers Masterclass</a> &rsaquo; BS capability · non-adj greedy</div>
+<h1>P15 &mdash; House Robber IV</h1>
+<div class="meta"><span class="badge med">Medium</span> &bull; LC #2560 &bull; Pattern: <strong>BS capability · greedy non-adjacent count</strong></div></header>
+
+<div class="section blue"><h2>&#128221; The Problem</h2>
+<p>Rob exactly k houses, no two adjacent. The "capability" is the max value robbed. Minimize capability.</p></div>
+
+<div class="section orange"><h2>&#128218; Jargon Buster</h2><div class="glossary"><dl>
+<dt>Capability</dt><dd>The maximum value among robbed houses. Lower = better.</dd>
+<dt>Greedy non-adjacent count</dt><dd>For threshold c, walk array; take any house ≤ c, then skip the next. Count fits.</dd>
+</dl></div></div>
+
+<div class="section green"><h2>&#127775; In Layman's Terms</h2>
+<p>Pick a ceiling c. Greedy-take houses worth ≤ c with no adjacency. If you can take ≥ k, c is feasible. Binary search smallest such c.</p></div>
+
+<div class="section orange"><h2>&#9889; The Aha Moment</h2>
+<p>Greedy "take + skip" is enough — DP not needed because feasibility is monotone in c.</p></div>
+
+<div class="section green"><h2>&#128295; Algorithm</h2><div class="steps"><ol>
+<li>lo = min(nums), hi = max(nums).</li>
+<li>BS smallest c with greedyTake(c) ≥ k.</li>
+</ol></div></div>
+
+<div class="section purple"><h2>&#9749; Java Solution</h2>
+<pre>public int minCapability(int[] nums, int k) {
+    int lo = Integer.MAX_VALUE, hi = Integer.MIN_VALUE;
+    for (int x : nums) { lo = Math.min(lo, x); hi = Math.max(hi, x); }
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (canRob(nums, mid) &gt;= k) hi = mid;
+        else                         lo = mid + 1;
+    }
+    return lo;
+}
+private int canRob(int[] nums, int cap) {
+    int count = 0, i = 0;
+    while (i &lt; nums.length) {
+        if (nums[i] &lt;= cap) { count++; i += 2; }
+        else                  i++;
+    }
+    return count;
+}</pre></div>
+
+<div class="section"><h2>&#9203; Complexity</h2>
+<div class="kv"><div class="kv-item"><div class="kv-label">Time</div><div class="kv-val">O(n log max)</div></div><div class="kv-item"><div class="kv-label">Space</div><div class="kv-val">O(1)</div></div></div></div>
+
+<div class="section orange"><h2>&#128200; BS-on-Answers Pattern</h2>
+<div class="pattern-box"><strong>BS + Adjacency Greedy:</strong> When picking subsets under adjacency rule, a simple skip-greedy plus BS solves "min max element of chosen subset."</div></div>
+
+<div class="insight"><strong>Key Insight:</strong> Greedy "take-then-skip" is optimal for non-adjacency feasibility (not value optimization!).</div>
+
+<div class="footer">Binary Search · On Answers Masterclass &mdash; DSA Practice Series</div>
+</div></body></html>

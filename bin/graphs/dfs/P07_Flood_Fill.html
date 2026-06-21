@@ -1,0 +1,9 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P07 – Flood Fill</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.6rem}.badge{background:#dcfce7;color:#166534;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;margin-bottom:12px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:12px 18px;margin-bottom:10px}h2{margin:0 0 4px;color:#1e40af;font-size:1rem}pre{background:#0f172a;color:#e2e8f0;padding:10px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; DFS Masterclass</a>
+<h1>P07 — Flood Fill</h1><div class="meta"><span class="badge">Easy</span> • LC #733</div>
+<div class="section"><h2>Java</h2><pre>void dfs(int[][] g, int r, int c, int old, int neu) {
+    if (r&lt;0||c&lt;0||r&gt;=g.length||c&gt;=g[0].length||g[r][c]!=old) return;
+    g[r][c] = neu;
+    dfs(g,r+1,c,old,neu); dfs(g,r-1,c,old,neu); dfs(g,r,c+1,old,neu); dfs(g,r,c-1,old,neu);
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Guard for old == neu before starting — otherwise the colour check itself becomes infinite recursion's culprit.</div></body></html>

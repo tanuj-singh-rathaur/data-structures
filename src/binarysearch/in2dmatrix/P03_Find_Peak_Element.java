@@ -1,5 +1,7 @@
 package binarysearch.in2dmatrix;
 
+import util.Test;
+
 /**
  * Find Peak Element
  * Topic    : Binary Search
@@ -24,7 +26,10 @@ public class P03_Find_Peak_Element {
 
     public static void main(String[] args) {
         P03_Find_Peak_Element sol = new P03_Find_Peak_Element();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1", sol.findPeakElement(new int[]{1,2,3,1}), 2);
+
+        Test.summary();
     }
 }

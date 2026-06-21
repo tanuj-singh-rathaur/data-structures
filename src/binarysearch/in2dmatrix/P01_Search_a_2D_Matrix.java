@@ -1,5 +1,7 @@
 package binarysearch.in2dmatrix;
 
+import util.Test;
+
 /**
  * Search a 2D Matrix
  * Topic    : Binary Search
@@ -24,7 +26,11 @@ public class P01_Search_a_2D_Matrix {
 
     public static void main(String[] args) {
         P01_Search_a_2D_Matrix sol = new P01_Search_a_2D_Matrix();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1",
+        //     sol.searchMatrix(new int[][]{{1,3,5,7},{10,11,16,20},{23,30,34,60}}, 3), true);
+
+        Test.summary();
     }
 }

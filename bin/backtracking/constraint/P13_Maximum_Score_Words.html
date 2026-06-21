@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>P13 – Max Score Words</title><style>body{font-family:'Segoe UI',Arial,sans-serif;max-width:860px;margin:0 auto;padding:32px;background:#f8fafc;color:#1e293b;line-height:1.6}h1{font-size:1.8rem}h2{margin:22px 0 8px;color:#1e40af;border-left:4px solid #2563eb;padding-left:10px}.badge{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:700}.meta{color:#64748b;font-size:.88rem;margin-bottom:18px}.section{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:10px;padding:16px 22px;margin-bottom:14px}pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:.82rem}.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px}.insight strong{color:#1d4ed8}</style></head>
+<body><a href="00_Masterclass.html" style="color:#2563eb">&larr; Constraint Masterclass</a>
+<h1>P13 — Maximum Score Words Formed by Letters</h1>
+<div class="meta"><span class="badge">Hard</span> • LC #1255 • Subset with inventory</div>
+<div class="section"><h2>Pattern</h2><p>For each subset of words check letter inventory ≤ available; track max score. Brute-force subsets feasible because |words| ≤ 14 ⇒ 16K subsets.</p></div>
+<div class="section"><h2>Java</h2><pre>public int maxScoreWords(String[] words, char[] letters, int[] score) {
+    int[] inv = new int[26]; for (char c : letters) inv[c-'a']++;
+    return dfs(words, 0, inv, score);
+}
+int dfs(String[] w, int i, int[] inv, int[] sc) {
+    if (i == w.length) return 0;
+    int skip = dfs(w, i+1, inv, sc);
+    int gain = 0; boolean ok = true;
+    int[] used = new int[26];
+    for (char c : w[i].toCharArray()) { used[c-'a']++; gain += sc[c-'a']; if (used[c-'a'] &gt; inv[c-'a']) ok = false; }
+    if (!ok) return skip;
+    for (int k=0;k&lt;26;k++) inv[k] -= used[k];
+    int take = gain + dfs(w, i+1, inv, sc);
+    for (int k=0;k&lt;26;k++) inv[k] += used[k];
+    return Math.max(skip, take);
+}</pre></div>
+<div class="section insight"><strong>Insight:</strong> Inventory is shared mutable state — restore on backtrack.</div></body></html>

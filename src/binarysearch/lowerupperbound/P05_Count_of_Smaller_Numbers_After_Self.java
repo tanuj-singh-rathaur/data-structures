@@ -1,5 +1,7 @@
 package binarysearch.lowerupperbound;
 
+import util.Test;
+
 /**
  * Count of Smaller Numbers After Self
  * Topic    : Binary Search
@@ -24,7 +26,11 @@ public class P05_Count_of_Smaller_Numbers_After_Self {
 
     public static void main(String[] args) {
         P05_Count_of_Smaller_Numbers_After_Self sol = new P05_Count_of_Smaller_Numbers_After_Self();
-        // TODO: add your test cases here
-        System.out.println("Add test cases and run!");
+
+        // TODO: add test cases once you've implemented the method. Example:
+        // Test.equal("Test 1", sol.countSmaller(new int[]{5,2,6,1}),
+        //     java.util.Arrays.asList(2, 1, 1, 0));
+
+        Test.summary();
     }
 }
