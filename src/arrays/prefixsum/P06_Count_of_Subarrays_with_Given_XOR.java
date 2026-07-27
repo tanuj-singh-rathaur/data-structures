@@ -1,29 +1,27 @@
 package arrays.prefixsum;
 
+import util.Test;
+
 /**
  * Count of Subarrays with Given XOR
- * Pattern : Prefix Sum
+ * Pattern : Prefix XOR + HashMap
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/]
- *
- * PATTERN HINT:
- *   [Prefix Sum — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Return the number of contiguous subarrays with XOR == m.
+ * If prefixXor[j] ^ prefixXor[i] == m, then subarray (i+1..j) has XOR m,
+ * i.e., look for prefixXor[i] == prefixXor[j] ^ m.
  */
 public class P06_Count_of_Subarrays_with_Given_XOR {
 
-    // TODO: define method signature after reading the problem
+    public int subarraysWithGivenXor(int[] nums, int m) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P06_Count_of_Subarrays_with_Given_XOR sol = new P06_Count_of_Subarrays_with_Given_XOR();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.subarraysWithGivenXor(new int[]{4,2,2,6,4}, 6), 4);
+        Test.equal("Test 2", sol.subarraysWithGivenXor(new int[]{5,6,7,8,9}, 5), 2);
+        Test.summary();
     }
 }

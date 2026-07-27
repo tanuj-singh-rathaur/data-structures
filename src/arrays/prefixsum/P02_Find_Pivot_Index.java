@@ -1,29 +1,27 @@
 package arrays.prefixsum;
 
+import util.Test;
+
 /**
  * Find Pivot Index
- * Pattern : Prefix Sum
+ * Pattern : Prefix Sum (leftSum == totalSum − leftSum − nums[i])
  * Difficulty: Easy
- * LeetCode  : https://leetcode.com/problems/find-pivot-index/
+ * LeetCode : https://leetcode.com/problems/find-pivot-index/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/find-pivot-index/]
- *
- * PATTERN HINT:
- *   [Prefix Sum — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Return the leftmost index where sum-of-left == sum-of-right, or −1.
  */
 public class P02_Find_Pivot_Index {
 
-    // TODO: define method signature after reading the problem
+    public int pivotIndex(int[] nums) {
+        // TODO: implement
+        return -1;
+    }
 
     public static void main(String[] args) {
         P02_Find_Pivot_Index sol = new P02_Find_Pivot_Index();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.pivotIndex(new int[]{1,7,3,6,5,6}), 3);
+        Test.equal("Test 2", sol.pivotIndex(new int[]{1,2,3}), -1);
+        Test.equal("Test 3", sol.pivotIndex(new int[]{2,1,-1}), 0);
+        Test.summary();
     }
 }

@@ -1,28 +1,27 @@
 package arrays.prefixsum;
 
+import util.Test;
+
 /**
  * Subarray Sums Divisible by K
- * Pattern : Prefix Sum
+ * Pattern : Prefix sum mod K + count of each remainder
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/subarray-sums-divisible-by-k/
+ * LeetCode : https://leetcode.com/problems/subarray-sums-divisible-by-k/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode]
- *
- * PATTERN HINT:
- *   [Prefix sum mod K; HashMap of {remainder : count}; same remainder ⇒ divisible sub]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
+ * Return the number of contiguous subarrays whose sum is divisible by k.
+ * Two prefix sums with the SAME remainder ⇒ their difference is divisible.
  */
 public class P10_Subarray_Sums_Divisible_by_K {
 
-    // TODO: define method signature after reading the problem
+    public int subarraysDivByK(int[] nums, int k) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P10_Subarray_Sums_Divisible_by_K sol = new P10_Subarray_Sums_Divisible_by_K();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.subarraysDivByK(new int[]{4,5,0,-2,-3,1}, 5), 7);
+        Test.equal("Test 2", sol.subarraysDivByK(new int[]{5}, 9), 0);
+        Test.summary();
     }
 }

@@ -1,29 +1,26 @@
 package arrays.slidingwindow;
 
+import util.Test;
+
 /**
  * Max Consecutive Ones III
- * Pattern : Sliding Window
+ * Pattern : Sliding Window (at most k zeros in window)
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/max-consecutive-ones-iii/
+ * LeetCode : https://leetcode.com/problems/max-consecutive-ones-iii/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/max-consecutive-ones-iii/]
- *
- * PATTERN HINT:
- *   [Sliding Window — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Longest subarray of 1s allowing at most k zeros to be flipped.
  */
 public class P05_Max_Consecutive_Ones_III {
 
-    // TODO: define method signature after reading the problem
+    public int longestOnes(int[] nums, int k) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P05_Max_Consecutive_Ones_III sol = new P05_Max_Consecutive_Ones_III();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.longestOnes(new int[]{1,1,1,0,0,0,1,1,1,1,0}, 2), 6);
+        Test.equal("Test 2", sol.longestOnes(new int[]{0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1}, 3), 10);
+        Test.summary();
     }
 }

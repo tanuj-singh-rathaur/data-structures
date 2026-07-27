@@ -1,28 +1,27 @@
 package arrays.kadane;
 
+import util.Test;
+
 /**
  * K-Concatenation Maximum Sum
- * Pattern : Kadane (Combined Cases)
+ * Pattern : Kadane on 1 or 2 copies + total * (K−2) if positive
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/k-concatenation-maximum-sum/
+ * LeetCode : https://leetcode.com/problems/k-concatenation-maximum-sum/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode]
- *
- * PATTERN HINT:
- *   [Consider 3 cases: single copy Kadane, two-copy Kadane, total > 0 multiplied by (K−2)]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
+ * With array repeated K times, return the max subarray sum modulo 1e9+7.
  */
 public class P09_K_Concatenation_Maximum_Sum {
 
-    // TODO: define method signature after reading the problem
+    public int kConcatenationMaxSum(int[] arr, int k) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P09_K_Concatenation_Maximum_Sum sol = new P09_K_Concatenation_Maximum_Sum();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.kConcatenationMaxSum(new int[]{1,2}, 3), 9);
+        Test.equal("Test 2", sol.kConcatenationMaxSum(new int[]{1,-2,1}, 5), 2);
+        Test.equal("Test 3", sol.kConcatenationMaxSum(new int[]{-1,-2}, 7), 0);
+        Test.summary();
     }
 }

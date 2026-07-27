@@ -1,28 +1,30 @@
 package arrays.slidingwindow;
 
+import java.util.Arrays;
+import java.util.List;
+
+import util.Test;
+
 /**
  * Find All Anagrams in a String
- * Pattern : Sliding Window
+ * Pattern : Sliding Window (fixed size, freq match)
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/find-all-anagrams-in-a-string/
+ * LeetCode : https://leetcode.com/problems/find-all-anagrams-in-a-string/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/find-all-anagrams-in-a-string/]
- *
- * PATTERN HINT:
- *   [Sliding Window — fixed-size window of len(p); track matches via frequency map]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Return start indices of all substrings in s that are anagrams of p.
  */
 public class P11_Find_All_Anagrams_in_a_String {
 
-    // TODO: define method signature after reading the problem
+    public List<Integer> findAnagrams(String s, String p) {
+        // TODO: implement
+        return java.util.Collections.emptyList();
+    }
 
     public static void main(String[] args) {
         P11_Find_All_Anagrams_in_a_String sol = new P11_Find_All_Anagrams_in_a_String();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.findAnagrams("cbaebabacd", "abc"), Arrays.asList(0, 6));
+        Test.equal("Test 2", sol.findAnagrams("abab", "ab"), Arrays.asList(0, 1, 2));
+        Test.equal("Test 3", sol.findAnagrams("aa", "bb"), java.util.Collections.<Integer>emptyList());
+        Test.summary();
     }
 }

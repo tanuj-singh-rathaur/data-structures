@@ -1,29 +1,29 @@
 package arrays.kadane;
 
+import util.Test;
+
 /**
- * Maximum Subarray
+ * Maximum Subarray (Kadane classic)
  * Pattern : Kadane's Algorithm
- * Difficulty: Easy
- * LeetCode  : https://leetcode.com/problems/maximum-subarray/
+ * Difficulty: Medium
+ * LeetCode : https://leetcode.com/problems/maximum-subarray/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/maximum-subarray/]
- *
- * PATTERN HINT:
- *   [Kadane's Algorithm — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Return the maximum sum of any contiguous subarray.
+ * cur = max(nums[i], cur + nums[i]); best = max(best, cur).
  */
 public class P01_Maximum_Subarray {
 
-    // TODO: define method signature after reading the problem
+    public int maxSubArray(int[] nums) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P01_Maximum_Subarray sol = new P01_Maximum_Subarray();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4}), 6);
+        Test.equal("Test 2", sol.maxSubArray(new int[]{1}), 1);
+        Test.equal("Test 3", sol.maxSubArray(new int[]{5,4,-1,7,8}), 23);
+        Test.equal("Test 4", sol.maxSubArray(new int[]{-3,-1,-2}), -1);
+        Test.summary();
     }
 }

@@ -1,28 +1,27 @@
 package arrays.prefixsum;
 
+import util.Test;
+
 /**
  * Continuous Subarray Sum
- * Pattern : Prefix Sum
+ * Pattern : Prefix sum mod k; HashMap of first-seen remainder
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/continuous-subarray-sum/
+ * LeetCode : https://leetcode.com/problems/continuous-subarray-sum/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode]
- *
- * PATTERN HINT:
- *   [Prefix Sum mod K — store first index where each remainder appeared]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
+ * Return true iff some contiguous subarray of length ≥ 2 has sum divisible by k.
  */
 public class P07_Continuous_Subarray_Sum {
 
-    // TODO: define method signature after reading the problem
+    public boolean checkSubarraySum(int[] nums, int k) {
+        // TODO: implement
+        return false;
+    }
 
     public static void main(String[] args) {
         P07_Continuous_Subarray_Sum sol = new P07_Continuous_Subarray_Sum();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.checkSubarraySum(new int[]{23,2,4,6,7}, 6), true);
+        Test.equal("Test 2", sol.checkSubarraySum(new int[]{23,2,6,4,7}, 6), true);
+        Test.equal("Test 3", sol.checkSubarraySum(new int[]{23,2,6,4,7}, 13), false);
+        Test.summary();
     }
 }

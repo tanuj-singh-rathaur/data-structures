@@ -1,28 +1,28 @@
 package arrays.kadane;
 
+import util.Test;
+
 /**
- * Jump Game II
- * Pattern : Kadane (BFS-Greedy)
+ * Jump Game II (minimum jumps)
+ * Pattern : BFS-style level tracking
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/jump-game-ii/
+ * LeetCode : https://leetcode.com/problems/jump-game-ii/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode]
- *
- * PATTERN HINT:
- *   [Track currentEnd and farthest within layer; bump jump count when i reaches currentEnd]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
+ * Return the min number of jumps to reach the last index.
+ * Track currentEnd (frontier of current jump) and farthest reachable.
  */
 public class P12_Jump_Game_II {
 
-    // TODO: define method signature after reading the problem
+    public int jump(int[] nums) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P12_Jump_Game_II sol = new P12_Jump_Game_II();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.jump(new int[]{2,3,1,1,4}), 2);
+        Test.equal("Test 2", sol.jump(new int[]{2,3,0,1,4}), 2);
+        Test.equal("Test 3", sol.jump(new int[]{1}), 0);
+        Test.summary();
     }
 }

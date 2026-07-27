@@ -1,29 +1,28 @@
 package arrays.slidingwindow;
 
+import util.Test;
+
 /**
  * Minimum Window Substring
- * Pattern : Sliding Window
+ * Pattern : Sliding Window (need-count map)
  * Difficulty: Hard
- * LeetCode  : https://leetcode.com/problems/minimum-window-substring/
+ * LeetCode : https://leetcode.com/problems/minimum-window-substring/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/minimum-window-substring/]
- *
- * PATTERN HINT:
- *   [Sliding Window — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Return the smallest substring of s that contains every char of t (multiset).
+ * Empty string if impossible.
  */
 public class P07_Minimum_Window_Substring {
 
-    // TODO: define method signature after reading the problem
+    public String minWindow(String s, String t) {
+        // TODO: implement
+        return "";
+    }
 
     public static void main(String[] args) {
         P07_Minimum_Window_Substring sol = new P07_Minimum_Window_Substring();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.minWindow("ADOBECODEBANC", "ABC"), "BANC");
+        Test.equal("Test 2", sol.minWindow("a", "a"), "a");
+        Test.equal("Test 3", sol.minWindow("a", "aa"), "");
+        Test.summary();
     }
 }

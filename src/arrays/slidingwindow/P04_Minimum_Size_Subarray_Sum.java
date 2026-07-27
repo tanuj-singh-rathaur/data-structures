@@ -1,29 +1,27 @@
 package arrays.slidingwindow;
 
+import util.Test;
+
 /**
  * Minimum Size Subarray Sum
- * Pattern : Sliding Window
+ * Pattern : Sliding Window (shrink to minimum)
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/minimum-size-subarray-sum/
+ * LeetCode : https://leetcode.com/problems/minimum-size-subarray-sum/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/minimum-size-subarray-sum/]
- *
- * PATTERN HINT:
- *   [Sliding Window — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Return the min length of a contiguous subarray with sum >= target. 0 if none.
  */
 public class P04_Minimum_Size_Subarray_Sum {
 
-    // TODO: define method signature after reading the problem
+    public int minSubArrayLen(int target, int[] nums) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P04_Minimum_Size_Subarray_Sum sol = new P04_Minimum_Size_Subarray_Sum();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.minSubArrayLen(7, new int[]{2,3,1,2,4,3}), 2);
+        Test.equal("Test 2", sol.minSubArrayLen(4, new int[]{1,4,4}), 1);
+        Test.equal("Test 3", sol.minSubArrayLen(11, new int[]{1,1,1,1,1,1,1,1}), 0);
+        Test.summary();
     }
 }

@@ -1,29 +1,28 @@
 package arrays.kadane;
 
+import util.Test;
+
 /**
  * Maximum Sum Circular Subarray
- * Pattern : Kadane's Algorithm
+ * Pattern : Kadane (twice — max + min)
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/maximum-sum-circular-subarray/
+ * LeetCode : https://leetcode.com/problems/maximum-sum-circular-subarray/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/maximum-sum-circular-subarray/]
- *
- * PATTERN HINT:
- *   [Kadane's Algorithm — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * max(kadaneMax, totalSum − kadaneMin), with edge case: if all-negative,
+ * answer = kadaneMax (can't take empty subarray).
  */
 public class P03_Maximum_Sum_Circular_Subarray {
 
-    // TODO: define method signature after reading the problem
+    public int maxSubarraySumCircular(int[] nums) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P03_Maximum_Sum_Circular_Subarray sol = new P03_Maximum_Sum_Circular_Subarray();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.maxSubarraySumCircular(new int[]{1,-2,3,-2}), 3);
+        Test.equal("Test 2", sol.maxSubarraySumCircular(new int[]{5,-3,5}), 10);
+        Test.equal("Test 3", sol.maxSubarraySumCircular(new int[]{-3,-2,-3}), -2);
+        Test.summary();
     }
 }

@@ -1,29 +1,27 @@
 package arrays.slidingwindow;
 
+import util.Test;
+
 /**
  * Sliding Window Maximum
- * Pattern : Sliding Window
+ * Pattern : Monotonic deque
  * Difficulty: Hard
- * LeetCode  : https://leetcode.com/problems/sliding-window-maximum/
+ * LeetCode : https://leetcode.com/problems/sliding-window-maximum/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/sliding-window-maximum/]
- *
- * PATTERN HINT:
- *   [Sliding Window — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * For every window of size k, return the max element. Use a monotonic deque
+ * that stores indices in decreasing value order.
  */
 public class P08_Sliding_Window_Maximum {
 
-    // TODO: define method signature after reading the problem
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        // TODO: implement
+        return new int[0];
+    }
 
     public static void main(String[] args) {
         P08_Sliding_Window_Maximum sol = new P08_Sliding_Window_Maximum();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.maxSlidingWindow(new int[]{1,3,-1,-3,5,3,6,7}, 3), new int[]{3,3,5,5,6,7});
+        Test.equal("Test 2", sol.maxSlidingWindow(new int[]{1}, 1), new int[]{1});
+        Test.summary();
     }
 }

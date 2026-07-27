@@ -1,29 +1,28 @@
 package arrays.slidingwindow;
 
+import util.Test;
+
 /**
  * Maximum Sum Subarray of Size K
- * Pattern : Sliding Window
+ * Pattern : Sliding Window (fixed size)
  * Difficulty: Easy
- * LeetCode  : https://leetcode.com/problems/maximum-sum-of-distinct-subarrays-with-length-k/
+ * LeetCode : https://leetcode.com/problems/maximum-sum-of-distinct-subarrays-with-length-k/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/maximum-sum-of-distinct-subarrays-with-length-k/]
- *
- * PATTERN HINT:
- *   [Sliding Window — think about how this pattern applies here]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Given an integer array and int k, return the max sum of any contiguous subarray of size k.
+ * Slide the window: sum += nums[R] − nums[R−K].
  */
 public class P01_Maximum_Sum_Subarray_of_Size_K {
 
-    // TODO: define method signature after reading the problem
+    public int maxSum(int[] nums, int k) {
+        // TODO: implement using fixed-size sliding window
+        return 0;
+    }
 
     public static void main(String[] args) {
         P01_Maximum_Sum_Subarray_of_Size_K sol = new P01_Maximum_Sum_Subarray_of_Size_K();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.maxSum(new int[]{2,1,5,1,3,2}, 3), 9);
+        Test.equal("Test 2", sol.maxSum(new int[]{2,3,4,1,5}, 2), 7);
+        Test.equal("Test 3", sol.maxSum(new int[]{1,1,1,1,1}, 5), 5);
+        Test.summary();
     }
 }

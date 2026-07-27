@@ -1,28 +1,28 @@
 package arrays.kadane;
 
+import util.Test;
+
 /**
  * Gas Station
- * Pattern : Kadane (Greedy Restart)
+ * Pattern : Greedy restart (Kadane-style)
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/gas-station/
+ * LeetCode : https://leetcode.com/problems/gas-station/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode]
- *
- * PATTERN HINT:
- *   [Walk diff array; whenever running tank goes negative, restart at next station]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
+ * Return the starting index that lets you complete a circular trip.
+ * If total(gas) &lt; total(cost) impossible. Otherwise the unique answer is the
+ * first station after any tank-goes-negative point.
  */
 public class P17_Gas_Station {
 
-    // TODO: define method signature after reading the problem
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        // TODO: implement
+        return -1;
+    }
 
     public static void main(String[] args) {
         P17_Gas_Station sol = new P17_Gas_Station();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.canCompleteCircuit(new int[]{1,2,3,4,5}, new int[]{3,4,5,1,2}), 3);
+        Test.equal("Test 2", sol.canCompleteCircuit(new int[]{2,3,4}, new int[]{3,4,3}), -1);
+        Test.summary();
     }
 }

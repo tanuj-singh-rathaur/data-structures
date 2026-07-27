@@ -1,29 +1,28 @@
 package arrays.slidingwindow;
 
+import util.Test;
+
 /**
  * Longest Substring Without Repeating Characters
- * Pattern : Sliding Window
+ * Pattern : Sliding Window (unique-char set / map)
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/longest-substring-without-repeating-characters/
+ * LeetCode : https://leetcode.com/problems/longest-substring-without-repeating-characters/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode: https://leetcode.com/problems/longest-substring-without-repeating-characters/]
- *
- * PATTERN HINT:
- *   [Sliding Window — track last-seen index of each character; shrink left past any repeat]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW — write your solution, then come back to Claude
- * ─────────────────────────────────────────────
+ * Return length of the longest substring with all distinct characters.
  */
 public class P09_Longest_Substring_Without_Repeating_Characters {
 
-    // TODO: define method signature after reading the problem
+    public int lengthOfLongestSubstring(String s) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P09_Longest_Substring_Without_Repeating_Characters sol = new P09_Longest_Substring_Without_Repeating_Characters();
-        // TODO: add test cases after reading the problem
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.lengthOfLongestSubstring("abcabcbb"), 3);
+        Test.equal("Test 2", sol.lengthOfLongestSubstring("bbbbb"), 1);
+        Test.equal("Test 3", sol.lengthOfLongestSubstring("pwwkew"), 3);
+        Test.equal("Test 4", sol.lengthOfLongestSubstring(""), 0);
+        Test.summary();
     }
 }

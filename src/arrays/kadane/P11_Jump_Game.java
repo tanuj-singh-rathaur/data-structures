@@ -1,28 +1,27 @@
 package arrays.kadane;
 
+import util.Test;
+
 /**
- * Jump Game
- * Pattern : Kadane (Greedy Reach)
+ * Jump Game (reachability)
+ * Pattern : Greedy running-max reach
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/jump-game/
+ * LeetCode : https://leetcode.com/problems/jump-game/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode]
- *
- * PATTERN HINT:
- *   [Track maxReach so far; if i > maxReach return false; if maxReach ≥ n−1 return true]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
+ * Return true if you can reach the last index starting from index 0.
  */
 public class P11_Jump_Game {
 
-    // TODO: define method signature after reading the problem
+    public boolean canJump(int[] nums) {
+        // TODO: implement
+        return false;
+    }
 
     public static void main(String[] args) {
         P11_Jump_Game sol = new P11_Jump_Game();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.canJump(new int[]{2,3,1,1,4}), true);
+        Test.equal("Test 2", sol.canJump(new int[]{3,2,1,0,4}), false);
+        Test.equal("Test 3", sol.canJump(new int[]{0}), true);
+        Test.summary();
     }
 }

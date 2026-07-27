@@ -1,28 +1,27 @@
 package arrays.kadane;
 
+import util.Test;
+
 /**
  * Substring with Largest Variance
- * Pattern : Kadane (Per-Pair, with "Used Negative" Flag)
+ * Pattern : Kadane per ordered (a, b) pair, with "has-b" flag
  * Difficulty: Hard
- * LeetCode  : https://leetcode.com/problems/substring-with-largest-variance/
+ * LeetCode : https://leetcode.com/problems/substring-with-largest-variance/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode]
- *
- * PATTERN HINT:
- *   [For each ordered (a,b) char pair: Kadane treating a=+1, b=−1; carefully require at least one b]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
+ * variance(substr) = maxFreq(char) − minFreq(char in substr). Return the
+ * maximum variance across all substrings.
  */
 public class P20_Substring_with_Largest_Variance {
 
-    // TODO: define method signature after reading the problem
+    public int largestVariance(String s) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P20_Substring_with_Largest_Variance sol = new P20_Substring_with_Largest_Variance();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.largestVariance("aababbb"), 3);
+        Test.equal("Test 2", sol.largestVariance("abcde"), 0);
+        Test.summary();
     }
 }

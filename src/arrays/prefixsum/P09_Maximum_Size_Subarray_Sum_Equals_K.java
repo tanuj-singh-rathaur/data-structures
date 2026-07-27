@@ -1,28 +1,27 @@
 package arrays.prefixsum;
 
+import util.Test;
+
 /**
  * Maximum Size Subarray Sum Equals K
- * Pattern : Prefix Sum
+ * Pattern : Prefix Sum + HashMap of first-seen sum
  * Difficulty: Medium
- * LeetCode  : https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/
+ * LeetCode : https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/
  * ─────────────────────────────────────────────
- *
- * PROBLEM:
- *   [Read the problem on LeetCode]
- *
- * PATTERN HINT:
- *   [HashMap of first occurrence of each prefix sum; check prefix − K]
- *
- * ─────────────────────────────────────────────
- * YOUR ATTEMPT BELOW
- * ─────────────────────────────────────────────
+ * Return the length of the longest contiguous subarray with sum == k.
+ * Works with negative numbers.
  */
 public class P09_Maximum_Size_Subarray_Sum_Equals_K {
 
-    // TODO: define method signature after reading the problem
+    public int maxSubArrayLen(int[] nums, int k) {
+        // TODO: implement
+        return 0;
+    }
 
     public static void main(String[] args) {
         P09_Maximum_Size_Subarray_Sum_Equals_K sol = new P09_Maximum_Size_Subarray_Sum_Equals_K();
-        System.out.println("Test your solution here");
+        Test.equal("Test 1", sol.maxSubArrayLen(new int[]{1,-1,5,-2,3}, 3), 4);
+        Test.equal("Test 2", sol.maxSubArrayLen(new int[]{-2,-1,2,1}, 1), 2);
+        Test.summary();
     }
 }
